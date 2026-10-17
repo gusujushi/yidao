@@ -1,0 +1,189 @@
+<title>易道能力岛</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;900&family=Noto+Sans+SC:wght@400;500&display=swap">
+<style>
+/* 布局概念：一本摊开的线装书 + 一片海。地图是海上 30 座岛；课文页像书页一样有界栏，对读页竖排。 */
+:root{
+  --paper:#ECEFE7;      /* 宣纸，略偏青 */
+  --card:#F7F8F3;
+  --ink:#1D2534;        /* 书中界栏的藏青墨 */
+  --muted:#5A6472;
+  --line:#BCC3B8;
+  --sea:#2A8794;        /* 桌布的青碧色 */
+  --sea-soft:#D4E6E5;
+  --sea-deep:#C3DCDB;
+  --seal:#B3352B;       /* 朱砂印 */
+  --good:#2F7D4F; --bad:#B3352B;
+  --f-brush:"Ma Shan Zheng","STXingkai","KaiTi","Kaiti SC",serif;
+  --f-serif:"Noto Serif SC","Songti SC","SimSun","STSong",serif;
+  --f-sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#11161C;--card:#182029;--ink:#E2E6DC;--muted:#9AA4AA;--line:#2F3A45;
+  --sea:#53B4BF;--sea-soft:#17303A;--sea-deep:#1B3A44;--seal:#E06A5E;--good:#5DBB84;--bad:#E06A5E;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#11161C;--card:#182029;--ink:#E2E6DC;--muted:#9AA4AA;--line:#2F3A45;
+  --sea:#53B4BF;--sea-soft:#17303A;--sea-deep:#1B3A44;--seal:#E06A5E;--good:#5DBB84;--bad:#E06A5E;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--paper);color:var(--ink)}
+body{font-family:var(--f-serif);font-size:16px;line-height:1.75;margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.3}
+.brush{font-family:var(--f-brush);font-weight:400}
+.eyebrow{font-family:var(--f-sans);font-size:12px;letter-spacing:.12em;color:var(--muted)}
+.muted{color:var(--muted)}
+.sans{font-family:var(--f-sans)}
+
+/* 顶栏 */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding-block:10px}
+.logo{display:flex;align-items:baseline;gap:8px;background:none;border:0;padding:0}
+.logo b{font-family:var(--f-brush);font-size:30px;font-weight:400;letter-spacing:.04em}
+.logo span{font-family:var(--f-sans);font-size:12px;color:var(--muted)}
+.stats{display:flex;align-items:center;gap:14px;font-family:var(--f-sans);font-size:13px;margin-left:auto}
+.lv{display:flex;align-items:center;gap:8px}
+.lv i{font-style:normal;border:1px solid var(--seal);color:var(--seal);padding:0 6px;border-radius:4px}
+.xpbar{width:90px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.xpbar>div{height:100%;background:var(--sea)}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;width:100%;scrollbar-width:none}
+nav.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:4px 10px;font-family:var(--f-sans);font-size:14px;white-space:nowrap;color:var(--muted)}
+nav.tabs button.on{color:var(--ink);border-color:var(--seal)}
+
+/* 通用 */
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);padding:8px 18px;border-radius:999px;font-family:var(--f-sans);font-size:14px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.small{padding:4px 12px;font-size:13px}
+.btn:disabled{opacity:.4;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
+section.view{display:grid;gap:22px;padding-top:22px}
+.head2{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 16px;justify-content:space-between}
+.head2 h2{font-size:28px}
+
+/* 今日 + 地图 */
+.today{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+.today .big{font-family:var(--f-brush);font-size:44px;line-height:1.1}
+.today ul{margin:8px 0 14px;padding-left:1.2em}
+.tile{display:grid;gap:4px}
+.tile b{font-family:var(--f-sans);font-size:26px;font-variant-numeric:tabular-nums}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.map{background:var(--sea-soft);border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+.map svg{display:block;width:100%;height:auto}
+.isle{cursor:pointer}
+.isle .land{fill:var(--card);stroke:var(--ink);stroke-width:1.5}
+.isle.lock{cursor:not-allowed}
+.isle.lock .land{fill:var(--sea-deep);stroke:var(--line)}
+.isle.lock text{fill:var(--muted)}
+.isle.cur .land{stroke:var(--seal);stroke-width:3}
+.isle text{fill:var(--ink);font-family:var(--f-serif)}
+.isle:focus-visible .land{stroke:var(--sea);stroke-width:4}
+.isle:hover:not(.lock) .land{fill:var(--paper)}
+.seaname{fill:var(--sea);font-family:var(--f-brush)}
+.path{stroke:var(--sea);stroke-width:2;stroke-dasharray:3 7;fill:none;opacity:.7}
+.wave{stroke:var(--sea);opacity:.25;fill:none;stroke-width:1.5}
+
+/* 课程 */
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.steps button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 14px;font-family:var(--f-sans);font-size:13px;color:var(--muted)}
+.steps button.on{border-color:var(--ink);color:var(--ink)}
+.steps button.seen::before{content:"✓ ";color:var(--good)}
+.page{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:22px clamp(16px,4vw,36px);display:grid;gap:16px;position:relative}
+.page::before{content:"";position:absolute;inset:6px;border:1px solid var(--line);border-radius:2px;pointer-events:none}
+.page>*{position:relative}
+.ph{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+.ph h3{font-size:26px}
+.ph .eyebrow{flex-basis:100%}
+.yw{font-size:20px;line-height:2.1;letter-spacing:.04em;max-width:40em}
+.yw .c{cursor:pointer;border-bottom:1px dashed transparent}
+.yw .c.h{color:transparent;border-bottom-color:var(--muted);user-select:none}
+.key{border-left:3px solid var(--seal);padding:4px 12px;font-weight:600;max-width:40em}
+.bh{max-width:42em}
+.lab{font-family:var(--f-sans);font-size:12px;letter-spacing:.12em;color:var(--sea);font-weight:500;margin-bottom:2px}
+.cases{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.case{border-top:1px solid var(--line);padding-top:8px;min-width:0}
+.yong{font-family:var(--f-sans);font-size:14px;background:var(--sea-soft);padding:8px 12px;border-radius:6px}
+.tools{display:flex;gap:6px;margin-left:auto}
+.gtop{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.hexa{flex:none}
+.hexa rect{fill:var(--ink)}
+.yao{display:grid;gap:0;border-top:1px solid var(--line)}
+.yao>div{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:4px 16px;padding:8px 0;border-bottom:1px solid var(--line)}
+.yao .p{font-weight:600}
+.yao .w{font-family:var(--f-sans);font-size:14px;color:var(--muted)}
+details summary{cursor:pointer;font-family:var(--f-sans);font-size:14px;color:var(--sea)}
+
+/* 对读：竖排书页 */
+.bookwrap{overflow-x:auto;border:1px solid var(--line);background:var(--card);border-radius:4px;padding:18px}
+.book{writing-mode:vertical-rl;height:24em;font-size:19px;line-height:2.3em;letter-spacing:.06em;padding:0 .2em;
+  background-image:repeating-linear-gradient(to left,var(--line) 0 1px,transparent 1px 2.3em);border-left:3px double var(--ink);border-right:3px double var(--ink);margin-left:auto;width:max-content}
+.book p{margin:0}
+.book .hd{font-weight:900}
+.book .q{color:var(--muted)}
+.book .an{text-indent:2em}
+.book.h{writing-mode:horizontal-tb;height:auto;width:auto;max-width:42em;background:none;border:0;line-height:2}
+.pairlabel{display:flex;gap:12px;flex-wrap:wrap;font-family:var(--f-sans);font-size:14px}
+
+/* 测验 */
+.quiz{max-width:720px;width:100%;margin:0 auto;display:grid;gap:16px}
+.qbar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.qbar>div{height:100%;background:var(--sea);transition:width .3s}
+.qq{font-size:20px;line-height:1.7}
+.qsub{background:var(--paper);border-radius:6px;padding:10px 14px;font-size:15px}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:12px 14px;font-size:16px}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt.ok{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--card))}
+.opt.no{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--card))}
+.fb{font-family:var(--f-sans);font-size:14px;border-radius:6px;padding:10px 12px;background:var(--paper)}
+.fb b.ok{color:var(--good)} .fb b.no{color:var(--bad)}
+.result{text-align:center;display:grid;gap:12px;justify-items:center}
+.seals{display:flex;gap:10px}
+.sealmark{width:54px;height:54px;border:3px solid var(--line);color:var(--line);border-radius:6px;display:grid;place-items:center;font-family:var(--f-brush);font-size:28px;transform:rotate(-6deg)}
+.sealmark.on{border-color:var(--seal);color:var(--seal);animation:stamp .4s ease-out both}
+@keyframes stamp{from{transform:scale(1.8) rotate(-6deg);opacity:0}to{transform:scale(1) rotate(-6deg);opacity:1}}
+@media (prefers-reduced-motion:reduce){.sealmark.on{animation:none}.qbar>div{transition:none}}
+
+/* 经典库 */
+.grid-n{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px}
+.grid-n button{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:8px 4px;display:grid;justify-items:center;gap:2px;font-size:13px;min-width:0}
+.grid-n button b{font-family:var(--f-sans);font-size:16px;font-variant-numeric:tabular-nums}
+.grid-n button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.grid-n button.learned{border-color:var(--sea)}
+.search{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;font:inherit;font-size:15px;color:var(--ink);min-width:0;flex:1 1 200px}
+.tri{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tri>div{border:1px solid var(--line);border-radius:8px;padding:10px;display:grid;justify-items:center;gap:2px;text-align:center;background:var(--card)}
+.tri b{font-size:20px}
+.basics{display:grid;gap:14px;max-width:46em}
+.basics h3{font-size:20px}
+table.t{border-collapse:collapse;font-size:15px}
+table.t td,table.t th{border-bottom:1px solid var(--line);padding:6px 10px;text-align:left}
+.tablewrap{overflow-x:auto}
+textarea{width:100%;min-height:80px;font:inherit;font-size:13px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px}
+.note{font-family:var(--f-sans);font-size:13px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 18px;border-radius:999px;font-family:var(--f-sans);font-size:14px;z-index:20}
+.code-in{font-family:var(--f-sans);font-size:28px;letter-spacing:.3em;width:7em;text-align:center;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.two>*{min-width:0}
+@media (max-width:760px){
+  .today,.cases,.two{grid-template-columns:1fr}
+  .tri{grid-template-columns:repeat(2,1fr)}
+  .yao>div{grid-template-columns:1fr}
+  .stats{margin-left:0}
+  .xpbar{width:60px}
+  .head2 h2{font-size:24px}
+  .yw{font-size:18px}
+}
+</style>
+
+<header class="top"><div class="wrap">
+  <button class="logo" id="logo" aria-label="回到地图"><b>易道能力岛</b><span>30天 · 周易 × 道德经</span></button>
+  <div class="stats" id="stats"></div>
+  <nav class="tabs" id="tabs"></nav>
+</div></header>
+<main class="wrap" id="main"></main>
+<div class="toast" id="toast" hidden></div>
