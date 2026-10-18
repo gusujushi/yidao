@@ -1,0 +1,17 @@
+{
+  "name": "易道能力岛 · 30天学周易与道德经",
+  "short_name": "易道能力岛",
+  "description": "像英语能力岛一样闯关学习《周易》和《道德经》",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EAF4FB",
+  "theme_color": "#14A3B8",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

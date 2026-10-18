@@ -1,0 +1,1641 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#14A3B8">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="易道能力岛">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>易道能力岛</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&family=Noto+Serif+SC:wght@400;600;900&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* 布局概念：明亮的海图。五片海各有颜色，岛屿像游戏关卡；卦象按五行上色（金木水火土）；吉祥物“易宝”是一个会眨眼的太极。 */
+:root{
+  --bg:#EAF4FB; --card:#FFFFFF; --ink:#18263A; --muted:#5E6E82; --line:#D5E2EE;
+  --sky:#CDEBF7; --sea:#8FD3E0; --sea2:#5BB8CE; --sand:#F7D98B;
+  --s1:#14A3B8; --s2:#2EAD66; --s3:#8A63E0; --s4:#2F7FF0; --s5:#F07F1E;
+  --jin:#D99A00; --mu:#22A060; --shui:#2D7FF9; --huo:#E5484D; --tu:#B0702A;
+  --seal:#E5484D; --gold:#F5B82E; --good:#22A060; --bad:#E5484D;
+  --f-brush:"Ma Shan Zheng","STXingkai","KaiTi","Kaiti SC",serif;
+  --f-fun:"ZCOOL KuaiLe","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-serif:"Noto Serif SC","Songti SC","SimSun","STSong",serif;
+  --f-sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --r:16px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1726;--card:#172338;--ink:#E8EEF6;--muted:#9AABC0;--line:#27364E;
+  --sky:#13253A;--sea:#16405A;--sea2:#1E5877;--sand:#8A7440;
+  --s1:#3CC4D8;--s2:#4CCB84;--s3:#A88BF0;--s4:#5C9DFF;--s5:#FF9D4D;
+  --jin:#F2B92E;--mu:#45C483;--shui:#5C9DFF;--huo:#FF6B6F;--tu:#D99652;--seal:#FF6B6F;--gold:#F7C64A;--good:#45C483;--bad:#FF6B6F;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1726;--card:#172338;--ink:#E8EEF6;--muted:#9AABC0;--line:#27364E;
+  --sky:#13253A;--sea:#16405A;--sea2:#1E5877;--sand:#8A7440;
+  --s1:#3CC4D8;--s2:#4CCB84;--s3:#A88BF0;--s4:#5C9DFF;--s5:#FF9D4D;
+  --jin:#F2B92E;--mu:#45C483;--shui:#5C9DFF;--huo:#FF6B6F;--tu:#D99652;--seal:#FF6B6F;--gold:#F7C64A;--good:#45C483;--bad:#FF6B6F;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-sans);font-size:16px;line-height:1.75;margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--s4);outline-offset:2px}
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 56px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.3}
+.fun{font-family:var(--f-fun);font-weight:400}
+.brush{font-family:var(--f-brush);font-weight:400}
+.eyebrow{font-size:12px;letter-spacing:.1em;color:var(--muted)}
+.muted{color:var(--muted)}
+.note{font-size:13px;color:var(--muted)}
+
+/* 顶栏 */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--card)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);box-shadow:0 2px 0 var(--line)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding-block:8px}
+.logo{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0}
+.logo b{font-family:var(--f-brush);font-size:30px;font-weight:400;background:linear-gradient(90deg,var(--s1),var(--s3) 50%,var(--s5));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stats{display:flex;align-items:center;gap:10px;font-size:13px;margin-left:auto;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-weight:700;font-size:13px;white-space:nowrap}
+.chip.lv{background:color-mix(in srgb,var(--s3) 16%,var(--card));color:var(--s3)}
+.chip.xp{background:color-mix(in srgb,var(--gold) 20%,var(--card));color:color-mix(in srgb,var(--gold) 60%,var(--ink))}
+.chip.fire{background:color-mix(in srgb,var(--s5) 16%,var(--card));color:var(--s5)}
+.chip.snd{border:0;background:color-mix(in srgb,var(--s4) 12%,var(--card));color:var(--s4)}
+.xpbar{width:80px;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.xpbar>div{height:100%;background:linear-gradient(90deg,var(--gold),var(--s5))}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;width:100%;scrollbar-width:none;padding-bottom:2px}
+nav.tabs button{border:0;border-radius:999px;padding:5px 14px;font-size:14px;white-space:nowrap;background:transparent;color:var(--muted);font-weight:500}
+nav.tabs button.on{background:var(--ink);color:var(--card)}
+nav.tabs button:hover:not(.on){background:var(--line)}
+
+/* 通用 */
+.btn{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--s4);color:#fff;padding:10px 22px;border-radius:999px;font-size:15px;font-weight:700;box-shadow:0 4px 0 color-mix(in srgb,var(--s4) 60%,#000);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 color-mix(in srgb,var(--s4) 60%,#000)}
+.btn.go{background:var(--s2);box-shadow:0 4px 0 color-mix(in srgb,var(--s2) 60%,#000)}
+.btn.warm{background:var(--s5);box-shadow:0 4px 0 color-mix(in srgb,var(--s5) 60%,#000)}
+.btn.ghost{background:var(--card);color:var(--ink);box-shadow:0 0 0 2px var(--line) inset}
+.btn.small{padding:5px 14px;font-size:13px;box-shadow:0 0 0 2px var(--line) inset;background:var(--card);color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.panel{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:0 2px 0 var(--line);scroll-margin-top:140px}
+section.view{display:grid;gap:22px;padding-top:22px}
+.head2{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 16px;justify-content:space-between}
+.head2 h2{font-size:30px}
+
+/* 易宝 */
+.mascot{flex:none}
+.mascot .eye{transform-origin:center;transform-box:fill-box;animation:blink 4s infinite}
+.mascot.happy{animation:hop .6s ease-out}
+.mascot.sad{animation:wob .5s ease-out}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes hop{0%{transform:translateY(0)}40%{transform:translateY(-14px) rotate(-8deg)}100%{transform:translateY(0)}}
+@keyframes wob{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
+.bubble{position:relative;background:var(--card);border-radius:14px;padding:8px 14px;box-shadow:0 0 0 2px var(--line) inset;font-size:14px;min-width:0}
+.bubble::before{content:"";position:absolute;left:-7px;top:18px;width:12px;height:12px;background:var(--card);border-left:2px solid var(--line);border-bottom:2px solid var(--line);transform:rotate(45deg)}
+.talk{display:flex;gap:12px;align-items:flex-start}
+
+/* 首页 */
+.today{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
+.hero{background:linear-gradient(135deg,var(--s1),var(--s4));color:#fff;border-radius:var(--r);padding:20px 22px;display:grid;gap:8px;position:relative;overflow:hidden}
+.hero .eyebrow{color:#ffffffcc}
+.hero .big{font-family:var(--f-brush);font-size:48px;line-height:1.1}
+.hero ul{margin:2px 0 8px;padding-left:1.2em;font-size:14px}
+.hero .btn{background:#fff;color:var(--s4);box-shadow:0 4px 0 #0003}
+.hero .note{color:#ffffffd0}
+.hero::after{content:"☯";position:absolute;right:-20px;bottom:-50px;font-size:180px;opacity:.12;line-height:1}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.tile{border-radius:14px;padding:12px 14px;display:grid;gap:2px;background:color-mix(in srgb,var(--c) 13%,var(--card));color:var(--ink)}
+.tile b{font-family:var(--f-fun);font-size:28px;font-weight:400;color:var(--c);font-variant-numeric:tabular-nums}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{display:flex;align-items:center;gap:8px;border-radius:12px;padding:6px 12px 6px 6px;background:var(--card);box-shadow:0 0 0 2px var(--line) inset;font-size:13px}
+.badge i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-family:var(--f-fun);color:#fff;background:var(--c);font-size:15px}
+.badge.off{opacity:.45;filter:grayscale(1)}
+.map{border-radius:var(--r);overflow:hidden;background:linear-gradient(180deg,var(--sky),var(--sea) 18%,var(--sea2));box-shadow:0 2px 0 var(--line)}
+.map svg{display:block;width:100%;height:auto}
+.isle{cursor:pointer}
+.isle .rim{fill:var(--sand)}
+.isle .land{stroke:#ffffff;stroke-width:3}
+.isle.lock{cursor:not-allowed}
+.isle.lock .land{fill:#9FB2C2 !important}
+.isle.lock .rim{fill:#C9D5DF}
+.isle.lock .tree{fill:#B9C7D2}
+.isle:hover:not(.lock) .grp{transform:translateY(-4px)}
+.isle .grp{transition:transform .15s;transform-box:fill-box}
+.isle:focus-visible .land{stroke:var(--gold);stroke-width:6}
+.isle text{font-family:var(--f-fun)}
+.boat{animation:bob 2.4s ease-in-out infinite;transform-box:fill-box}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+.wave{fill:none;stroke:#ffffff;opacity:.45;stroke-width:3;stroke-linecap:round;animation:drift 6s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateX(-12px)}to{transform:translateX(12px)}}
+.path{stroke:#ffffff;stroke-width:4;stroke-dasharray:2 12;stroke-linecap:round;fill:none;opacity:.8}
+
+/* 课程 */
+.dayhead{border-radius:var(--r);padding:16px 20px;background:linear-gradient(120deg,var(--sc),color-mix(in srgb,var(--sc) 55%,var(--s4)));color:#fff;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.dayhead .eyebrow{color:#ffffffd0}
+.dayhead h2{font-family:var(--f-brush);font-weight:400;font-size:32px}
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.steps button{border:0;background:#ffffff33;color:#fff;border-radius:999px;padding:5px 14px;font-size:14px;font-weight:700}
+.steps button.on{background:#fff;color:var(--sc)}
+.steps button.seen:not(.on)::before{content:"✓ "}
+.page{background:var(--card);border-radius:var(--r);padding:0 0 20px;display:grid;gap:16px;box-shadow:0 2px 0 var(--line);overflow:hidden}
+.page>*:not(.ph){margin:0 clamp(16px,4vw,32px)}
+.ph{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;padding:14px clamp(16px,4vw,32px);background:color-mix(in srgb,var(--pc) 14%,var(--card));border-bottom:3px solid var(--pc)}
+.ph h3{font-family:var(--f-fun);font-weight:400;font-size:26px;color:var(--ink)}
+.ph .tag{background:var(--pc);color:#fff;border-radius:8px;padding:1px 10px;font-size:13px;font-weight:700}
+.yw{font-family:var(--f-serif);font-size:20px;line-height:2.1;letter-spacing:.04em;max-width:40em}
+.yw .c{cursor:pointer;border-radius:3px}
+.yw .c.h{color:transparent;background:color-mix(in srgb,var(--gold) 35%,var(--card));user-select:none}
+.key{border-radius:12px;padding:10px 14px;font-family:var(--f-serif);font-weight:600;max-width:42em;background:color-mix(in srgb,var(--gold) 18%,var(--card))}
+.bh{max-width:44em}
+.lab{font-size:13px;font-weight:700;margin-bottom:2px;color:var(--lc,var(--s4))}
+.cases{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.case{border-radius:12px;padding:12px 14px;min-width:0;background:color-mix(in srgb,var(--lc) 9%,var(--card))}
+.case.gu{--lc:var(--tu)} .case.jin{--lc:var(--s4)}
+.yong{font-size:14px;background:color-mix(in srgb,var(--s2) 14%,var(--card));padding:10px 14px;border-radius:12px;display:flex;gap:8px;align-items:center}
+.yong::before{content:"行";flex:none;width:26px;height:26px;border-radius:50%;background:var(--s2);color:#fff;display:grid;place-items:center;font-family:var(--f-fun)}
+.tools{display:flex;gap:6px;margin-left:auto}
+.gtop{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.hexa{flex:none}
+.trilegend{display:grid;gap:4px;font-size:13px}
+.trilegend span{display:inline-flex;align-items:center;gap:6px}
+.trilegend i{width:12px;height:12px;border-radius:3px;background:var(--c)}
+.yao{display:grid;border-radius:12px;overflow:hidden;border:2px solid var(--line)}
+.yao>div{display:grid;grid-template-columns:auto minmax(0,1.1fr) minmax(0,1fr);gap:4px 14px;padding:8px 12px;align-items:center}
+.yao>div:nth-child(odd){background:color-mix(in srgb,var(--line) 35%,var(--card))}
+.yao .bar{width:34px;height:8px;border-radius:2px;background:var(--c)}
+.yao .bar.yin{background:linear-gradient(90deg,var(--c) 0 42%,transparent 42% 58%,var(--c) 58%)}
+.yao .p{font-weight:700}
+.yao .t{font-family:var(--f-serif)}
+.yao .w{font-size:14px;color:var(--muted)}
+details summary{cursor:pointer;font-size:14px;color:var(--s4);font-weight:700}
+
+/* 对读 */
+.bookwrap{overflow-x:auto;background:var(--card);border-radius:var(--r);padding:20px;box-shadow:0 2px 0 var(--line)}
+.book{writing-mode:vertical-rl;height:24em;font-family:var(--f-serif);font-size:19px;line-height:2.3em;letter-spacing:.06em;padding:0 .2em;
+  background-image:repeating-linear-gradient(to left,var(--line) 0 1px,transparent 1px 2.3em);border-left:4px double var(--s3);border-right:4px double var(--s3);margin-left:auto;width:max-content}
+.book p{margin:0}
+.book .hd{font-weight:900;color:var(--s3)}
+.book .q1{color:var(--s2)} .book .q2{color:var(--s5)}
+.book .an{text-indent:2em}
+.book.h{writing-mode:horizontal-tb;height:auto;width:auto;max-width:44em;background:none;border:0;line-height:2}
+.vs{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+.vs .side{border-radius:14px;padding:10px 16px;color:#fff;text-align:center;min-width:0}
+.vs .x{font-family:var(--f-fun);font-size:28px;color:var(--s3)}
+
+/* 测验 */
+.quiz{max-width:740px;width:100%;margin:0 auto;display:grid;gap:16px}
+.qtop{display:flex;align-items:center;gap:12px}
+.qbar{flex:1;height:14px;background:var(--line);border-radius:7px;overflow:hidden}
+.qbar>div{height:100%;background:linear-gradient(90deg,var(--s2),var(--s1));border-radius:7px;transition:width .3s}
+.combo{font-family:var(--f-fun);font-size:18px;color:var(--s5);min-width:5em;text-align:right}
+.combo.pop{animation:pop .35s}
+@keyframes pop{50%{transform:scale(1.4)}}
+.qcard{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:0 2px 0 var(--line);display:grid;gap:14px;position:relative}
+.qq{font-size:20px;line-height:1.7;font-weight:500}
+.qsub{background:color-mix(in srgb,var(--s4) 7%,var(--card));border-radius:12px;padding:12px 14px;font-size:15px}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;border:0;background:var(--card);border-radius:14px;padding:12px 14px;font-size:16px;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line);display:flex;gap:10px;align-items:center}
+.opt b{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff;background:var(--oc);font-family:var(--f-fun);font-weight:400}
+.opt:hover:not(:disabled){box-shadow:0 0 0 2px var(--oc) inset,0 3px 0 var(--oc)}
+.opt.ok{box-shadow:0 0 0 3px var(--good) inset;background:color-mix(in srgb,var(--good) 14%,var(--card))}
+.opt.no{box-shadow:0 0 0 3px var(--bad) inset;background:color-mix(in srgb,var(--bad) 12%,var(--card));animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fb{font-size:15px;border-radius:12px;padding:12px 14px;background:color-mix(in srgb,var(--c) 13%,var(--card))}
+.fb b{color:var(--c)}
+.plus{position:absolute;right:20px;top:10px;font-family:var(--f-fun);font-size:26px;color:var(--gold);pointer-events:none;animation:up 1s ease-out forwards}
+@keyframes up{to{transform:translateY(-40px);opacity:0}}
+.result{text-align:center;display:grid;gap:12px;justify-items:center}
+.seals{display:flex;gap:12px}
+.star{width:60px;height:60px}
+.star path{fill:var(--line)}
+.star.on path{fill:var(--gold)}
+.star.on{animation:stamp .45s ease-out both}
+@keyframes stamp{from{transform:scale(2) rotate(-30deg);opacity:0}to{transform:scale(1);opacity:1}}
+.cards{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.jn{width:150px;border-radius:12px;padding:10px;color:#fff;font-size:13px;text-align:left;background:var(--c);animation:flip .5s ease-out both}
+.jn b{font-family:var(--f-fun);font-weight:400;font-size:16px;display:block}
+@keyframes flip{from{transform:rotateY(90deg)}to{transform:none}}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%;height:100%}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* 经典库 等 */
+.grid-n{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px}
+.grid-n button{border:0;background:var(--card);border-radius:12px;padding:8px 4px;display:grid;justify-items:center;gap:2px;font-size:13px;min-width:0;box-shadow:0 0 0 2px var(--line) inset}
+.grid-n button b{font-family:var(--f-fun);font-weight:400;font-size:18px;color:var(--c,var(--muted))}
+.grid-n button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.grid-n button.learned{background:color-mix(in srgb,var(--c) 14%,var(--card));box-shadow:0 0 0 2px var(--c) inset}
+.search{border:0;box-shadow:0 0 0 2px var(--line) inset;background:var(--card);border-radius:999px;padding:8px 16px;font:inherit;font-size:15px;color:var(--ink);min-width:0;flex:1 1 200px}
+.seg{display:flex;gap:6px}
+.seg button{border:0;border-radius:999px;padding:6px 16px;font-weight:700;background:var(--card);box-shadow:0 0 0 2px var(--line) inset}
+.seg button.on{background:var(--ink);color:var(--card);box-shadow:none}
+.tri{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tri>div{border-radius:14px;padding:10px;display:grid;justify-items:center;gap:2px;text-align:center;background:color-mix(in srgb,var(--c) 12%,var(--card))}
+.tri b{font-family:var(--f-fun);font-weight:400;font-size:22px;color:var(--c)}
+.basics{display:grid;gap:14px}
+table.t{border-collapse:collapse;font-size:15px}
+table.t td,table.t th{border-bottom:2px solid var(--line);padding:6px 10px;text-align:left}
+.tablewrap{overflow-x:auto}
+textarea{width:100%;min-height:80px;font:inherit;font-size:13px;background:var(--card);color:var(--ink);border:0;box-shadow:0 0 0 2px var(--line) inset;border-radius:10px;padding:8px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--card);padding:8px 18px;border-radius:999px;font-size:14px;z-index:40;font-weight:700}
+.code-in{font-family:var(--f-fun);font-size:30px;letter-spacing:.3em;width:7em;text-align:center;border:0;box-shadow:0 0 0 3px var(--s3) inset;border-radius:12px;background:var(--card);color:var(--ink);padding:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.two>*{min-width:0}
+@media (max-width:760px){
+  .today,.cases,.two{grid-template-columns:1fr}
+  .tri{grid-template-columns:repeat(2,1fr)}
+  .yao>div{grid-template-columns:auto minmax(0,1fr)}
+  .yao .w{grid-column:2}
+  .stats{margin-left:0}
+  .xpbar{width:50px}
+  .head2 h2{font-size:26px}
+  .yw{font-size:18px}
+  .hero .big{font-size:40px}
+}
+</style>
+
+</head><body>
+<header class="top"><div class="wrap">
+  <button class="logo" id="logo" aria-label="回到地图"><span id="logomas"></span><b>易道能力岛</b></button>
+  <div class="stats" id="stats"></div>
+  <nav class="tabs" id="tabs"></nav>
+</div></header>
+<main class="wrap" id="main"></main>
+<canvas id="fx"></canvas>
+<div class="toast" id="toast" hidden></div>
+<script>
+// 原文：《道德经》王弼本、《周易》通行本（来源：维基文库），由 tools/parse_sources.py 生成
+window.DDJ=[{"n": 1, "s": "道可道，非常道，名可名，非常名；无名，天地之始，有名，万物之母。故常无欲，以观其妙，常有欲，以观其徼；此两者，同出而异名，同谓之玄。玄之又玄，众妙之门。", "t": "道可道，非常道，名可名，非常名；無名，天地之始，有名，萬物之母。故常無欲，以觀其妙，常有欲，以觀其徼；此兩者，同出而異名，同謂之玄。玄之又玄，眾妙之門。"}, {"n": 2, "s": "天下皆知美之为美，斯恶已。皆知善之为善，斯不善已。故有无相生，难易相成，长短相较，高下相倾，音声相和，前后相随。是以圣人处无为之事，行不言之教；万物作焉而不辞，生而不有，为而不恃，功成而弗居。夫唯弗居，是以不去。", "t": "天下皆知美之為美，斯惡已。皆知善之為善，斯不善已。故有無相生，難易相成，長短相較，高下相傾，音聲相和，前後相隨。是以聖人處無為之事，行不言之教；萬物作焉而不辭，生而不有，為而不恃，功成而弗居。夫唯弗居，是以不去。"}, {"n": 3, "s": "不尚贤，使民不争；不贵难得之货，使民不为盗；不见可欲，使民心不乱。是以圣人之治，虚其心，实其腹，弱其志，强其骨。常使民无知无欲。使夫智者不敢为也。为无为，则无不治。", "t": "不尚賢，使民不爭；不貴難得之貨，使民不為盜；不見可欲，使民心不亂。是以聖人之治，虛其心，實其腹，弱其志，強其骨。常使民無知無欲。使夫智者不敢為也。為無為，則無不治。"}, {"n": 4, "s": "道冲而用之或不盈，渊兮似万物之宗；挫其锐，解其纷，和其光，同其尘，湛兮似或存。吾不知谁之子，象帝之先。", "t": "道沖而用之或不盈，淵兮似萬物之宗；挫其銳，解其紛，和其光，同其塵，湛兮似或存。吾不知誰之子，象帝之先。"}, {"n": 5, "s": "天地不仁，以万物为刍狗；圣人不仁，以百姓为刍狗。天地之间，其犹橐籥乎？虚而不屈，动而愈出。多言数穷，不如守中。", "t": "天地不仁，以萬物為芻狗；聖人不仁，以百姓為芻狗。天地之間，其猶橐籥乎？虛而不屈，動而愈出。多言數窮，不如守中。"}, {"n": 6, "s": "谷神不死，是谓玄牝。玄牝之门，是谓天地根。绵绵若存，用之不勤。", "t": "谷神不死，是謂玄牝。玄牝之門，是謂天地根。緜緜若存，用之不勤。"}, {"n": 7, "s": "天长地久。天地所以能长且久者，以其不自生，故能长生。是以圣人后其身而身先；外其身而身存。非以其无私邪，故能成其私。", "t": "天長地久。天地所以能長且久者，以其不自生，故能長生。是以聖人後其身而身先；外其身而身存。非以其無私邪，故能成其私。"}, {"n": 8, "s": "上善若水。水善利万物而不争，处众人之所恶，故几于道。居善地，心善渊，与善仁，言善信，正善治，事善能，动善时。夫唯不争，故无尤。", "t": "上善若水。水善利萬物而不爭，處眾人之所惡，故幾於道。居善地，心善淵，與善仁，言善信，正善治，事善能，動善時。夫唯不爭，故無尤。"}, {"n": 9, "s": "持而盈之，不如其已；揣而棁之，不可长保。金玉满堂，莫之能守；富贵而骄，自遗其咎。功遂身退，天之道。", "t": "持而盈之，不如其已；揣而梲之，不可長保。金玉滿堂，莫之能守；富貴而驕，自遺其咎。功遂身退，天之道。"}, {"n": 10, "s": "载营魄抱一，能无离乎？专气致柔，能婴儿乎？涤除玄览，能无疵乎？爱国治民，能无知乎？天门开阖，能为雌乎？明白四达，能无为乎？生之，畜之。生而不有，为而不恃，长而不宰，是谓玄德。", "t": "載營魄抱一，能無離乎？專氣致柔，能嬰兒乎？滌除玄覽，能無疵乎？愛國治民，能無知乎？天門開闔，能為雌乎？明白四達，能無為乎？生之，畜之。生而不有，為而不恃，長而不宰，是謂玄德。"}, {"n": 11, "s": "三十辐共一毂，当其无，有车之用。埏埴以为器，当其无，有器之用。凿户牖以为室，当其无，有室之用。故有之以为利，无之以为用。", "t": "三十輻共一轂，當其無，有車之用。埏埴以為器，當其無，有器之用。鑿戶牖以為室，當其無，有室之用。故有之以為利，無之以為用。"}, {"n": 12, "s": "五色令人目盲，五音令人耳聋，五味令人口爽，驰骋畋猎令人心发狂，难得之货令人行妨。是以圣人为腹不为目，故去彼取此。", "t": "五色令人目盲，五音令人耳聾，五味令人口爽，馳騁畋獵令人心發狂，難得之貨令人行妨。是以聖人為腹不為目，故去彼取此。"}, {"n": 13, "s": "宠辱若惊，贵大患若身。何谓宠辱若惊？宠为下，得之若惊，失之若惊，是谓宠辱若惊。何谓贵大患若身？吾所以有大患者，为吾有身，及吾无身，吾有何患？故贵以身为天下，若可寄天下；爱以身为天下，若可托天下。", "t": "寵辱若驚，貴大患若身。何謂寵辱若驚？寵為下，得之若驚，失之若驚，是謂寵辱若驚。何謂貴大患若身？吾所以有大患者，為吾有身，及吾無身，吾有何患？故貴以身為天下，若可寄天下；愛以身為天下，若可託天下。"}, {"n": 14, "s": "视之不见名曰夷，听之不闻名曰希，搏之不得名曰微。此三者，不可致诘，故混而为一。其上不皦，其下不昧。绳绳不可名，复归于无物。是谓无状之状，无物之象，是谓惚恍。迎之不见其首，随之不见其后。执古之道，以御今之有。能知古始，是谓道纪。", "t": "視之不見名曰夷，聽之不聞名曰希，搏之不得名曰微。此三者，不可致詰，故混而為一。其上不皦，其下不昧。繩繩不可名，復歸於無物。是謂無狀之狀，無物之象，是謂惚恍。迎之不見其首，隨之不見其後。執古之道，以御今之有。能知古始，是謂道紀。"}, {"n": 15, "s": "古之善为士者，微妙玄通，深不可识。夫唯不可识，故强为之容。豫焉若冬涉川，犹兮若畏四邻，俨兮其若容，涣兮若冰之将释，敦兮其若朴，旷兮其若谷，混兮其若浊。孰能浊以静之徐清？孰能安以久动之徐生？保此道者不欲盈，夫唯不盈，故能蔽不新成。", "t": "古之善為士者，微妙玄通，深不可識。夫唯不可識，故強為之容。豫焉若冬涉川，猶兮若畏四鄰，儼兮其若容，渙兮若冰之將釋，敦兮其若樸，曠兮其若谷，混兮其若濁。孰能濁以靜之徐清？孰能安以久動之徐生？保此道者不欲盈，夫唯不盈，故能蔽不新成。"}, {"n": 16, "s": "致虚极，守静笃。万物并作，吾以观复。夫物芸芸，各复归其根。归根曰静，是谓复命。复命曰常，知常曰明。不知常，妄作凶。知常容，容乃公，公乃全，全乃天，天乃道，道乃久，没身不殆。", "t": "致虛極，守靜篤。萬物並作，吾以觀復。夫物芸芸，各復歸其根。歸根曰靜，是謂復命。復命曰常，知常曰明。不知常，妄作凶。知常容，容乃公，公乃全，全乃天，天乃道，道乃久，沒身不殆。"}, {"n": 17, "s": "太上，下知有之，其次，亲而誉之，其次，畏之，其次，侮之。信不足焉，有不信焉。悠兮其贵言，功成事遂，百姓皆谓：我自然。", "t": "太上，下知有之，其次，親而譽之，其次，畏之，其次，侮之。信不足焉，有不信焉。悠兮其貴言，功成事遂，百姓皆謂：我自然。"}, {"n": 18, "s": "大道废，有仁义；智慧出，有大伪；六亲不和，有孝慈；国家昏乱，有忠臣。", "t": "大道廢，有仁義；智慧出，有大偽；六親不和，有孝慈；國家昏亂，有忠臣。"}, {"n": 19, "s": "绝圣弃智，民利百倍；绝仁弃义，民复孝慈；绝巧弃利，盗贼无有。此三者以为文不足，故令有所属﹕见素抱朴，少私寡欲。", "t": "絕聖棄智，民利百倍；絕仁棄義，民復孝慈；絕巧棄利，盜賊無有。此三者以為文不足，故令有所屬﹕見素抱樸，少私寡欲。"}, {"n": 20, "s": "绝学无忧，唯之与阿，相去几何？善之与恶，相去若何？人之所畏，不可不畏。荒兮其未央哉﹗众人熙熙，如享太牢，如春登台。我独泊兮其未兆，如婴儿之未孩；儽儽兮若无所归。众人皆有余，而我独若遗。我愚人之心也哉﹗沌沌兮，俗人昭昭，我独昏昏。俗人察察，我独闷闷。澹兮其若海，飂兮若无止。众人皆有以，而我独顽似鄙。我独异于人，而贵食母。", "t": "絕學無憂，唯之與阿，相去幾何？善之與惡，相去若何？人之所畏，不可不畏。荒兮其未央哉﹗眾人熙熙，如享太牢，如春登臺。我獨泊兮其未兆，如嬰兒之未孩；儽儽兮若無所歸。眾人皆有餘，而我獨若遺。我愚人之心也哉﹗沌沌兮，俗人昭昭，我獨昏昏。俗人察察，我獨悶悶。澹兮其若海，飂兮若無止。眾人皆有以，而我獨頑似鄙。我獨異於人，而貴食母。"}, {"n": 21, "s": "孔德之容，惟道是从。道之为物，惟恍惟惚。惚兮恍兮，其中有象；恍兮惚兮，其中有物。窈兮冥兮，其中有精；其精甚真，其中有信。自今及古，其名不去，以阅众甫。吾何以知众甫之状哉？以此。", "t": "孔德之容，惟道是從。道之為物，惟恍惟惚。惚兮恍兮，其中有象；恍兮惚兮，其中有物。窈兮冥兮，其中有精；其精甚真，其中有信。自今及古，其名不去，以閱眾甫。吾何以知眾甫之狀哉？以此。"}, {"n": 22, "s": "曲则全，枉则直，洼则盈，敝则新，少则得，多则惑。是以圣人抱一为天下式。不自见故明，不自是故彰，不自伐故有功，不自矜故长。夫唯不争，故天下莫能与之争。古之所谓曲则全者，岂虚言哉！诚全而归之。", "t": "曲則全，枉則直，窪則盈，敝則新，少則得，多則惑。是以聖人抱一為天下式。不自見故明，不自是故彰，不自伐故有功，不自矜故長。夫唯不爭，故天下莫能與之爭。古之所謂曲則全者，豈虛言哉！誠全而歸之。"}, {"n": 23, "s": "希言自然。故飘风不终朝，骤雨不终日。孰为此者？天地。天地尚不能久，而况于人乎？故从事于道者，道者同于道，德者同于德，失者同于失。同于道者，道亦乐得之；同于德者，德亦乐得之；同于失者，失亦乐得之。信不足焉，有不信焉。", "t": "希言自然。故飄風不終朝，驟雨不終日。孰為此者？天地。天地尚不能久，而況於人乎？故從事於道者，道者同於道，德者同於德，失者同於失。同於道者，道亦樂得之；同於德者，德亦樂得之；同於失者，失亦樂得之。信不足焉，有不信焉。"}, {"n": 24, "s": "企者不立，跨者不行，自见者不明，自是者不彰，自伐者无功，自矜者不长。其在道也，曰余食赘行。物或恶之，故有道者不处。", "t": "企者不立，跨者不行，自見者不明，自是者不彰，自伐者無功，自矜者不長。其在道也，曰餘食贅行。物或惡之，故有道者不處。"}, {"n": 25, "s": "有物混成，先天地生。寂兮寥兮，独立而不改，周行而不殆，可以为天下母。吾不知其名，字之曰道，强为之名曰大。大曰逝，逝曰远，远曰反。故道大，天大，地大，王亦大。域中有四大，而王居其一焉。人法地，地法天，天法道，道法自然。", "t": "有物混成，先天地生。寂兮寥兮，獨立而不改，周行而不殆，可以為天下母。吾不知其名，字之曰道，強為之名曰大。大曰逝，逝曰遠，遠曰反。故道大，天大，地大，王亦大。域中有四大，而王居其一焉。人法地，地法天，天法道，道法自然。"}, {"n": 26, "s": "重为轻根，静为躁君。是以圣人终日行不离辎重。虽有荣观，燕处超然。奈何万乘之主，而以身轻天下？轻则失本，躁则失君。", "t": "重為輕根，靜為躁君。是以聖人終日行不離輜重。雖有榮觀，燕處超然。奈何萬乘之主，而以身輕天下？輕則失本，躁則失君。"}, {"n": 27, "s": "善行无辙迹，善言无瑕讁；善数不用筹策；善闭无关楗而不可开，善结无绳约而不可解。是以圣人常善救人，故无弃人；常善救物，故无弃物，是谓袭明。故善人者，不善人之师；不善人者，善人之资。不贵其师，不爱其资，虽智大迷，是谓要妙。", "t": "善行無轍迹，善言無瑕讁；善數不用籌策；善閉無關楗而不可開，善結無繩約而不可解。是以聖人常善救人，故無棄人；常善救物，故無棄物，是謂襲明。故善人者，不善人之師；不善人者，善人之資。不貴其師，不愛其資，雖智大迷，是謂要妙。"}, {"n": 28, "s": "知其雄，守其雌，为天下溪。为天下溪，常德不离，复归于婴儿。知其白，守其黑，为天下式。为天下式，常德不忒，复归于无极。知其荣，守其辱，为天下谷，常德乃足，复归于朴。朴散则为器，圣人用之，则为官长，故大制不割。", "t": "知其雄，守其雌，為天下谿。為天下谿，常德不離，復歸於嬰兒。知其白，守其黑，為天下式。為天下式，常德不忒，復歸於無極。知其榮，守其辱，為天下谷，常德乃足，復歸於樸。樸散則為器，聖人用之，則為官長，故大制不割。"}, {"n": 29, "s": "将欲取天下而为之，吾见其不得已。天下神器，不可为也，为者败之，执者失之。故物或行或随，或歔或吹。或强或羸，或挫或隳。是以圣人去甚，去奢，去泰。", "t": "將欲取天下而為之，吾見其不得已。天下神器，不可為也，為者敗之，執者失之。故物或行或隨，或歔或吹。或強或羸，或挫或隳。是以聖人去甚，去奢，去泰。"}, {"n": 30, "s": "以道佐人主者，不以兵强天下。其事好还。师之所处，荆棘生焉。大军之后，必有凶年。善有果而已，不敢以取强。果而勿矜，果而勿伐，果而勿骄。果而不得已，果而勿强。物壮则老，是谓不道，不道早已。", "t": "以道佐人主者，不以兵強天下。其事好還。師之所處，荊棘生焉。大軍之後，必有凶年。善有果而已，不敢以取強。果而勿矜，果而勿伐，果而勿驕。果而不得已，果而勿強。物壯則老，是謂不道，不道早已。"}, {"n": 31, "s": "夫佳兵者，不祥之器，物或恶之，故有道者不处。君子居则贵左，用兵则贵右。兵者不祥之器，非君子之器，不得已而用之，恬淡为上。胜而不美，而美之者，是乐杀人。夫乐杀人者，则不可以得志于天下矣。吉事尚左，凶事尚右。偏将军居左，上将军居右，言以丧礼处之。杀人之众，以哀悲泣之，战胜，以丧礼处之。", "t": "夫佳兵者，不祥之器，物或惡之，故有道者不處。君子居則貴左，用兵則貴右。兵者不祥之器，非君子之器，不得已而用之，恬淡為上。勝而不美，而美之者，是樂殺人。夫樂殺人者，則不可以得志於天下矣。吉事尚左，凶事尚右。偏將軍居左，上將軍居右，言以喪禮處之。殺人之眾，以哀悲泣之，戰勝，以喪禮處之。"}, {"n": 32, "s": "道常无名，朴虽小，天下莫能臣也。侯王若能守之，万物将自宾。天地相合，以降甘露，民莫之令而自均。始制有名，名亦既有，夫亦将知止，知止所以不殆。譬道之在天下，犹川谷之于江海。", "t": "道常無名，樸雖小，天下莫能臣也。侯王若能守之，萬物將自賓。天地相合，以降甘露，民莫之令而自均。始制有名，名亦既有，夫亦將知止，知止所以不殆。譬道之在天下，猶川谷之於江海。"}, {"n": 33, "s": "知人者智，自知者明。胜人者有力，自胜者强。知足者富。强行者有志。不失其所者久。死而不亡者寿。", "t": "知人者智，自知者明。勝人者有力，自勝者強。知足者富。強行者有志。不失其所者久。死而不亡者壽。"}, {"n": 34, "s": "大道泛兮，其可左右。万物恃之而生而不辞，功成不名有。衣养万物而不为主，常无欲，可名于小；万物归焉而不为主，可名为大。以其终不自为大，故能成其大。", "t": "大道氾兮，其可左右。萬物恃之而生而不辭，功成不名有。衣養萬物而不為主，常無欲，可名於小；萬物歸焉而不為主，可名為大。以其終不自為大，故能成其大。"}, {"n": 35, "s": "执大象，天下往。往而不害，安平太。乐与饵，过客止。道之出口，淡乎其无味，视之不足见，听之不足闻，用之不足既。", "t": "執大象，天下往。往而不害，安平太。樂與餌，過客止。道之出口，淡乎其無味，視之不足見，聽之不足聞，用之不足既。"}, {"n": 36, "s": "将欲歙之，必固张之；将欲弱之，必固强之；将欲废之，必固兴之；将欲夺之，必固与之。是谓微明。柔弱胜刚强。鱼不可脱于渊，国之利器不可以示人。", "t": "將欲歙之，必固張之；將欲弱之，必固強之；將欲廢之，必固興之；將欲奪之，必固與之。是謂微明。柔弱勝剛強。魚不可脫於淵，國之利器不可以示人。"}, {"n": 37, "s": "道常无为而无不为。侯王若能守之，万物将自化。化而欲作，吾将镇之以无名之朴。无名之朴，夫亦将无欲。不欲以静，天下将自定。", "t": "道常無為而無不為。侯王若能守之，萬物將自化。化而欲作，吾將鎮之以無名之樸。無名之樸，夫亦將無欲。不欲以靜，天下將自定。"}, {"n": 38, "s": "上德不德，是以有德；下德不失德，是以无德。上德无为而无以为，下德为之而有以为。上仁为之而无以为，上义为之而有以为。上礼为之而莫之应， 则攘臂而扔之。故失道而后德，失德而后仁，失仁而后义，失义而后礼。夫礼者，忠信之薄，而乱之首。前识者，道之华，而愚之始。是以大丈夫处其厚，不居其薄；处其实，不居其华。故去彼取此。", "t": "上德不德，是以有德；下德不失德，是以無德。上德無為而無以為，下德為之而有以為。上仁為之而無以為，上義為之而有以為。上禮為之而莫之應， 則攘臂而扔之。故失道而後德，失德而後仁，失仁而後義，失義而後禮。夫禮者，忠信之薄，而亂之首。前識者，道之華，而愚之始。是以大丈夫處其厚，不居其薄；處其實，不居其華。故去彼取此。"}, {"n": 39, "s": "昔之得一者，天得一以清，地得一以宁，神得一以灵，谷得一以盈，万物得一以生，侯王得一以为天下贞。其致之，天无以清将恐裂，地无以宁将恐发，神无以灵将恐歇，谷无以盈将恐竭，万物无以生将恐灭，侯王无以贵高将恐蹶。故贵以贱为本，高以下为基。是以侯王自称孤﹑寡﹑不谷。此非以贱为本邪？非乎？故致数舆无舆，不欲琭琭如玉，珞珞如石。", "t": "昔之得一者，天得一以清，地得一以寧，神得一以靈，谷得一以盈，萬物得一以生，侯王得一以為天下貞。其致之，天無以清將恐裂，地無以寧將恐發，神無以靈將恐歇，谷無以盈將恐竭，萬物無以生將恐滅，侯王無以貴高將恐蹶。故貴以賤為本，高以下為基。是以侯王自稱孤﹑寡﹑不穀。此非以賤為本邪？非乎？故致數輿無輿，不欲琭琭如玉，珞珞如石。"}, {"n": 40, "s": "反者道之动，弱者道之用。天下万物生于有，有生于无。", "t": "反者道之動，弱者道之用。天下萬物生於有，有生於無。"}, {"n": 41, "s": "上士闻道，勤而行之；中士闻道，若存若亡；下士闻道，大笑之。不笑不足以为道。故建言有之﹕明道若昧，进道若退，夷道若颣，上德若谷，大白若辱，广德若不足，建德若偷，质真若渝，大方无隅，大器晚成，大音希声，大象无形，道隐无名。夫唯道，善贷且成。", "t": "上士聞道，勤而行之；中士聞道，若存若亡；下士聞道，大笑之。不笑不足以為道。故建言有之﹕明道若昧，進道若退，夷道若纇，上德若谷，大白若辱，廣德若不足，建德若偷，質真若渝，大方無隅，大器晚成，大音希聲，大象無形，道隱無名。夫唯道，善貸且成。"}, {"n": 42, "s": "道生一，一生二，二生三，三生万物。万物负阴而抱阳，冲气以为和。人之所恶，唯孤﹑寡﹑不谷，而王公以为称。故物或损之而益，或益之而损。人之所教，我亦教之。强梁者不得其死，吾将以为教父。", "t": "道生一，一生二，二生三，三生萬物。萬物負陰而抱陽，沖氣以為和。人之所惡，唯孤﹑寡﹑不穀，而王公以為稱。故物或損之而益，或益之而損。人之所教，我亦教之。強梁者不得其死，吾將以為教父。"}, {"n": 43, "s": "天下之至柔，驰骋天下之至坚。无有入无间，吾是以知无为之有益。不言之教，无为之益，天下希及之。", "t": "天下之至柔，馳騁天下之至堅。無有入無間，吾是以知無為之有益。不言之教，無為之益，天下希及之。"}, {"n": 44, "s": "名与身孰亲？身与货孰多？得与亡孰病？是故甚爱必大费，多藏必厚亡，知足不辱，知止不殆，可以长久。", "t": "名與身孰親？身與貨孰多？得與亡孰病？是故甚愛必大費，多藏必厚亡，知足不辱，知止不殆，可以長久。"}, {"n": 45, "s": "大成若缺，其用不弊。大盈若冲，其用不穷。大直若屈，其用不居。大巧若拙，其用不辍。大辩若讷，其用不差。躁胜寒，静胜热。清静为天下正。", "t": "大成若缺，其用不弊。大盈若沖，其用不窮。大直若屈，其用不居。大巧若拙，其用不輟。大辯若訥，其用不差。躁勝寒，靜勝熱。清靜為天下正。"}, {"n": 46, "s": "天下有道，却走马以粪。天下无道，戎马生于郊。祸莫大于不知足；咎莫大于欲得。故知足之足，常足矣。", "t": "天下有道，卻走馬以糞。天下無道，戎馬生於郊。禍莫大於不知足；咎莫大於欲得。故知足之足，常足矣。"}, {"n": 47, "s": "不出户，知天下；不窥牖，见天道。其出弥远，其知弥少。是以圣人不行而知，不见而名，不为而成。", "t": "不出戶，知天下；不闚牖，見天道。其出彌遠，其知彌少。是以聖人不行而知，不見而名，不為而成。"}, {"n": 48, "s": "为学日益，为道日损。损之又损，以至于无为。无为而无不为。取天下常以无事，及其有事，不足以取天下。", "t": "為學日益，為道日損。損之又損，以至於無為。無為而無不為。取天下常以無事，及其有事，不足以取天下。"}, {"n": 49, "s": "圣人无常心，以百姓心为心。善者，吾善之；不善者，吾亦善之，德善。信者，吾信之；不信者，吾亦信之，德信。圣人在天下歙歙，为天下浑其心，百姓皆注其耳目,圣人皆孩之。", "t": "聖人無常心，以百姓心為心。善者，吾善之；不善者，吾亦善之，德善。信者，吾信之；不信者，吾亦信之，德信。聖人在天下歙歙，為天下渾其心，百姓皆注其耳目,聖人皆孩之。"}, {"n": 50, "s": "出生入死。生之徒，十有三；死之徒，十有三；人之生，动之死地，亦十有三。夫何故？以其生生之厚。盖闻善摄生者，陆行不遇兕虎，入军不被甲兵；兕无所投其角，虎无所措其爪，兵无所容其刃。夫何故？以其无死地。", "t": "出生入死。生之徒，十有三；死之徒，十有三；人之生，動之死地，亦十有三。夫何故？以其生生之厚。蓋聞善攝生者，陸行不遇兕虎，入軍不被甲兵；兕無所投其角，虎無所措其爪，兵無所容其刃。夫何故？以其無死地。"}, {"n": 51, "s": "道生之，德畜之，物形之，势成之。是以万物莫不尊道而贵德。道之尊，德之贵，夫莫之命而常自然。故道生之，德畜之。长之育之，亭之毒之，盖之覆之。生而不有，为而不恃，长而不宰。是谓玄德。", "t": "道生之，德畜之，物形之，勢成之。是以萬物莫不尊道而貴德。道之尊，德之貴，夫莫之命而常自然。故道生之，德畜之。長之育之，亭之毒之，蓋之覆之。生而不有，為而不恃，長而不宰。是謂玄德。"}, {"n": 52, "s": "天下有始，以为天下母。既得其母，以知其子，既知其子，复守其母，没身不殆。塞其兑，闭其门，终身不勤。开其兑，济其事，终身不救。见小曰明，守柔曰强。用其光，复归其明，无遗身殃，是为习常。", "t": "天下有始，以為天下母。既得其母，以知其子，既知其子，復守其母，沒身不殆。塞其兌，閉其門，終身不勤。開其兌，濟其事，終身不救。見小曰明，守柔曰強。用其光，復歸其明，無遺身殃，是為習常。"}, {"n": 53, "s": "使我介然有知，行于大道，唯施是畏。大道甚夷，而民好径。朝甚除，田甚芜，仓甚虚；服文彩，带利剑，厌饮食，财货有余；是为盗夸。非道也哉！", "t": "使我介然有知，行於大道，唯施是畏。大道甚夷，而民好徑。朝甚除，田甚蕪，倉甚虛；服文綵，帶利劍，厭飲食，財貨有餘；是為盜夸。非道也哉！"}, {"n": 54, "s": "善建者不拔，善抱者不脱，子孙以祭祀不辍。修之于身，其德乃真；修之于家，其德乃余；修之于乡，其德乃长；修之于国，其德乃丰；修之于天下，其德乃普。故以身观身，以家观家，以乡观乡，以国观国，以天下观天下。吾何以知天下然哉？以此。", "t": "善建者不拔，善抱者不脫，子孫以祭祀不輟。修之於身，其德乃真；修之於家，其德乃餘；修之於鄉，其德乃長；修之於國，其德乃豐；修之於天下，其德乃普。故以身觀身，以家觀家，以鄉觀鄉，以國觀國，以天下觀天下。吾何以知天下然哉？以此。"}, {"n": 55, "s": "含德之厚，比于赤子。蜂虿虺蛇不螫，猛兽不据，攫鸟不搏。骨弱筋柔而握固。未知牝牡之合而全作，精之至也。终日号而不嗄，和之至也。知和曰常，知常曰明。益生曰祥。心使气曰强。物壮则老，谓之不道，不道早已。", "t": "含德之厚，比於赤子。蜂蠆虺蛇不螫，猛獸不據，攫鳥不搏。骨弱筋柔而握固。未知牝牡之合而全作，精之至也。終日號而不嗄，和之至也。知和曰常，知常曰明。益生曰祥。心使氣曰強。物壯則老，謂之不道，不道早已。"}, {"n": 56, "s": "知者不言，言者不知。塞其兑，闭其门，挫其锐，解其分，和其光，同其尘，是谓玄同。故不可得而亲，不可得而疏；不可得而利，不可得而害；不可得而贵，不可得而贱。故为天下贵。", "t": "知者不言，言者不知。塞其兌，閉其門，挫其銳，解其分，和其光，同其塵，是謂玄同。故不可得而親，不可得而疏；不可得而利，不可得而害；不可得而貴，不可得而賤。故為天下貴。"}, {"n": 57, "s": "以正治国，以奇用兵，以无事取天下。吾何以知其然哉？以此。天下多忌讳，而民弥贫；民多利器，国家滋昬；人多伎巧，奇物滋起；法令滋彰，盗贼多有。故圣人云﹕「我无为而民自化，我好静而民自正，我无事而民自富，我无欲而民自朴。」", "t": "以正治國，以奇用兵，以無事取天下。吾何以知其然哉？以此。天下多忌諱，而民彌貧；民多利器，國家滋昬；人多伎巧，奇物滋起；法令滋彰，盜賊多有。故聖人云﹕「我無為而民自化，我好靜而民自正，我無事而民自富，我無欲而民自樸。」"}, {"n": 58, "s": "其政闷闷，其民淳淳；其政察察，其民缺缺。祸兮福之所倚，福兮祸之所伏。孰知其极？其无正。正复为奇，善复为妖。人之迷，其日固久。是以圣人方而不割，廉而不刿，直而不肆，光而不燿。", "t": "其政悶悶，其民淳淳；其政察察，其民缺缺。禍兮福之所倚，福兮禍之所伏。孰知其極？其無正。正復為奇，善復為妖。人之迷，其日固久。是以聖人方而不割，廉而不劌，直而不肆，光而不燿。"}, {"n": 59, "s": "治人事天，莫若啬。夫唯啬，是谓早服；早服谓之重积德；重积德则无不克，无不克则莫知其极；莫知其极，可以有国；有国之母，可以长久；是谓深根固柢，长生久视之道。", "t": "治人事天，莫若嗇。夫唯嗇，是謂早服；早服謂之重積德；重積德則無不克，無不克則莫知其極；莫知其極，可以有國；有國之母，可以長久；是謂深根固柢，長生久視之道。"}, {"n": 60, "s": "治大国，若烹小鲜。以道莅天下，其鬼不神；非其鬼不神，其神不伤人；非其神不伤人，圣人亦不伤人。夫两不相伤，故德交归焉。", "t": "治大國，若烹小鮮。以道莅天下，其鬼不神；非其鬼不神，其神不傷人；非其神不傷人，聖人亦不傷人。夫兩不相傷，故德交歸焉。"}, {"n": 61, "s": "大国者下流，天下之交。天下之牝，牝常以静胜牡，以静为下。故大国以下小国，则取小国；小国以下大国，则取大国。故或下以取，或下而取。大国不过欲兼畜人，小国不过欲入事人。夫两者各得其所欲，大者宜为下。", "t": "大國者下流，天下之交。天下之牝，牝常以靜勝牡，以靜為下。故大國以下小國，則取小國；小國以下大國，則取大國。故或下以取，或下而取。大國不過欲兼畜人，小國不過欲入事人。夫兩者各得其所欲，大者宜為下。"}, {"n": 62, "s": "道者万物之奥。善人之宝，不善人之所保。美言可以市，尊行可以加人。人之不善，何弃之有？故立天子，置三公，虽有拱璧以先驷马，不如坐进此道。古之所以贵此道者何？不曰以求得，有罪以免邪？故为天下贵。", "t": "道者萬物之奧。善人之寶，不善人之所保。美言可以市，尊行可以加人。人之不善，何棄之有？故立天子，置三公，雖有拱璧以先駟馬，不如坐進此道。古之所以貴此道者何？不曰以求得，有罪以免邪？故為天下貴。"}, {"n": 63, "s": "为无为，事无事，味无味。大小多少，报怨以德。图难于其易，为大于其细；天下难事必作于易，天下大事必作于细。是以圣人终不为大，故能成其大。夫轻诺必寡信，多易必多难。是以圣人犹难之，故终无难矣", "t": "為無為，事無事，味無味。大小多少，報怨以德。圖難於其易，為大於其細；天下難事必作於易，天下大事必作於細。是以聖人終不為大，故能成其大。夫輕諾必寡信，多易必多難。是以聖人猶難之，故終無難矣"}, {"n": 64, "s": "其安易持，其未兆易谋。其脆易泮，其微易散。为之于未有，治之于未乱。合抱之木，生于毫末；九层之台，起于累土；千里之行，始于足下。为者败之，执者失之。是以圣人无为故无败，无执故无失。民之从事，常于几成而败之。慎终如始，则无败事。是以圣人欲不欲，不贵难得之货；学不学，复众人之所过。以辅万物之自然，而不敢为。", "t": "其安易持，其未兆易謀。其脆易泮，其微易散。為之於未有，治之於未亂。合抱之木，生於毫末；九層之臺，起於累土；千里之行，始於足下。為者敗之，執者失之。是以聖人無為故無敗，無執故無失。民之從事，常於幾成而敗之。慎終如始，則無敗事。是以聖人欲不欲，不貴難得之貨；學不學，復眾人之所過。以輔萬物之自然，而不敢為。"}, {"n": 65, "s": "古之善为道者，非以明民，将以愚之。民之难治，以其智多。故以智治国，国之贼，不以智治国，国之福。知此两者亦稽式。常知稽式，是谓玄德。玄德深矣，远矣，与物反矣，然后乃至大顺。", "t": "古之善為道者，非以明民，將以愚之。民之難治，以其智多。故以智治國，國之賊，不以智治國，國之福。知此兩者亦稽式。常知稽式，是謂玄德。玄德深矣，遠矣，與物反矣，然後乃至大順。"}, {"n": 66, "s": "江海所以能为百谷王者，以其善下之，故能为百谷王。是以欲上民，必以言下之。欲先民，必以身后之。是以圣人处上而民不重，处前而民不害。是以天下乐推而不厌，以其不争，故天下莫能与之争。", "t": "江海所以能為百谷王者，以其善下之，故能為百谷王。是以欲上民，必以言下之。欲先民，必以身後之。是以聖人處上而民不重，處前而民不害。是以天下樂推而不厭，以其不爭，故天下莫能與之爭。"}, {"n": 67, "s": "天下皆谓我道大，似不肖。夫唯大，故似不肖。若肖，久矣其细也夫！我有三宝，持而保之。一曰慈，二曰俭，三曰不敢为天下先。慈故能勇，俭故能广，不敢为天下先，故能成器长。今舍慈且勇，舍俭且广，舍后且先，死矣！夫慈以战则胜，以守则固。天将救之，以慈卫之。", "t": "天下皆謂我道大，似不肖。夫唯大，故似不肖。若肖，久矣其細也夫！我有三寶，持而保之。一曰慈，二曰儉，三曰不敢為天下先。慈故能勇，儉故能廣，不敢為天下先，故能成器長。今舍慈且勇，舍儉且廣，舍後且先，死矣！夫慈以戰則勝，以守則固。天將救之，以慈衛之。"}, {"n": 68, "s": "善为士者不武，善战者不怒，善胜敌者不与，善用人者为之下，是谓不争之德，是谓用人之力，是谓配天古之极。", "t": "善為士者不武，善戰者不怒，善勝敵者不與，善用人者為之下，是謂不爭之德，是謂用人之力，是謂配天古之極。"}, {"n": 69, "s": "用兵有言﹕「吾不敢为主而为客，不敢进寸而退尺。」是谓行无行，攘无臂，扔无敌，执无兵。祸莫大于轻敌，轻敌几丧吾宝。故抗兵相加，哀者胜矣。", "t": "用兵有言﹕「吾不敢為主而為客，不敢進寸而退尺。」是謂行無行，攘無臂，扔無敵，執無兵。禍莫大於輕敵，輕敵幾喪吾寶。故抗兵相加，哀者勝矣。"}, {"n": 70, "s": "吾言甚易知，甚易行。天下莫能知，莫能行。言有宗，事有君。夫唯无知，是以不我知。知我者希，则我者贵。是以圣人被褐怀玉。", "t": "吾言甚易知，甚易行。天下莫能知，莫能行。言有宗，事有君。夫唯無知，是以不我知。知我者希，則我者貴。是以聖人被褐懷玉。"}, {"n": 71, "s": "知不知上，不知知病。夫唯病病，是以不病。圣人不病，以其病病，是以不病。", "t": "知不知上，不知知病。夫唯病病，是以不病。聖人不病，以其病病，是以不病。"}, {"n": 72, "s": "民不畏威，则大威至。无狎其所居，无厌其所生。夫唯不厌，是以不厌。是以圣人自知不自见，自爱不自贵；故去彼取此。", "t": "民不畏威，則大威至。無狎其所居，無厭其所生。夫唯不厭，是以不厭。是以聖人自知不自見，自愛不自貴；故去彼取此。"}, {"n": 73, "s": "勇于敢则杀，勇于不敢则活。此两者，或利或害。天之所恶，孰知其故？是以圣人犹难之。天之道，不争而善胜，不言而善应，不召而自来，𦈎然而善谋。天网恢恢，疏而不失。", "t": "勇於敢則殺，勇於不敢則活。此兩者，或利或害。天之所惡，孰知其故？是以聖人猶難之。天之道，不爭而善勝，不言而善應，不召而自來，繟然而善謀。天網恢恢，疏而不失。"}, {"n": 74, "s": "民不畏死，奈何以死惧之？若使民常畏死，而为奇者，吾得执而杀之，孰敢？常有司杀者杀，夫代司杀者杀，是谓代大匠斲。夫代大匠斲者，希有不伤其手矣。", "t": "民不畏死，奈何以死懼之？若使民常畏死，而為奇者，吾得執而殺之，孰敢？常有司殺者殺，夫代司殺者殺，是謂代大匠斲。夫代大匠斲者，希有不傷其手矣。"}, {"n": 75, "s": "民之饥，以其上食税之多，是以饥。民之难治，以其上之有为，是以难治。民之轻死，以其上求生之厚，是以轻死。夫唯无以生为者，是贤于贵生。", "t": "民之饑，以其上食稅之多，是以饑。民之難治，以其上之有為，是以難治。民之輕死，以其上求生之厚，是以輕死。夫唯無以生為者，是賢於貴生。"}, {"n": 76, "s": "人之生也柔弱，其死也坚强。万物草木之生也柔脆，其死也枯槁。故坚强者死之徒，柔弱者生之徒。是以兵强则不胜，木强则兵。强大处下，柔弱处上。", "t": "人之生也柔弱，其死也堅強。萬物草木之生也柔脆，其死也枯槁。故堅強者死之徒，柔弱者生之徒。是以兵強則不勝，木強則兵。強大處下，柔弱處上。"}, {"n": 77, "s": "天之道，其犹张弓与？高者抑之，下者举之；有余者损之，不足者补之。天之道，损有余而补不足。人之道则不然，损不足以奉有余。孰能有余以奉天下？唯有道者。是以圣人为而不恃，功成而不处，其不欲见贤。", "t": "天之道，其猶張弓與？高者抑之，下者舉之；有餘者損之，不足者補之。天之道，損有餘而補不足。人之道則不然，損不足以奉有餘。孰能有餘以奉天下？唯有道者。是以聖人為而不恃，功成而不處，其不欲見賢。"}, {"n": 78, "s": "天下莫柔弱于水，而攻坚强者，莫之能胜，其无以易之。弱之胜强，柔之胜刚，天下莫不知莫能行。是以圣人云﹕「受国之垢，是谓社稷主；受国不祥，是为天下王。」正言若反。", "t": "天下莫柔弱於水，而攻堅強者，莫之能勝，其無以易之。弱之勝強，柔之勝剛，天下莫不知莫能行。是以聖人云﹕「受國之垢，是謂社稷主；受國不祥，是為天下王。」正言若反。"}, {"n": 79, "s": "和大怨，必有余怨，安可以为善？是以圣人执左契，而不责于人。有德司契，无德司彻。天道无亲，常与善人。", "t": "和大怨，必有餘怨，安可以為善？是以聖人執左契，而不責於人。有德司契，無德司徹。天道無親，常與善人。"}, {"n": 80, "s": "小国寡民，使有什伯之器而不用，使民重死而不远徙。虽有舟舆，无所乘之；虽有甲兵，无所陈之。使人复结绳而用之，甘其食，美其服，安其居，乐其俗。邻国相望，鸡犬之声相闻，民至老死，不相往来。", "t": "小國寡民，使有什伯之器而不用，使民重死而不遠徙。雖有舟輿，無所乘之；雖有甲兵，無所陳之。使人復結繩而用之，甘其食，美其服，安其居，樂其俗。鄰國相望，雞犬之聲相聞，民至老死，不相往來。"}, {"n": 81, "s": "信言不美，美言不信。善者不辩，辩者不善。知者不博，博者不知。圣人不积，既以为人己愈有，既以与人己愈多。天之道，利而不害；圣人之道，为而不争。", "t": "信言不美，美言不信。善者不辯，辯者不善。知者不博，博者不知。聖人不積，既以為人己愈有，既以與人己愈多。天之道，利而不害；聖人之道，為而不爭。"}];
+window.GUA=[{"n": 1, "name": "乾", "nameT": "乾", "down": "乾", "up": "乾", "gc": "元亨。利贞。", "gcT": "元亨。利貞。", "yao": ["初九：潜龙勿用。", "九二：见龙在田，利见大人。", "九三：君子终日乾乾，夕惕若；厉，无咎。", "九四：或跃在渊，无咎。", "九五：飞龙在天，利见大人。", "上九：亢龙，有悔。", "用九：见群龙无首，吉。"], "yaoT": ["初九：潛龍勿用。", "九二：見龍在田，利見大人。", "九三：君子終日乾乾，夕惕若；厲，无咎。", "九四：或躍在淵，无咎。", "九五：飛龍在天，利見大人。", "上九：亢龍，有悔。", "用九：見羣龍无首，吉。"], "tuan": "大哉乾元，万物资始，乃统天。云行雨施，品物流形，大明终始，六位时成。时乘六龙以御天，乾道变化，各正性命，保合大和，乃利贞。首出庶物，万国咸宁。", "dx": "天行健，君子以自强不息。", "dxT": "天行健，君子以自強不息。", "xx": ["潜龙勿用，阳在下也。", "见龙在田，德施普也。", "终日乾乾，反复道也。", "或跃在渊，进无咎也。", "飞龙在天，大人造也。", "亢龙有悔，盈不可久也。", "用九，天德不可为首也。"]}, {"n": 2, "name": "坤", "nameT": "坤", "down": "坤", "up": "坤", "gc": "元亨。利牝马之贞。君子有攸往，先迷后得主。利西南得朋，东北丧朋。安贞，吉。", "gcT": "元亨。利牝馬之貞。君子有攸往，先迷後得主。利西南得朋，東北喪朋。安貞，吉。", "yao": ["初六：履霜，坚冰至。", "六二：直方大，不习无不利。", "六三：含章，可贞。或从王事，无成有终。", "六四：括囊，无咎无誉。", "六五：黄裳，元吉。", "上六：龙战于野，其血玄黄。", "用六：利永贞。"], "yaoT": ["初六：履霜，堅冰至。", "六二：直方大，不習无不利。", "六三：含章，可貞。或從王事，无成有終。", "六四：括囊，无咎无譽。", "六五：黃裳，元吉。", "上六：龍戰于野，其血玄黃。", "用六：利永貞。"], "tuan": "至哉坤元，万物资生，乃顺承天。坤厚载物，德合无疆；含弘光大，品物咸亨。牝马地类，行地无疆，柔顺利贞。君子攸行，先迷失道，后顺得常。西南得朋，乃与类行，东北丧朋，乃终有庆。安贞之吉，应地无疆。", "dx": "地势坤，君子以厚德载物。", "dxT": "地勢坤，君子以厚德載物。", "xx": ["履霜坚冰，阴始凝也。驯致其道，至坚冰也。", "六二之动，直以方也。不习无不利，地道光也。", "含章可贞，以时发也。或从王事，知光大也。", "括囊无咎，慎不害也。", "黄裳元吉，文在中也。", "龙战于野，其道穷也。", "用六永贞，以大终也。"]}, {"n": 3, "name": "屯", "nameT": "屯", "down": "震", "up": "坎", "gc": "元亨，利贞。勿用有攸往，利建侯。", "gcT": "元亨，利貞。勿用有攸往，利建侯。", "yao": ["初九：磐桓，利居贞，利建侯。", "六二：屯如邅如，乘马班如，匪寇婚媾，女子贞不字，十年乃字。", "六三：即鹿无虞，惟入于林中，君子几不如舍，往吝。", "六四：乘马班如，求婚媾，往，吉无不利。", "九五：屯其膏；小贞吉，大贞凶。", "上六：乘马班如，泣血涟如。"], "yaoT": ["初九：磐桓，利居貞，利建侯。", "六二：屯如邅如，乘馬班如，匪寇婚媾，女子貞不字，十年乃字。", "六三：即鹿无虞，惟入于林中，君子幾不如舍，往吝。", "六四：乘馬班如，求婚媾，往，吉无不利。", "九五：屯其膏；小貞吉，大貞凶。", "上六：乘馬班如，泣血漣如。"], "tuan": "屯，刚柔始交而难生，动乎险中，大亨贞。雷雨之动满盈，天造草昧，宜建侯而不宁。", "dx": "云雷，屯；君子以经纶。", "dxT": "雲雷，屯；君子以經綸。", "xx": ["虽磐桓，志行正也。以贵下贱，大得民也。", "六二之难，乘刚也。十年乃字，反常也。", "即鹿无虞，以从禽也。君子舍之，往吝穷也。", "求而往，明也。", "屯其膏，施未光也。", "泣血涟如，何可长也。"]}, {"n": 4, "name": "蒙", "nameT": "蒙", "down": "坎", "up": "艮", "gc": "亨。匪我求童蒙，童蒙求我。初筮告，再三渎，渎则不告。利贞。", "gcT": "亨。匪我求童蒙，童蒙求我。初筮告，再三瀆，瀆則不告。利貞。", "yao": ["初六：发蒙，利用刑人，用说桎梏，以往吝。", "九二：包蒙吉，纳妇吉，子克家。", "六三：勿用取女，见金夫，不有躬，无攸利。", "六四：困蒙，吝。", "六五：童蒙，吉。", "上九：击蒙，不利为寇，利御寇。"], "yaoT": ["初六：發蒙，利用刑人，用說桎梏，以往吝。", "九二：包蒙吉，納婦吉，子克家。", "六三：勿用取女，見金夫，不有躬，无攸利。", "六四：困蒙，吝。", "六五：童蒙，吉。", "上九：擊蒙，不利為寇，利禦寇。"], "tuan": "蒙，山下有险，险而止，蒙。蒙亨，以亨行，时中也。匪我求童蒙，童蒙求我，志应也。初筮告，以刚中也。再三渎，渎则不告，渎蒙也。蒙以养正，圣功也。", "dx": "山下出泉，蒙；君子以果行育德。", "dxT": "山下出泉，蒙；君子以果行育德。", "xx": ["利用刑人，以正法也。", "子克家，刚柔接也。", "勿用取女，行不顺也。", "困蒙之吝，独远实也。", "童蒙之吉，顺以巽也。", "利御寇，上下顺也。"]}, {"n": 5, "name": "需", "nameT": "需", "down": "乾", "up": "坎", "gc": "有孚，光亨。贞吉，利涉大川。", "gcT": "有孚，光亨。貞吉，利涉大川。", "yao": ["初九：需于郊，利用恒，无咎。", "九二：需于沙，小有言，终吉。", "九三：需于泥，致寇至。", "六四：需于血，出自穴。", "九五：需于酒食，贞吉。", "上六：入于穴，有不速之客三人来，敬之终吉。"], "yaoT": ["初九：需于郊，利用恆，无咎。", "九二：需于沙，小有言，終吉。", "九三：需于泥，致寇至。", "六四：需于血，出自穴。", "九五：需于酒食，貞吉。", "上六：入于穴，有不速之客三人來，敬之終吉。"], "tuan": "需，须也，险在前也；刚健而不陷，其义不困穷矣。需，有孚，光亨，贞吉，位乎天位，以正中也。利涉大川，往有功也。", "dx": "云上于天，需；君子以饮食宴乐。", "dxT": "雲上於天，需；君子以飲食宴樂。", "xx": ["需于郊，不犯难行也。利用恒，无咎，未失常也。", "需于沙，衍在中也。虽小有言，以吉终也。", "需于泥，灾在外也。自我致寇，敬慎不败也。", "需于血，顺以听也。", "酒食，贞吉，以中正也。", "不速之客来，敬之终吉。虽不当位，未大失也。"]}, {"n": 6, "name": "讼", "nameT": "訟", "down": "坎", "up": "乾", "gc": "有孚，窒，惕，中吉，终凶。利见大人，不利涉大川。", "gcT": "有孚，窒，惕，中吉，終凶。利見大人，不利涉大川。", "yao": ["初六：不永所事，小有言，终吉。", "九二：不克讼，归而逋，其邑人三百户无眚。", "六三：食旧德，贞厉，终吉。或从王事，无成。", "九四：不克讼，复即命渝，安贞吉。", "九五：讼，元吉。", "上九：或锡之鞶带，终朝三褫之。"], "yaoT": ["初六：不永所事，小有言，終吉。", "九二：不克訟，歸而逋，其邑人三百戶无眚。", "六三：食舊德，貞厲，終吉。或從王事，无成。", "九四：不克訟，復即命渝，安貞吉。", "九五：訟，元吉。", "上九：或錫之鞶帶，終朝三褫之。"], "tuan": "讼，上刚下险，险而健，讼。讼，有孚，窒，惕，中吉，刚来而得中也。终凶，讼不可成也。利见大人，尚中正也。不利涉大川，入于渊也。", "dx": "天与水违行，讼；君子以作事谋始。", "dxT": "天與水違行，訟；君子以作事謀始。", "xx": ["不永所事，讼不可长也。虽小有言，其辩明也。", "不克讼，归逋窜也。自下讼上，患至掇也。", "食旧德，从上吉也。", "复即命渝，安贞，不失也。", "讼，元吉，以中正也。", "以讼受服，亦不足敬也。"]}, {"n": 7, "name": "师", "nameT": "師", "down": "坎", "up": "坤", "gc": "贞丈人吉，无咎。", "gcT": "貞丈人吉，无咎。", "yao": ["初六：师出以律，否臧，凶。", "九二：在师中吉，无咎；王三锡命。", "六三：师或舆尸，凶。", "六四：师左次，无咎。", "六五：田有禽，利执言，无咎。长子帅师，弟子舆尸，贞凶。", "上六：大君有命，开国承家，小人勿用。"], "yaoT": ["初六：師出以律，否臧，凶。", "九二：在師中吉，无咎；王三錫命。", "六三：師或輿尸，凶。", "六四：師左次，无咎。", "六五：田有禽，利執言，无咎。長子帥師，弟子輿尸，貞凶。", "上六：大君有命，開國承家，小人勿用。"], "tuan": "师，众也。贞，正也。能以众正，可以王矣。刚中而应，行险而顺，以此毒天下，而民从之，吉又何咎矣。", "dx": "地中有水，师；君子以容民畜众。", "dxT": "地中有水，師；君子以容民畜衆。", "xx": ["师出以律；失律，凶也。", "在师中吉，承天宠也。王三锡命，怀万邦也。", "师或舆尸，大无功也。", "左次无咎，未失常也。", "长子帅师，以中行也。弟子舆尸，使不当也。", "大君有命，以正功也。小人勿用，必乱邦也。"]}, {"n": 8, "name": "比", "nameT": "比", "down": "坤", "up": "坎", "gc": "吉。原筮元永贞，无咎。不宁方来，后夫凶。", "gcT": "吉。原筮元永貞，无咎。不寧方來，後夫凶。", "yao": ["初六：有孚，比之，无咎。有孚盈缶，终来有它，吉。", "六二：比之自内，贞吉。", "六三：比之匪人。", "六四：外比之，贞吉。", "九五：显比。王用三驱，失前禽，邑人不诫，吉。", "上六：比之无首，凶。"], "yaoT": ["初六：有孚，比之，无咎。有孚盈缶，終來有它，吉。", "六二：比之自內，貞吉。", "六三：比之匪人。", "六四：外比之，貞吉。", "九五：顯比。王用三驅，失前禽，邑人不誡，吉。", "上六：比之无首，凶。"], "tuan": "比，吉也。比，辅也，下顺从也。原筮，元永贞，无咎，以刚中也。不宁方来，上下应也。后夫凶，其道穷也。", "dx": "地上有水，比；先王以建万国，亲诸侯。", "dxT": "地上有水，比；先王以建萬國，親諸侯。", "xx": ["比之初六，有它吉也。", "比之自内，不自失也。", "比之匪人，不亦伤乎！", "外比于贤，以从上也。", "显比之吉，位正中也。舍逆取顺，失前禽也。邑人不诫，上使中也。", "比之无首，无所终也。"]}, {"n": 9, "name": "小畜", "nameT": "小畜", "down": "乾", "up": "巽", "gc": "亨。密云不雨，自我西郊。", "gcT": "亨。密雲不雨，自我西郊。", "yao": ["初九：复自道，何其咎，吉。", "九二：牵复，吉。", "九三：舆说辐，夫妻反目。", "六四：有孚，血去惕出，无咎。", "九五：有孚挛如，富以其邻。", "上九：既雨既处，尚德载，妇贞厉，月几望，君子征凶。"], "yaoT": ["初九：復自道，何其咎，吉。", "九二：牽復，吉。", "九三：輿說輻，夫妻反目。", "六四：有孚，血去惕出，无咎。", "九五：有孚攣如，富以其鄰。", "上九：既雨既處，尚德載，婦貞厲，月幾望，君子征凶。"], "tuan": "小畜，柔得位而上下应之，曰小畜。健而巽，刚中而志行，乃亨。密云不雨，尚往也。自我西郊，施未行也。", "dx": "风行天上，小畜，君子以懿文德。", "dxT": "風行天上，小畜，君子以懿文德。", "xx": ["复自道，其义吉也。", "牵复在中，亦不自失也。", "夫妻反目，不能正室也。", "有孚。惕出。上合志也。", "有孚挛如，不独富也。", "既雨既处，德积载也。君子征凶，有所疑也。"]}, {"n": 10, "name": "履", "nameT": "履", "down": "兑", "up": "乾", "gc": "履虎尾，不咥人，亨。", "gcT": "履虎尾，不咥人，亨。", "yao": ["初九：素履，往无咎。", "九二：履道坦坦，幽人贞吉。", "六三：眇能视，跛能履，履虎尾，咥人，凶。武人为于大君。", "九四：履虎尾，愬愬终吉。", "九五：夬履，贞厉。", "上九：视履考详，其旋元吉。"], "yaoT": ["初九：素履，往无咎。", "九二：履道坦坦，幽人貞吉。", "六三：眇能視，跛能履，履虎尾，咥人，凶。武人為于大君。", "九四：履虎尾，愬愬終吉。", "九五：夬履，貞厲。", "上九：視履考詳，其旋元吉。"], "tuan": "履，柔履刚也。说而应乎乾，是以履虎尾，不咥人，亨，利贞。刚中正，履帝位而不疚，光明也。", "dx": "上天下泽，履；君子以辨上下，定民志。", "dxT": "上天下澤，履；君子以辨上下，定民志。", "xx": ["素履之往，独行愿也。", "幽人贞吉，中不自乱也。", "眇能视，不足以有明也。跛能履，不足以与行也。咥人之凶，位不当也。武人为于大君，志刚也。", "愬愬终吉，志行也。", "夬履贞厉，位正当也。", "元吉在上，大有庆也。"]}, {"n": 11, "name": "泰", "nameT": "泰", "down": "乾", "up": "坤", "gc": "小往大来，吉亨。", "gcT": "小往大來，吉亨。", "yao": ["初九：拔茅茹以其汇，征吉。", "九二：包荒。用冯河，不遐遗；朋亡。得尚于中行。", "九三：无平不陂，无往不复，艰贞无咎。勿恤其孚，于食有福。", "六四：翩翩，不富以其邻；不戒以孚。", "六五：帝乙归妹，以祉，元吉。", "上六：城复于隍，勿用师，自邑告命，贞吝。"], "yaoT": ["初九：拔茅茹以其彙，征吉。", "九二：包荒。用馮河，不遐遺；朋亡。得尚于中行。", "九三：无平不陂，无往不復，艱貞无咎。勿恤其孚，于食有福。", "六四：翩翩，不富以其鄰；不戒以孚。", "六五：帝乙歸妹，以祉，元吉。", "上六：城復于隍，勿用師，自邑告命，貞吝。"], "tuan": "泰，小往大来，吉亨。则是天地交而万物通也，上下交而其志同也。内阳而外阴，内健而外顺，内君子而外小人，君子道长，小人道消也。", "dx": "天地交，泰；后以财成天地之道，辅相天地之宜，以左右民。", "dxT": "天地交，泰；后以財成天地之道，輔相天地之宜，以左右民。", "xx": ["拔茅征吉，志在外也。", "包荒，得尚于中行，以光大也。", "无往不复，天地际也。", "翩翩不富，皆失实也。不戒以孚，中心愿也。", "以祉，元吉。中以行愿也。", "城复于隍，其命乱也。"]}, {"n": 12, "name": "否", "nameT": "否", "down": "坤", "up": "乾", "gc": "否之匪人，不利君子贞，大往小来。", "gcT": "否之匪人，不利君子貞，大往小來。", "yao": ["初六，拔茅茹以其汇，贞吉。亨。", "六二，包承，小人吉，大人否。亨。", "六三，包羞。", "九四，有命，无咎，畴离祉。", "九五，休否，大人吉。其亡其亡，系于苞桑。", "上九，倾否，先否后喜。"], "yaoT": ["初六，拔茅茹以其彙，貞吉。亨。", "六二，包承，小人吉，大人否。亨。", "六三，包羞。", "九四，有命，无咎，疇離祉。", "九五，休否，大人吉。其亡其亡，繫于苞桑。", "上九，傾否，先否後喜。"], "tuan": "否之匪人，不利君子贞，大往小来。则是天地不交而万物不通也，上下不交而天下无邦也。内阴而外阳，内柔而外刚，内小人而外君子，小人道长，君子道消也。", "dx": "天地不交，否；君子以俭德辟难，不可荣以禄。", "dxT": "天地不交，否；君子以儉德辟難，不可榮以祿。", "xx": ["拔茅贞吉，志在君也。", "大人否，亨。不乱群也。", "包羞，位不当也。", "有命无咎，志行也。", "大人之吉，位正当也。", "否终则倾，何可长也。"]}, {"n": 13, "name": "同人", "nameT": "同人", "down": "离", "up": "乾", "gc": "同人于野，亨。 利涉大川，利君子贞。", "gcT": "同人于野，亨。 利涉大川，利君子貞。", "yao": ["初九：同人于门，无咎。", "六二：同人于宗，吝。", "九三：伏戎于莽，升其高陵，三岁不兴。", "九四：乘其墉，弗克攻，吉。", "九五：同人，先号啕而后笑。大师克相遇。", "上九：同人于郊，无悔。"], "yaoT": ["初九：同人于門，無咎。", "六二：同人于宗，吝。", "九三：伏戎于莽，升其高陵，三歲不興。", "九四：乘其墉，弗克攻，吉。", "九五：同人，先號啕而後笑。大師克相遇。", "上九：同人于郊，無悔。"], "tuan": "同人，柔得位得中，而应乎乾，曰同人。同人曰，同人于野，亨。利涉大川，乾行也。文明以健，中正而应，君子正也。唯君子为能通天下之志。", "dx": "天与火，同人；君子以类族辨物。", "dxT": "天與火，同人；君子以類族辨物。", "xx": ["出门同人，又谁咎也。", "同人于宗，吝道也。", "伏戎于莽，敌刚也。三岁不兴，安行也。", "乘其墉，义弗克也，其吉，则困而反则也。", "同人之先，以中直也。大师相遇，言相克也。", "同人于郊，志未得也。"]}, {"n": 14, "name": "大有", "nameT": "大有", "down": "乾", "up": "离", "gc": "元亨。", "gcT": "元亨。", "yao": ["初九：无交害，匪咎，艰则无咎。", "九二：大车以载，有攸往，无咎。", "九三：公用亨于天子，小人弗克。", "九四：匪其彭，无咎。", "六五：厥孚交如，威如；吉。", "上九：自天右之，吉无不利。"], "yaoT": ["初九：无交害，匪咎，艱則无咎。", "九二：大車以載，有攸往，无咎。", "九三：公用亨于天子，小人弗克。", "九四：匪其彭，无咎。", "六五：厥孚交如，威如；吉。", "上九：自天右之，吉无不利。"], "tuan": "大有，柔得尊位，大中而上下应之，曰大有。其德刚健而文明，应乎天而时行，是以元亨。", "dx": "火在天上，大有；君子以遏恶扬善，顺天休命。", "dxT": "火在天上，大有；君子以遏惡揚善，順天休命。", "xx": ["大有初九，无交害也。", "大车以载，积中不败也。", "公用亨于天子，小人害也。", "匪其彭，无咎；明辨晰也。", "厥孚交如，信以发志也。威如之吉，易而无备也。", "大有上吉，自天佑也。"]}, {"n": 15, "name": "谦", "nameT": "謙", "down": "艮", "up": "坤", "gc": "亨，君子有终。", "gcT": "亨，君子有終。", "yao": ["初六：谦谦君子，用涉大川，吉。", "六二：鸣谦，贞吉。", "九三：劳谦君子，有终吉。", "六四：无不利，㧑谦。", "六五：不富，以其邻，利用侵伐，无不利。", "上六：鸣谦，利用行师，征邑国。"], "yaoT": ["初六：謙謙君子，用涉大川，吉。", "六二：鳴謙，貞吉。", "九三：勞謙君子，有終吉。", "六四：无不利，撝謙。", "六五：不富，以其鄰，利用侵伐，无不利。", "上六：鳴謙，利用行師，征邑國。"], "tuan": "谦，亨，天道下济而光明，地道卑而上行。天道亏盈而益谦，地道变盈而流谦，鬼神害盈而福谦，人道恶盈而好谦。谦尊而光，卑而不可逾，君子之终也。", "dx": "地中有山，谦；君子以裒多益寡，称物平施。", "dxT": "地中有山，謙；君子以裒多益寡，稱物平施。", "xx": ["谦谦君子，卑以自牧也。", "鸣谦贞吉，中心得也。", "劳谦君子，万民服也。", "无不利㧑谦；不违则也。", "利用侵伐，征不服也。", "鸣谦，志未得也。可用行师，征邑国也。"]}, {"n": 16, "name": "豫", "nameT": "豫", "down": "坤", "up": "震", "gc": "利建侯行师。", "gcT": "利建侯行師。", "yao": ["初六：鸣豫，凶。", "六二：介于石，不终日，贞吉。", "六三：盱豫，悔。迟有悔。", "九四：由豫，大有得。勿疑。朋盍簪。", "六五：贞疾，恒不死。", "上六：冥豫，成有渝，无咎。"], "yaoT": ["初六：鳴豫，凶。", "六二：介于石，不終日，貞吉。", "六三：盱豫，悔。遲有悔。", "九四：由豫，大有得。勿疑。朋盍簪。", "六五：貞疾，恆不死。", "上六：冥豫，成有渝，无咎。"], "tuan": "豫，刚应而志行，顺以动，豫。豫，顺以动，故天地如之，而况建侯行师乎？天地以顺动，故日月不过，而四时不忒；圣人以顺动，则刑罚清而民服。豫之时义大矣哉！", "dx": "雷出地奋，豫。先王以作乐崇德，殷荐之上帝，以配祖考。", "dxT": "雷出地奮，豫。先王以作樂崇德，殷薦之上帝，以配祖考。", "xx": ["初六鸣豫，志穷凶也。", "不终日，贞吉；以中正也。", "盱豫有悔，位不当也。", "由豫，大有得；志大行也。", "六五贞疾，乘刚也。恒不死，中未亡也。", "冥豫在上，何可长也。"]}, {"n": 17, "name": "随", "nameT": "隨", "down": "震", "up": "兑", "gc": "元亨。利贞。无咎。", "gcT": "元亨。利貞。无咎。", "yao": ["初九：官有渝，贞吉。出门交有功。", "六二：系小子，失丈夫。", "六三：系丈夫，失小子。随，有求得利，居贞。", "九四：随有获，贞凶。有孚在道，以明，何咎。", "九五：孚于嘉，吉。", "上六：拘系之，乃从维之。王用亨于西山。"], "yaoT": ["初九：官有渝，貞吉。出門交有功。", "六二：係小子，失丈夫。", "六三：係丈夫，失小子。隨，有求得利，居貞。", "九四：隨有獲，貞凶。有孚在道，以明，何咎。", "九五：孚于嘉，吉。", "上六：拘係之，乃從維之。王用亨于西山。"], "tuan": "随，刚来而下柔，动而说，随。大亨贞，无咎，而天下随时，随时之义大矣哉！", "dx": "泽中有雷，随；君子以向晦入宴息。", "dxT": "澤中有雷，隨；君子以嚮晦入宴息。", "xx": ["官有渝，从正吉也。出门交有功，不失也。", "系小子，弗兼与也。", "系丈夫，志舍下也。", "随有获，其义凶也。有孚在道，明功也。", "孚于嘉，吉；位正中也。", "拘系之，上穷也。"]}, {"n": 18, "name": "蛊", "nameT": "蠱", "down": "巽", "up": "艮", "gc": "元亨。利涉大川。先甲三日，后甲三日。", "gcT": "元亨。利涉大川。先甲三日，後甲三日。", "yao": ["初六：干父之蛊，有子考，无咎，厉终吉。", "九二：干母之蛊，不可贞。", "九三：干父之蛊，小有悔，无大咎。", "六四：裕父之蛊，往见吝。", "六五：干父之蛊，用誉。", "上九：不事王侯，高尚其事。"], "yaoT": ["初六：幹父之蠱，有子考，无咎，厲終吉。", "九二：幹母之蠱，不可貞。", "九三：幹父之蠱，小有悔，无大咎。", "六四：裕父之蠱，往見吝。", "六五：幹父之蠱，用譽。", "上九：不事王侯，高尚其事。"], "tuan": "蛊，刚上而柔下，巽而止，蛊。蛊，元亨，而天下治也。利涉大川，往有事也。先甲三日，后甲三日，终则有始，天行也。", "dx": "山下有风，蛊；君子以振民育德。", "dxT": "山下有風，蠱；君子以振民育德。", "xx": ["干父之蛊，意承考也。", "干母之蛊，得中道也。", "干父之蛊，终无咎也。", "裕父之蛊，往未得也。", "干父用誉，承以德也。", "不事王侯，志可则也。"]}, {"n": 19, "name": "临", "nameT": "臨", "down": "兑", "up": "坤", "gc": "元亨。利贞。至于八月有凶。", "gcT": "元亨。利貞。至于八月有凶。", "yao": ["初九：咸临，贞吉。", "九二：咸临，吉无不利。", "六三：甘临，无攸利。既忧之，无咎。", "六四：至临，无咎。", "六五：知临，大君之宜，吉。", "上六：敦临，吉无咎。"], "yaoT": ["初九：咸臨，貞吉。", "九二：咸臨，吉无不利。", "六三：甘臨，无攸利。既憂之，无咎。", "六四：至臨，无咎。", "六五：知臨，大君之宜，吉。", "上六：敦臨，吉无咎。"], "tuan": "临，刚浸而长。说而顺，刚中而应，大亨以正，天之道也。至于八月有凶，消不久也。", "dx": "泽上有地，临；君子以教思无穷，容保民无疆。", "dxT": "澤上有地，臨；君子以教思无窮，容保民无疆。", "xx": ["咸临贞吉，志行正也。", "咸临，吉无不利；未顺命也。", "甘临，位不当也。既忧之，咎不长也。", "至临无咎，位当也。", "大君之宜，行中之谓也。", "敦临之吉，志在内也。"]}, {"n": 20, "name": "观", "nameT": "觀", "down": "坤", "up": "巽", "gc": "盥而不荐，有孚颙若。", "gcT": "盥而不薦，有孚顒若。", "yao": ["初六：童观，小人无咎，君子吝。", "六二：窥观，利女贞。", "六三：观我生，进退。", "六四：观国之光，利用宾于王。", "九五：观我生，君子无咎。", "上九：观其生，君子无咎。"], "yaoT": ["初六：童觀，小人无咎，君子吝。", "六二：窺觀，利女貞。", "六三：觀我生，進退。", "六四：觀國之光，利用賓于王。", "九五：觀我生，君子无咎。", "上九：觀其生，君子无咎。"], "tuan": "大观在上，顺而巽，中正以观天下。观，盥而不荐，有孚颙若，下观而化也。观天之神道，而四时不忒，圣人以神道设教，而天下服矣。", "dx": "风行地上，观；先王以省方，观民设教。", "dxT": "風行地上，觀；先王以省方，觀民設教。", "xx": ["初六童观，小人道也。", "窥观女贞，亦可丑也。", "观我生，进退；未失道也。", "观国之光，尚宾也。", "观我生，观民也。", "观其生，志未平也。"]}, {"n": 21, "name": "噬嗑", "nameT": "噬嗑", "down": "震", "up": "离", "gc": "亨。利用狱。", "gcT": "亨。利用獄。", "yao": ["初九：屦校灭趾，无咎。", "六二：噬肤灭鼻，无咎。", "六三：噬腊肉，遇毒；小吝，无咎。", "九四：噬乾胏，得金矢，利艰贞，吉。", "六五：噬乾肉，得黄金，贞厉，无咎。", "上九：何校灭耳，凶。"], "yaoT": ["初九：屨校滅趾，无咎。", "六二：噬膚滅鼻，无咎。", "六三：噬臘肉，遇毒；小吝，无咎。", "九四：噬乾胏，得金矢，利艱貞，吉。", "六五：噬乾肉，得黃金，貞厲，无咎。", "上九：何校滅耳，凶。"], "tuan": "颐中有物，曰噬嗑，噬嗑而亨。刚柔分，动而明，雷电合而章。柔得中而上行，虽不当位，利用狱也。", "dx": "雷电噬嗑；先王以明罚敕法。", "dxT": "雷電噬嗑；先王以明罰敕法。", "xx": ["屦校灭趾，不行也。", "噬肤灭鼻，乘刚也。", "遇毒，位不当也。", "利艰贞吉，未光也。", "贞厉无咎，得当也。", "何校灭耳，聪不明也。"]}, {"n": 22, "name": "贲", "nameT": "賁", "down": "离", "up": "艮", "gc": "亨。小利有攸往。", "gcT": "亨。小利有攸往。", "yao": ["初九：贲其趾，舍车而徒。", "六二：贲其须。", "九三：贲如濡如，永贞吉。", "六四：贲如皤如，白马翰如，匪寇婚媾。", "六五：贲于丘园，束帛戋戋，吝，终吉。", "上九：白贲，无咎。"], "yaoT": ["初九：賁其趾，舍車而徒。", "六二：賁其須。", "九三：賁如濡如，永貞吉。", "六四：賁如皤如，白馬翰如，匪寇婚媾。", "六五：賁於丘園，束帛戔戔，吝，終吉。", "上九：白賁，无咎。"], "tuan": "贲，亨；柔来而文刚，故亨。分刚上而文柔，故小利有攸往。刚柔交错，天文也；文明以止，人文也。观乎天文，以察时变；观乎人文，以化成天下。", "dx": "山下有火，贲；君子以明庶政，无敢折狱。", "dxT": "山下有火，賁；君子以明庶政，无敢折獄。", "xx": ["舍车而徒，义弗乘也。", "贲其须，与上兴也。", "永贞之吉，终莫之陵也。", "六四，当位疑也。匪寇婚媾，终无尤也。", "六五之吉，有喜也。", "白贲无咎，上得志也。"]}, {"n": 23, "name": "剥", "nameT": "剝", "down": "坤", "up": "艮", "gc": "不利。有攸往。", "gcT": "不利。有攸往。", "yao": ["初六：剥床以足，蔑贞凶。", "六二：剥床以辨，蔑贞凶。", "六三：剥之，无咎。", "六四：剥床以肤，凶。", "六五：贯鱼，以宫人宠，无不利。", "上九：硕果不食，君子得舆，小人剥庐。"], "yaoT": ["初六：剝牀以足，蔑貞凶。", "六二：剝牀以辨，蔑貞凶。", "六三：剝之，无咎。", "六四：剝牀以膚，凶。", "六五：貫魚，以宮人寵，无不利。", "上九：碩果不食，君子得輿，小人剝廬。"], "tuan": "剥，剥也，柔变刚也。不利有攸往，小人长也。顺而止之，观象也。君子尚消息盈虚，天行也。", "dx": "山附地上，剥；上以厚下，安宅。", "dxT": "山附地上，剝；上以厚下，安宅。", "xx": ["剥床以足，以灭下也。", "剥床以辨，未有与也。", "剥之无咎，失上下也。", "剥床以肤，切近灾也。", "以宫人宠，终无尤也。", "君子得舆，民所载也。小人剥庐，终不可用也。"]}, {"n": 24, "name": "复", "nameT": "復", "down": "震", "up": "坤", "gc": "亨。出入无疾，朋来无咎。反复其道，七日来复，利有攸往。", "gcT": "亨。出入无疾，朋來无咎。反復其道，七日來復，利有攸往。", "yao": ["初九：不远复，无祇悔，元吉。", "六二：休复，吉。", "六三：频复，厉无咎。", "六四：中行独复。", "六五：敦复，无悔。", "上六：迷复，凶，有灾眚。用行师，终有大败，以其国君，凶；至于十年，不克征。"], "yaoT": ["初九：不遠復，无祇悔，元吉。", "六二：休復，吉。", "六三：頻復，厲无咎。", "六四：中行獨復。", "六五：敦復，无悔。", "上六：迷復，凶，有災眚。用行師，終有大敗，以其國君，凶；至于十年，不克征。"], "tuan": "复亨；刚反，动而以顺行，是以出入无疾，朋来无咎。反复其道，七日来复，天行也。利有攸往，刚长也。复其见天地之心乎？", "dx": "雷在地中，复；先王以至日闭关，商旅不行，后不省方。", "dxT": "雷在地中，復；先王以至日閉關，商旅不行，后不省方。", "xx": ["不远之复，以修身也。", "休复之吉，以下仁也。", "频复之厉，义无咎也。", "中行独复，以从道也。", "敦复无悔，中以自考也。", "迷复之凶，反君道也。"]}, {"n": 25, "name": "无妄", "nameT": "无妄", "down": "震", "up": "乾", "gc": "元亨。利贞。其匪正有眚，不利有攸往。", "gcT": "元亨。利貞。其匪正有眚，不利有攸往。", "yao": ["初九：无妄，往吉。", "六二：不耕获，不菑畬，则利有攸往。", "六三：无妄之灾，或系之牛，行人之得，邑人之灾。", "九四：可贞，无咎。", "九五：无妄之疾，勿药有喜。", "上九：无妄，行有眚，无攸利。"], "yaoT": ["初九：无妄，往吉。", "六二：不耕穫，不菑畬，則利有攸往。", "六三：无妄之災，或繫之牛，行人之得，邑人之災。", "九四：可貞，无咎。", "九五：无妄之疾，勿藥有喜。", "上九：无妄，行有眚，无攸利。"], "tuan": "无妄，刚自外来，而为主于内。动而健，刚中而应，大亨以正，天之命也。其匪正有眚，不利有攸往。无妄之往，何之矣？ 天命不佑，行矣哉？", "dx": "天下雷行，物与无妄；先王以茂对时，育万物。", "dxT": "天下雷行，物與无妄；先王以茂對時，育萬物。", "xx": ["无妄之往，得志也。", "不耕获，未富也。", "行人得牛，邑人灾也。", "可贞无咎，固有之也。", "无妄之药，不可试也。", "无妄之行，穷之灾也。"]}, {"n": 26, "name": "大畜", "nameT": "大畜", "down": "乾", "up": "艮", "gc": "利贞，不家食吉，利涉大川。", "gcT": "利貞，不家食吉，利涉大川。", "yao": ["初九：有厉利已。", "九二：舆说輹。", "九三：良马逐，利艰贞，吉。日闲舆卫，利有攸往。", "六四：童牛之牿，元吉。", "六五：豮豕之牙，吉。", "上九：何天之衢，亨。"], "yaoT": ["初九：有厲利已。", "九二：輿說輹。", "九三：良馬逐，利艱貞，吉。日閑輿衛，利有攸往。", "六四：童牛之牿，元吉。", "六五：豶豕之牙，吉。", "上九：何天之衢，亨。"], "tuan": "大畜，刚健笃实辉光，日新其德，刚上而尚贤。能止健，大正也。不家食吉，养贤也。利涉大川，应乎天也。", "dx": "天在山中，大畜；君子以多识前言往行，以畜其德。", "dxT": "天在山中，大畜；君子以多識前言往行，以畜其德。", "xx": ["有厉利已，不犯灾也。", "舆说輹，中无尤也。", "利有攸往，上合志也。", "六四元吉，有喜也。", "六五之吉，有庆也。", "何天之衢，道大行也。"]}, {"n": 27, "name": "颐", "nameT": "頤", "down": "震", "up": "艮", "gc": "贞吉。观颐，自求口实。", "gcT": "貞吉。觀頤，自求口實。", "yao": ["初九：舍尔灵龟，观我朵颐，凶。", "六二：颠颐，拂经，于丘颐，征凶。", "六三：拂颐，贞凶，十年勿用，无攸利。", "六四：颠颐吉，虎视眈眈，其欲逐逐，无咎。", "六五：拂经，居贞吉，不可涉大川。", "上九：由颐，厉吉，利涉大川。"], "yaoT": ["初九：舍爾靈龜，觀我朵頤，凶。", "六二：顛頤，拂經，于丘頤，征凶。", "六三：拂頤，貞凶，十年勿用，无攸利。", "六四：顛頤吉，虎視眈眈，其欲逐逐，无咎。", "六五：拂經，居貞吉，不可涉大川。", "上九：由頤，厲吉，利涉大川。"], "tuan": "颐贞吉，养正则吉也。观颐，观其所养也；自求口实，观其自养也。天地养万物，圣人养贤，以及万民；颐之时大矣哉！", "dx": "山下有雷，颐；君子以慎言语，节饮食。", "dxT": "山下有雷，頤；君子以慎言語，節飲食。", "xx": ["观我朵颐，亦不足贵也。", "六二征凶，行失类也。", "十年勿用，道大悖也。", "颠颐之吉，上施光也。", "居贞之吉，顺以从上也。", "由颐厉吉，大有庆也。"]}, {"n": 28, "name": "大过", "nameT": "大過", "down": "巽", "up": "兑", "gc": "栋桡，利有攸往，亨。", "gcT": "棟橈，利有攸往，亨。", "yao": ["初六：藉用白茅，无咎。", "九二：枯杨生稊，老夫得其女妻，无不利。", "九三：栋桡，凶。", "九四：栋隆，吉。有它吝。", "九五：枯杨生华，老妇得其士夫，无咎无誉。", "上六：过涉灭顶，凶，无咎。"], "yaoT": ["初六：藉用白茅，无咎。", "九二：枯楊生稊，老夫得其女妻，无不利。", "九三：棟橈，凶。", "九四：棟隆，吉。有它吝。", "九五：枯楊生華，老婦得其士夫，无咎无譽。", "上六：過涉滅頂，凶，无咎。"], "tuan": "大过，大者过也。栋桡，本末弱也。刚过而中，巽而说行，利有攸往，乃亨。大过之时大矣哉！", "dx": "泽灭木，大过。君子以独立不惧，遯世无闷。", "dxT": "澤滅木，大過。君子以獨立不懼，遯世无悶。", "xx": ["藉用白茅，柔在下也。", "老夫女妻，过以相与也。", "栋桡之凶，不可以有辅也。", "栋隆之吉，不桡乎下也。", "枯杨生华，何可久也。老妇士夫，亦可丑也。", "过涉之凶，不可咎也。"]}, {"n": 29, "name": "坎", "nameT": "坎", "down": "坎", "up": "坎", "gc": "有孚，维心亨。行有尚。", "gcT": "有孚，維心亨。行有尚。", "yao": ["初六：习坎，入于坎窞，凶。", "九二：坎有险，求小得。", "六三：来之坎坎，险且枕，入于坎窞，勿用。", "六四：樽酒簋贰，用缶，纳约自牖，终无咎。", "九五：坎不盈，祗既平，无咎。", "上六：系用徽𬙊，寘于丛棘，三岁不得，凶。"], "yaoT": ["初六：習坎，入于坎窞，凶。", "九二：坎有險，求小得。", "六三：來之坎坎，險且枕，入于坎窞，勿用。", "六四：樽酒簋貳，用缶，納約自牖，終无咎。", "九五：坎不盈，祗既平，无咎。", "上六：係用徽纆，寘于叢棘，三歲不得，凶。"], "tuan": "习坎，重险也。水流而不盈，行险而不失其信。维心亨，乃以刚中也。行有尚，往有功也。天险不可升也，地险山川丘陵也，王公设险以守其国，坎之时用大矣哉！", "dx": "水洊至，习坎；君子以常德行，习教事。", "dxT": "水洊至，習坎；君子以常德行，習教事。", "xx": ["习坎入坎，失道凶也。", "求小得，未出中也。", "来之坎坎，终无功也。", "樽酒簋贰，刚柔济也。", "坎不盈，中未大也。", "上六失道，凶三岁也。"]}, {"n": 30, "name": "离", "nameT": "離", "down": "离", "up": "离", "gc": "利贞。亨。畜牝牛，吉。", "gcT": "利貞。亨。畜牝牛，吉。", "yao": ["初九：履错然，敬之无咎。", "六二：黄离，元吉。", "九三：日昃之离，不鼓缶而歌，则大耋之嗟，凶。", "九四：突如其来如，焚如，死如，弃如。", "六五：出涕沱若，戚嗟若，吉。", "上九：王用出征，有嘉折首，获匪其丑，无咎。"], "yaoT": ["初九：履錯然，敬之无咎。", "六二：黃離，元吉。", "九三：日昃之離，不鼓缶而歌，則大耋之嗟，凶。", "九四：突如其來如，焚如，死如，棄如。", "六五：出涕沱若，戚嗟若，吉。", "上九：王用出征，有嘉折首，獲匪其醜，无咎。"], "tuan": "离，丽也；日月丽乎天，百谷草木丽乎土，重明以丽乎正，乃化成天下。柔丽乎中正，故亨；是以畜牝牛吉也。", "dx": "明两作离，大人以继明照于四方。", "dxT": "明兩作離，大人以繼明照于四方。", "xx": ["履错之敬，以辟咎也。", "黄离元吉，得中道也。", "日昃之离，何可久也。", "突如其来如，无所容也。", "六五之吉，离王公也。", "王用出征，以正邦也。"]}, {"n": 31, "name": "咸", "nameT": "咸", "down": "艮", "up": "兑", "gc": "亨。利贞。取女吉。", "gcT": "亨。利貞。取女吉。", "yao": ["初六：咸其拇。", "六二：咸其腓，凶，居吉。", "九三：咸其股，执其随，往吝。", "九四：贞吉悔亡，憧憧往来，朋从尔思。", "九五：咸其脢，无悔。", "上六：咸其辅，颊，舌。"], "yaoT": ["初六：咸其拇。", "六二：咸其腓，凶，居吉。", "九三：咸其股，執其隨，往吝。", "九四：貞吉悔亡，憧憧往來，朋從爾思。", "九五：咸其脢，无悔。", "上六：咸其輔，頰，舌。"], "tuan": "咸，感也。柔上而刚下，二气感应以相与，止而说，男下女，是以亨利贞，取女吉也。天地感而万物化生，圣人感人心而天下和平；观其所感，而天地万物之情可见矣！", "dx": "山上有泽，咸；君子以虚受人。", "dxT": "山上有澤，咸；君子以虛受人。", "xx": ["咸其拇，志在外也。", "虽凶，居吉，顺不害也。", "咸其股，亦不处也。志在随人，所执下也。", "贞吉悔亡，未感害也。憧憧往来，未光大也。", "咸其脢，志末也。", "咸其辅，颊，舌，滕口说也。"]}, {"n": 32, "name": "恒", "nameT": "恆", "down": "巽", "up": "震", "gc": "亨，无咎。利贞，利有攸往。", "gcT": "亨，无咎。利貞，利有攸往。", "yao": ["初六：浚恒，贞凶，无攸利。", "九二：悔亡。", "九三：不恒其德，或承之羞，贞吝。", "九四：田无禽。", "六五：恒其德，贞，妇人吉，夫子凶。", "上六：振恒，凶。"], "yaoT": ["初六：浚恆，貞凶，无攸利。", "九二：悔亡。", "九三：不恆其德，或承之羞，貞吝。", "九四：田无禽。", "六五：恆其德，貞，婦人吉，夫子凶。", "上六：振恆，凶。"], "tuan": "恒，久也。刚上而柔下，雷风相与，巽而动，刚柔皆应，恒。恒亨无咎，利贞；久于其道也，天地之道，恒久而不已也。利有攸往，终则有始也。日月得天，而能久照，四时变化，而能久成，圣人久于其道，而天下化成；观其所恒，而天地万物之情可见矣！", "dx": "雷风，恒；君子以立不易方。", "dxT": "雷風，恆；君子以立不易方。", "xx": ["浚恒之凶，始求深也。", "九二悔亡，能久中也。", "不恒其德，无所容也。", "久非其位，安得禽也。", "妇人贞吉，从一而终也。夫子制义，从妇凶也。", "振恒在上，大无功也。"]}, {"n": 33, "name": "遯", "nameT": "遯", "down": "艮", "up": "乾", "gc": "亨。小利贞。", "gcT": "亨。小利貞。", "yao": ["初六：遯尾，厉，勿用有攸往。", "六二：执之用黄牛之革，莫之胜说。", "九三：系遯，有疾厉，畜臣妾吉。", "九四：好遯君子吉，小人否。", "九五：嘉遯，贞吉。", "上九：肥遯，无不利。"], "yaoT": ["初六：遯尾，厲，勿用有攸往。", "六二：執之用黃牛之革，莫之勝說。", "九三：係遯，有疾厲，畜臣妾吉。", "九四：好遯君子吉，小人否。", "九五：嘉遯，貞吉。", "上九：肥遯，无不利。"], "tuan": "遯亨，遯而亨也。刚当位而应，与时行也。小利贞，浸而长也。遯之时义大矣哉！", "dx": "天下有山，遯；君子以远小人，不恶而严。", "dxT": "天下有山，遯；君子以遠小人，不惡而嚴。", "xx": ["遯尾之厉，不往何灾也。", "执用黄牛，固志也。", "系遯之厉，有疾惫也。畜臣妾吉，不可大事也。", "君子好遯，小人否也。", "嘉遯贞吉，以正志也。", "肥遯，无不利；无所疑也。"]}, {"n": 34, "name": "大壮", "nameT": "大壯", "down": "乾", "up": "震", "gc": "利贞。", "gcT": "利貞。", "yao": ["初九：壮于趾，征凶，有孚。", "九二：贞吉。", "九三：小人用壮，君子用罔，贞厉。羝羊触藩，羸其角。", "九四：贞吉悔亡，藩决不羸，壮于大舆之輹。", "六五：丧羊于易，无悔。", "上六：羝羊触藩，不能退，不能遂，无攸利，艰则吉。"], "yaoT": ["初九：壯于趾，征凶，有孚。", "九二：貞吉。", "九三：小人用壯，君子用罔，貞厲。羝羊觸藩，羸其角。", "九四：貞吉悔亡，藩決不羸，壯于大輿之輹。", "六五：喪羊于易，无悔。", "上六：羝羊觸藩，不能退，不能遂，无攸利，艱則吉。"], "tuan": "大壮，大者壮也。刚以动，故壮。大壮利贞；大者正也。正大而天地之情可见矣！", "dx": "雷在天上，大壮；君子以非礼弗履。", "dxT": "雷在天上，大壯；君子以非禮弗履。", "xx": ["壮于趾，其孚穷也。", "九二贞吉，以中也。", "小人用壮，君子罔也。", "藩决不羸，尚往也。", "丧羊于易，位不当也。", "不能退，不能遂，不详也。艰则吉，咎不长也。"]}, {"n": 35, "name": "晋", "nameT": "晉", "down": "坤", "up": "离", "gc": "康侯用锡马蕃庶，昼日三接。", "gcT": "康侯用錫馬蕃庶，晝日三接。", "yao": ["初六：晋如，摧如，贞吉。罔孚，裕无咎。", "六二：晋如，愁如，贞吉。受兹介福，于其王母。", "六三：众允，悔亡。", "九四：晋如鼫鼠，贞厉。", "六五：悔亡，失得勿恤，往吉无不利。", "上九：晋其角，维用伐邑，厉吉无咎，贞吝。"], "yaoT": ["初六：晉如，摧如，貞吉。罔孚，裕无咎。", "六二：晉如，愁如，貞吉。受茲介福，于其王母。", "六三：眾允，悔亡。", "九四：晉如鼫鼠，貞厲。", "六五：悔亡，失得勿恤，往吉无不利。", "上九：晉其角，維用伐邑，厲吉无咎，貞吝。"], "tuan": "晋，进也。明出地上，顺而丽乎大明，柔进而上行。是以康侯用锡马蕃庶，昼日三接也。", "dx": "明出地上，晋；君子以自昭明德。", "dxT": "明出地上，晉；君子以自昭明德。", "xx": ["晋如，摧如；独行正也。裕无咎；未受命也。", "受兹介福，以中正也。", "众允之志，上行也。", "鼫鼠贞厉，位不当也。", "失得勿恤，往有庆也。", "维用伐邑，道未光也。"]}, {"n": 36, "name": "明夷", "nameT": "明夷", "down": "离", "up": "坤", "gc": "利艰贞。", "gcT": "利艱貞。", "yao": ["初九：明夷于飞，垂其翼。君子于行，三日不食，有攸往，主人有言。", "六二：明夷，夷于左股，用拯马壮，吉。", "九三：明夷于南狩，得其大首，不可疾贞。", "六四：入于左腹，获明夷之心，于出门庭。", "六五：箕子之明夷，利贞。", "上六：不明晦，初登于天，后入于地。"], "yaoT": ["初九：明夷于飛，垂其翼。君子于行，三日不食，有攸往，主人有言。", "六二：明夷，夷于左股，用拯馬壯，吉。", "九三：明夷于南狩，得其大首，不可疾貞。", "六四：入于左腹，獲明夷之心，于出門庭。", "六五：箕子之明夷，利貞。", "上六：不明晦，初登于天，後入于地。"], "tuan": "明入地中，明夷。内文明而外柔顺，以蒙大难，文王以之。利艰贞，晦其明也，内难而能正其志，箕子以之。", "dx": "明入地中，明夷；君子以莅众，用晦而明。", "dxT": "明入地中，明夷；君子以蒞眾，用晦而明。", "xx": ["君子于行，义不食也。", "六二之吉，顺以则也。", "南狩之志，乃大得也。", "入于左腹，获心意也。", "箕子之贞，明不可息也。", "初登于天，照四国也。后入于地，失则也。"]}, {"n": 37, "name": "家人", "nameT": "家人", "down": "离", "up": "巽", "gc": "利女贞。", "gcT": "利女貞。", "yao": ["初九：闲有家，悔亡。", "六二：无攸遂，在中馈，贞吉。", "九三：家人嗃嗃，悔厉吉；妇子嘻嘻，终吝。", "六四：富家，大吉。", "九五：王假有家，勿恤。吉。", "上九：有孚威如，终吉。"], "yaoT": ["初九：閑有家，悔亡。", "六二：无攸遂，在中饋，貞吉。", "九三：家人嗃嗃，悔厲吉；婦子嘻嘻，終吝。", "六四：富家，大吉。", "九五：王假有家，勿恤。吉。", "上九：有孚威如，終吉。"], "tuan": "家人，女正位乎内，男正位乎外，男女正，天地之大义也。家人有严君焉，父母之谓也。父父，子子，兄兄，弟弟，夫夫，妇妇，而家道正；正家而天下定矣。", "dx": "风自火出，家人；君子以言有物，而行有恒。", "dxT": "風自火出，家人；君子以言有物，而行有恆。", "xx": ["闲有家，志未变也。", "六二之吉，顺以巽也。", "家人嗃嗃，未失也；妇子嘻嘻，失家节也。", "富家大吉，顺在位也。", "王假有家，交相爱也。", "威如之吉，反身之谓也。"]}, {"n": 38, "name": "睽", "nameT": "睽", "down": "兑", "up": "离", "gc": "小事吉。", "gcT": "小事吉。", "yao": ["初九：悔亡，丧马勿逐，自复；见恶人无咎。", "九二：遇主于巷，无咎。", "六三：见舆曳，其牛掣，其人天且劓，无初有终。", "九四：睽孤，遇元夫，交孚，厉无咎。", "六五：悔亡，厥宗噬肤，往何咎。", "上九：睽孤， 见豕负涂，载鬼一车， 先张之弧，后说之弧，匪寇婚媾，往遇雨则吉。"], "yaoT": ["初九：悔亡，喪馬勿逐，自復；見惡人无咎。", "九二：遇主于巷，无咎。", "六三：見輿曳，其牛掣，其人天且劓，无初有終。", "九四：睽孤，遇元夫，交孚，厲无咎。", "六五：悔亡，厥宗噬膚，往何咎。", "上九：睽孤， 見豕負涂，載鬼一車， 先張之弧，後說之弧，匪寇婚媾，往遇雨則吉。"], "tuan": "睽，火动而上，泽动而下；二女同居，其志不同行；说而丽乎明，柔进而上行，得中而应乎刚；是以小事吉。天地睽，而其事同也；男女睽，而其志通也；万物睽，而其事类也；睽之时用大矣哉！", "dx": "上火下泽，睽；君子以同而异。", "dxT": "上火下澤，睽；君子以同而異。", "xx": ["见恶人，以辟咎也。", "遇主于巷，未失道也。", "见舆曳，位不当也。无初有终，遇刚也。", "交孚无咎，志行也。", "厥宗噬肤，往有庆也。", "遇雨之吉，群疑亡也。"]}, {"n": 39, "name": "蹇", "nameT": "蹇", "down": "艮", "up": "坎", "gc": "利西南，不利东北；利见大人，贞吉。", "gcT": "利西南，不利東北；利見大人，貞吉。", "yao": ["初六：往蹇，来誉。", "六二：王臣蹇蹇，匪躬之故。", "九三：往蹇来反。", "六四：往蹇来连。", "九五：大蹇朋来。", "上六：往蹇来硕，吉；利见大人。"], "yaoT": ["初六：往蹇，來譽。", "六二：王臣蹇蹇，匪躬之故。", "九三：往蹇來反。", "六四：往蹇來連。", "九五：大蹇朋來。", "上六：往蹇來碩，吉；利見大人。"], "tuan": "蹇，难也，险在前也。见险而能止，知矣哉！蹇利西南，往得中也；不利东北，其道穷也。利见大人，往有功也。当位贞吉，以正邦也。蹇之时用大矣哉！", "dx": "山上有水，蹇；君子以反身修德。", "dxT": "山上有水，蹇；君子以反身修德。", "xx": ["往蹇来誉，宜待也。", "王臣蹇蹇，终无尤也。", "往蹇来反，内喜之也。", "往蹇来连，当位实也。", "大蹇朋来，以中节也。", "往蹇来硕，志在内也。利见大人，以从贵也。"]}, {"n": 40, "name": "解", "nameT": "解", "down": "坎", "up": "震", "gc": "利西南，无所往，其来复吉。有攸往，夙吉。", "gcT": "利西南，无所往，其來復吉。有攸往，夙吉。", "yao": ["初六：无咎。", "九二：田获三狐，得黄矢，贞吉。", "六三：负且乘，致寇至，贞吝。", "九四：解而拇，朋至斯孚。", "六五：君子维有解，吉；有孚于小人。", "上六：公用射隼，于高墉之上，获之，无不利。"], "yaoT": ["初六：无咎。", "九二：田獲三狐，得黃矢，貞吉。", "六三：負且乘，致寇至，貞吝。", "九四：解而拇，朋至斯孚。", "六五：君子維有解，吉；有孚于小人。", "上六：公用射隼，于高墉之上，獲之，无不利。"], "tuan": "解，险以动，动而免乎险，解。解利西南，往得众也。其来复吉，乃得中也。有攸往夙吉，往有功也。天地解，而雷雨作，雷雨作，而百果草木皆甲坼，解之时义大矣哉！", "dx": "雷雨作，解；君子以赦过宥罪。", "dxT": "雷雨作，解；君子以赦過宥罪。", "xx": ["刚柔之际，义无咎也。", "九二贞吉，得中道也。", "负且乘，亦可丑也，自我致戎，又谁咎也。", "解而拇，未当位也。", "君子有解，小人退也。", "公用射隼，以解悖也。"]}, {"n": 41, "name": "损", "nameT": "損", "down": "兑", "up": "艮", "gc": "有孚，元吉。无咎，可贞，利有攸往。曷之用？二簋可用享。", "gcT": "有孚，元吉。无咎，可貞，利有攸往。曷之用？二簋可用享。", "yao": ["初九：已事遄往，无咎，酌损之。", "九二：利贞，征凶，弗损益之。", "六三：三人行，则损一人；一人行，则得其友。", "六四：损其疾，使遄有喜，无咎。", "六五：或益之，十朋之龟弗克违，元吉。", "上九：弗损益之，无咎，贞吉，利有攸往，得臣无家。"], "yaoT": ["初九：已事遄往，无咎，酌損之。", "九二：利貞，征凶，弗損益之。", "六三：三人行，則損一人；一人行，則得其友。", "六四：損其疾，使遄有喜，无咎。", "六五：或益之，十朋之龜弗克違，元吉。", "上九：弗損益之，无咎，貞吉，利有攸往，得臣无家。"], "tuan": "损，损下益上，其道上行。损而有孚，元吉，无咎，可贞，利有攸往。曷之用？二簋可用享；二簋应有时。损刚益柔有时，损益盈虚，与时偕行。", "dx": "山下有泽，损；君子以惩忿窒欲。", "dxT": "山下有澤，損；君子以懲忿窒欲。", "xx": ["已事遄往，尚合志也。", "九二利贞，中以为志也。", "一人行，三则疑也。", "损其疾，亦可喜也。", "六五元吉，自上佑也。", "弗损益之，大得志也。"]}, {"n": 42, "name": "益", "nameT": "益", "down": "震", "up": "巽", "gc": "利有攸往。利涉大川。", "gcT": "利有攸往。利涉大川。", "yao": ["初九：利用为大作，元吉，无咎。", "六二：或益之，十朋之龟弗克违，永贞吉。王用享于帝，吉。", "六三：益之用凶事，无咎。有孚中行，告公用圭。", "六四：中行，告公从。利用为依迁国。", "九五：有孚惠心，勿问元吉。有孚惠我德。", "上九：莫益之，或击之，立心勿恒，凶。"], "yaoT": ["初九：利用為大作，元吉，无咎。", "六二：或益之，十朋之龜弗克違，永貞吉。王用享于帝，吉。", "六三：益之用凶事，无咎。有孚中行，告公用圭。", "六四：中行，告公從。利用為依遷國。", "九五：有孚惠心，勿問元吉。有孚惠我德。", "上九：莫益之，或擊之，立心勿恆，凶。"], "tuan": "益，损上益下，民说无疆，自上下下，其道大光。利有攸往，中正有庆。利涉大川，木道乃行。益动而巽，日进无疆。天施地生，其益无方。凡益之道，与时偕行。", "dx": "风雷，益；君子以见善则迁，有过则改。", "dxT": "風雷，益；君子以見善則遷，有過則改。", "xx": ["元吉无咎，下不厚事也。", "或益之，自外来也。", "益用凶事，固有之也。", "告公从，以益志也。", "有孚惠心，勿问之矣。惠我德，大得志也。", "莫益之，偏辞也。或击之，自外来也。"]}, {"n": 43, "name": "夬", "nameT": "夬", "down": "乾", "up": "兑", "gc": "扬于王庭，孚号，有厉，告自邑，不利即戎，利有攸往。", "gcT": "揚于王庭，孚號，有厲，告自邑，不利即戎，利有攸往。", "yao": ["初九：壮于前趾，往不胜为咎。", "九二：惕号，莫夜有戎，勿恤。", "九三：壮于頄，有凶。君子夬夬，独行遇雨，若濡有愠，无咎。", "九四：臀无肤，其行次且。牵羊悔亡，闻言不信。", "九五：苋陆夬夬，中行无咎。", "上六：无号，终有凶。"], "yaoT": ["初九：壯于前趾，往不勝為咎。", "九二：惕號，莫夜有戎，勿恤。", "九三：壯于頄，有凶。君子夬夬，獨行遇雨，若濡有慍，无咎。", "九四：臀无膚，其行次且。牽羊悔亡，聞言不信。", "九五：莧陸夬夬，中行无咎。", "上六：无號，終有凶。"], "tuan": "夬，决也，刚决柔也。健而说，决而和，扬于王庭，柔乘五刚也。孚号有厉，其危乃光也。告自邑，不利即戎，所尚乃穷也。利有攸往，刚长乃终也。", "dx": "泽上于天，夬；君子以施禄及下，居德则忌。", "dxT": "澤上于天，夬；君子以施祿及下，居德則忌。", "xx": ["不胜而往，咎也。", "莫夜有戎，得中道也。", "君子夬夬，终无咎也。", "其行次且，位不当也。闻言不信，聪不明也。", "中行无咎，中未光也。", "无号之凶，终不可长也。"]}, {"n": 44, "name": "姤", "nameT": "姤", "down": "巽", "up": "乾", "gc": "女壮，勿用取女。", "gcT": "女壯，勿用取女。", "yao": ["初六：系于金柅，贞吉，有攸往，见凶，羸豕，孚，蹢躅。", "九二：包有鱼，无咎，不利宾。", "九三：臀无肤，其行次且，厉，无大咎。", "九四：包无鱼，起凶。", "九五：以杞苞瓜，含章，有陨自天。", "上九：姤其角，吝，无咎。"], "yaoT": ["初六：系于金柅，貞吉，有攸往，見凶，羸豕，孚，蹢躅。", "九二：包有魚，无咎，不利賓。", "九三：臀无膚，其行次且，厲，无大咎。", "九四：包无魚，起凶。", "九五：以杞苞瓜，含章，有隕自天。", "上九：姤其角，吝，无咎。"], "tuan": "姤，遇也，柔遇刚也。勿用取女，不可与长也。天地相遇，品物咸章也。刚遇中正，天下大行也。姤之时义大矣哉！", "dx": "天下有风，姤；后以施命诰四方。", "dxT": "天下有風，姤；后以施命誥四方。", "xx": ["系于金柅，柔道牵也。", "包有鱼，义不及宾也。", "其行次且，行未牵也。", "无鱼之凶，远民也。", "九五含章，中正也。有陨自天，志不舍命也。", "姤其角，上穷吝也。"]}, {"n": 45, "name": "萃", "nameT": "萃", "down": "坤", "up": "兑", "gc": "王假有庙，利见大人，亨。利贞。用大牲吉，利有攸往。", "gcT": "王假有廟，利見大人，亨。利貞。用大牲吉，利有攸往。", "yao": ["初六：有孚不终，乃乱乃萃，若号一握为笑，勿恤，往无咎。", "六二：引吉，无咎，孚乃利用禴。", "六三：萃如，嗟如，无攸利，往无咎，小吝。", "九四：大吉，无咎。", "九五：萃有位，无咎。匪孚，元永贞，悔亡。", "上六：赍咨涕洟，无咎。"], "yaoT": ["初六：有孚不終，乃亂乃萃，若號一握為笑，勿恤，往无咎。", "六二：引吉，无咎，孚乃利用禴。", "六三：萃如，嗟如，无攸利，往无咎，小吝。", "九四：大吉，无咎。", "九五：萃有位，无咎。匪孚，元永貞，悔亡。", "上六：齎咨涕洟，无咎。"], "tuan": "萃，聚也；顺以说，刚中而应，故聚也。王假有庙，致孝享也。利见大人亨，聚以正也。用大牲吉，利有攸往，顺天命也。观其所聚，而天地万物之情可见矣。", "dx": "泽上于地，萃；君子以除戎器，戒不虞。", "dxT": "澤上于地，萃；君子以除戎器，戒不虞。", "xx": ["乃乱乃萃，其志乱也。", "引吉无咎，中未变也。", "往无咎，上巽也。", "大吉无咎，位不当也。", "萃有位，志未光也。", "赍咨涕洟，未安上也。"]}, {"n": 46, "name": "升", "nameT": "升", "down": "巽", "up": "坤", "gc": "元亨，用见大人，勿恤，南征吉。", "gcT": "元亨，用見大人，勿恤，南征吉。", "yao": ["初六：允升，大吉。", "九二：孚乃利用禴，无咎。", "九三：升虚邑。", "六四：王用亨于岐山，吉无咎。", "六五：贞吉，升阶。", "上六：冥升，利于不息之贞。"], "yaoT": ["初六：允升，大吉。", "九二：孚乃利用禴，无咎。", "九三：升虛邑。", "六四：王用亨于岐山，吉无咎。", "六五：貞吉，升階。", "上六：冥升，利于不息之貞。"], "tuan": "柔以时升，巽而顺，刚中而应，是以大亨。用见大人，勿恤；有庆也。南征吉，志行也。", "dx": "地中生木，升；君子以顺德，积小以高大。", "dxT": "地中生木，升；君子以順德，積小以高大。", "xx": ["允升大吉，上合志也。", "九二之孚，有喜也。", "升虚邑，无所疑也。", "王用亨于岐山，顺事也。", "贞吉升阶，大得志也。", "冥升在上，消不富也。"]}, {"n": 47, "name": "困", "nameT": "困", "down": "坎", "up": "兑", "gc": "亨，贞大人吉，无咎，有言不信。", "gcT": "亨，貞大人吉，无咎，有言不信。", "yao": ["初六：臀困于株木，入于幽谷，三岁不觌。", "九二：困于酒食，朱绂方来，利用亨祀，征凶，无咎。", "六三：困于石，据于蒺藜，入于其宫，不见其妻，凶。", "九四：来徐徐，困于金车，吝，有终。", "九五：劓刖，困于赤绂，乃徐有说，利用祭祀。", "上六：困于葛藟，于臲卼，曰动悔。有悔，征吉。"], "yaoT": ["初六：臀困于株木，入于幽谷，三歲不覿。", "九二：困于酒食，朱紱方來，利用亨祀，征凶，无咎。", "六三：困于石，據于蒺藜，入于其宮，不見其妻，凶。", "九四：來徐徐，困于金車，吝，有終。", "九五：劓刖，困于赤紱，乃徐有說，利用祭祀。", "上六：困于葛藟，于臲卼，曰動悔。有悔，征吉。"], "tuan": "困，刚掩也。险以说，困而不失其所，亨；其唯君子乎？ 贞大人吉，以刚中也。有言不信，尚口乃穷也。", "dx": "泽无水，困；君子以致命遂志。", "dxT": "澤无水，困；君子以致命遂志。", "xx": ["入于幽谷，幽不明也。", "困于酒食，中有庆也。", "据于蒺藜，乘刚也。入于其宫，不见其妻，不祥也。", "来徐徐，志在下也。虽不当位，有与也。", "劓刖，志未得也。乃徐有说，以中直也。利用祭祀，受福也。", "困于葛藟，未当也。动悔，有悔，吉行也。"]}, {"n": 48, "name": "井", "nameT": "井", "down": "巽", "up": "坎", "gc": "改邑不改井，无丧无得，往来井井。汔至亦未繘井。羸其瓶，凶。", "gcT": "改邑不改井，无喪无得，往來井井。汔至亦未繘井。羸其瓶，凶。", "yao": ["初六：井泥不食，旧井无禽。", "九二：井谷射鲋，瓮敝漏。", "九三：井渫不食，为我心恻，可用汲，王明，并受其福。", "六四：井甃，无咎。", "九五：井冽，寒泉食。", "上六：井收勿幕，有孚元吉。"], "yaoT": ["初六：井泥不食，舊井无禽。", "九二：井谷射鮒，瓮敝漏。", "九三：井渫不食，為我心惻，可用汲，王明，並受其福。", "六四：井甃，无咎。", "九五：井冽，寒泉食。", "上六：井收勿幕，有孚元吉。"], "tuan": "巽乎水而上水，井；井养而不穷也。改邑不改井，乃以刚中也。汔至亦未繘井，未有功也。羸其瓶，是以凶也。", "dx": "木上有水，井；君子以劳民劝相。", "dxT": "木上有水，井；君子以勞民勸相。", "xx": ["井泥不食，下也。旧井无禽，时舍也。", "井谷射鲋，无与也。", "井渫不食，行恻也。求王明，受福也。", "井甃无咎，修井也。", "寒泉之食，中正也。", "元吉在上，大成也。"]}, {"n": 49, "name": "革", "nameT": "革", "down": "离", "up": "兑", "gc": "已日乃孚，元亨。利贞。悔亡。", "gcT": "已日乃孚，元亨。利貞。悔亡。", "yao": ["初九：巩用黄牛之革。", "六二：已日乃革之，征吉，无咎。", "九三：征凶，贞厉，革言三就，有孚。", "九四：悔亡，有孚改命，吉。", "九五：大人虎变，未占有孚。", "上六：君子豹变，小人革面，征凶，居贞吉。"], "yaoT": ["初九：鞏用黃牛之革。", "六二：已日乃革之，征吉，无咎。", "九三：征凶，貞厲，革言三就，有孚。", "九四：悔亡，有孚改命，吉。", "九五：大人虎變，未占有孚。", "上六：君子豹變，小人革面，征凶，居貞吉。"], "tuan": "革，水火相息，二女同居，其志不相得，曰革。已日乃孚；革而信也。文明以说，大亨以正，革而当，其悔乃亡。天地革而四时成，汤武革命，顺乎天而应乎人，革之时义大矣哉！", "dx": "泽中有火，革；君子以治历明时。", "dxT": "澤中有火，革；君子以治歷明時。", "xx": ["巩用黄牛，不可以有为也。", "已日革之，行有嘉也。", "革言三就，又何之矣。", "改命之吉，信志也。", "大人虎变，其文炳也。", "君子豹变，其文蔚也。小人革面，顺以从君也。"]}, {"n": 50, "name": "鼎", "nameT": "鼎", "down": "巽", "up": "离", "gc": "元吉，亨。", "gcT": "元吉，亨。", "yao": ["初六：鼎颠趾，利出否，得妾以其子，无咎。", "九二：鼎有实，我仇有疾，不我能即，吉。", "九三：鼎耳革，其行塞，雉膏不食，方雨亏悔，终吉。", "九四：鼎折足，覆公𫗧，其形渥，凶。", "六五：鼎黄耳金铉，利贞。", "上九：鼎玉铉，大吉，无不利。"], "yaoT": ["初六：鼎顛趾，利出否，得妾以其子，无咎。", "九二：鼎有實，我仇有疾，不我能即，吉。", "九三：鼎耳革，其行塞，雉膏不食，方雨虧悔，終吉。", "九四：鼎折足，覆公餗，其形渥，凶。", "六五：鼎黃耳金鉉，利貞。", "上九：鼎玉鉉，大吉，无不利。"], "tuan": "鼎，象也。以木巽火，亨饪也。圣人亨以享上帝，而大亨以养圣贤。巽而耳目聪明，柔进而上行，得中而应乎刚，是以元亨。", "dx": "木上有火，鼎；君子以正位凝命。", "dxT": "木上有火，鼎；君子以正位凝命。", "xx": ["鼎颠趾，未悖也。利出否，以从贵也。", "鼎有实，慎所之也。我仇有疾，终无尤也。", "鼎耳革，失其义也。", "覆公𫗧，信如何也。", "鼎黄耳，中以为实也。", "玉铉在上，刚柔节也。"]}, {"n": 51, "name": "震", "nameT": "震", "down": "震", "up": "震", "gc": "亨。震来虩虩，笑言哑哑。震惊百里，不丧匕鬯。", "gcT": "亨。震來虩虩，笑言啞啞。震驚百里，不喪匕鬯。", "yao": ["初九：震来虩虩，后笑言哑哑，吉。", "六二：震来厉，亿丧贝，跻于九陵，勿逐，七日得。", "六三：震苏苏，震行无眚。", "九四：震遂泥。", "六五：震往来厉，亿无丧，有事。", "上六：震索索，视矍矍，征凶。震不于其躬，于其邻，无咎。婚媾有言。"], "yaoT": ["初九：震來虩虩，後笑言啞啞，吉。", "六二：震來厲，億喪貝，躋于九陵，勿逐，七日得。", "六三：震蘇蘇，震行无眚。", "九四：震遂泥。", "六五：震往來厲，億无喪，有事。", "上六：震索索，視矍矍，征凶。震不于其躬，于其鄰，无咎。婚媾有言。"], "tuan": "震，亨。震来虩虩，恐致福也。笑言哑哑，后有则也。震惊百里，惊远而惧迩也。出可以守宗庙社稷，以为祭主也。", "dx": "洊雷，震；君子以恐惧修省。", "dxT": "洊雷，震；君子以恐懼修省。", "xx": ["震来虩虩，恐致福也。笑言哑哑，后有则也。", "震来厉，乘刚也。", "震苏苏，位不当也。", "震遂泥，未光也。", "震往来厉，危行也。其事在中，大无丧也。", "震索索，中未得也。虽凶无咎，畏邻戒也。"]}, {"n": 52, "name": "艮", "nameT": "艮", "down": "艮", "up": "艮", "gc": "艮其背，不获其身，行其庭，不见其人，无咎。", "gcT": "艮其背，不獲其身，行其庭，不見其人，无咎。", "yao": ["初六：艮其趾，无咎，利永贞。", "六二：艮其腓，不拯其随，其心不快。", "九三：艮其限，列其夤，厉薰心。", "六四：艮其身，无咎。", "六五：艮其辅，言有序，悔亡。", "上九：敦艮，吉。"], "yaoT": ["初六：艮其趾，无咎，利永貞。", "六二：艮其腓，不拯其隨，其心不快。", "九三：艮其限，列其夤，厲薰心。", "六四：艮其身，无咎。", "六五：艮其輔，言有序，悔亡。", "上九：敦艮，吉。"], "tuan": "艮，止也。时止则止，时行则行，动静不失其时，其道光明。艮其止，止其所也。上下敌应，不相与也。是以不获其身，行其庭不见其人，无咎也。", "dx": "兼山，艮；君子以思不出其位。", "dxT": "兼山，艮；君子以思不出其位。", "xx": ["艮其趾，未失正也。", "不拯其随，未退听也。", "艮其限，危薰心也。", "艮其身，止诸躬也。", "艮其辅，以中正也。", "敦艮之吉，以厚终也。"]}, {"n": 53, "name": "渐", "nameT": "漸", "down": "艮", "up": "巽", "gc": "女归吉，利贞。", "gcT": "女歸吉，利貞。", "yao": ["初六：鸿渐于干，小子厉，有言，无咎。", "六二：鸿渐于磐，饮食衎衎，吉。", "九三：鸿渐于陆，夫征不复，妇孕不育，凶；利御寇。", "六四：鸿渐于木，或得其桷，无咎。", "九五：鸿渐于陵，妇三岁不孕，终莫之胜，吉。", "上九：鸿渐于陆，其羽可用为仪，吉。"], "yaoT": ["初六：鴻漸于干，小子厲，有言，无咎。", "六二：鴻漸于磐，飲食衎衎，吉。", "九三：鴻漸于陸，夫征不復，婦孕不育，凶；利禦寇。", "六四：鴻漸于木，或得其桷，无咎。", "九五：鴻漸于陵，婦三歲不孕，終莫之勝，吉。", "上九：鴻漸于陸，其羽可用為儀，吉。"], "tuan": "渐之进也，女归吉也。进得位，往有功也。进以正，可以正邦也。其位刚，得中也。止而巽，动不穷也。", "dx": "山上有木，渐；君子以居贤德，善俗。", "dxT": "山上有木，漸；君子以居賢德，善俗。", "xx": ["小子之厉，义无咎也。", "饮食衎衎，不素饱也。", "夫征不复，离群丑也。妇孕不育，失其道也。利用御寇，顺相保也。", "或得其桷，顺以巽也。", "终莫之胜，吉；得所愿也。", "其羽可用为仪，吉；不可乱也。"]}, {"n": 54, "name": "归妹", "nameT": "歸妹", "down": "兑", "up": "震", "gc": "征凶，无攸利。", "gcT": "征凶，无攸利。", "yao": ["初九：归妹以娣，跛能履，征吉。", "九二：眇能视，利幽人之贞。", "六三：归妹以须，反归以娣。", "九四：归妹愆期，迟归有时。", "六五：帝乙归妹，其君之袂，不如其娣之袂良，月几望，吉。", "上六：女承筐无实，士刲羊无血，无攸利。"], "yaoT": ["初九：歸妹以娣，跛能履，征吉。", "九二：眇能視，利幽人之貞。", "六三：歸妹以須，反歸以娣。", "九四：歸妹愆期，遲歸有時。", "六五：帝乙歸妹，其君之袂，不如其娣之袂良，月幾望，吉。", "上六：女承筐无實，士刲羊无血，无攸利。"], "tuan": "归妹，天地之大义也。天地不交，而万物不兴，归妹人之终始也。说以动，所归妹也。征凶，位不当也。无攸利，柔乘刚也。", "dx": "泽上有雷，归妹；君子以永终知敝。", "dxT": "澤上有雷，歸妹；君子以永終知敝。", "xx": ["归妹以娣，以恒也。跛能履吉，相承也。", "利幽人之贞，未变常也。", "归妹以须，未当也。", "愆期之志，有待而行也。", "帝乙归妹，不如其娣之袂良也。其位在中，以贵行也。", "上六无实，承虚筐也。"]}, {"n": 55, "name": "丰", "nameT": "豐", "down": "离", "up": "震", "gc": "亨。王假之，勿忧，宜日中。", "gcT": "亨。王假之，勿憂，宜日中。", "yao": ["初九：遇其配主，虽旬无咎，往有尚。", "六二：丰其蔀，日中见斗，往得疑疾，有孚发若，吉。", "九三：丰其沛，日中见沬，折其右肱，无咎。", "九四：丰其蔀，日中见斗，遇其夷主，吉。", "六五：来章，有庆誉，吉。", "上六：丰其屋，蔀其家，窥其户，阒其无人，三岁不觌，凶。"], "yaoT": ["初九：遇其配主，雖旬无咎，往有尚。", "六二：豐其蔀，日中見斗，往得疑疾，有孚發若，吉。", "九三：豐其沛，日中見沬，折其右肱，无咎。", "九四：豐其蔀，日中見斗，遇其夷主，吉。", "六五：來章，有慶譽，吉。", "上六：豐其屋，蔀其家，窺其戶，闃其无人，三歲不觌，凶。"], "tuan": "丰，大也。明以动，故丰。王假之，尚大也。勿忧宜日中，宜照天下也。日中则昃，月盈则食，天地盈虚，与时消息，而况于人乎？况于鬼神乎？", "dx": "雷电皆至，丰；君子以折狱致刑。", "dxT": "雷電皆至，豐；君子以折獄致刑。", "xx": ["虽旬无咎，过旬灾也。", "有孚发若，信以发志也。", "丰其沛，不可大事也。折其右肱，终不可用也。", "丰其蔀，位不当也。日中见斗，幽不明也。遇其夷主，吉；行也。", "六五之吉，有庆也。", "丰其屋，天际翔也。窥其户，阒其无人，自藏也。"]}, {"n": 56, "name": "旅", "nameT": "旅", "down": "艮", "up": "离", "gc": "小亨，旅贞吉。", "gcT": "小亨，旅貞吉。", "yao": ["初六：旅琐琐，斯其所取灾。", "六二：旅即次，怀其资，得童仆贞。", "九三：旅焚其次，丧其童仆，贞厉。", "九四：旅于处，得其资斧，我心不快。", "六五：射雉一矢亡，终以誉命。", "上九：鸟焚其巢，旅人先笑后号咷。丧牛于易，凶。"], "yaoT": ["初六：旅瑣瑣，斯其所取災。", "六二：旅即次，懷其資，得童僕貞。", "九三：旅焚其次，喪其童僕，貞厲。", "九四：旅于處，得其資斧，我心不快。", "六五：射雉一矢亡，終以譽命。", "上九：鳥焚其巢，旅人先笑後號咷。喪牛于易，凶。"], "tuan": "旅，小亨，柔得中乎外，而顺乎刚，止而丽乎明，是以小亨，旅贞吉也。旅之时义大矣哉！", "dx": "山上有火，旅；君子以明慎用刑，而不留狱。", "dxT": "山上有火，旅；君子以明慎用刑，而不留獄。", "xx": ["旅琐琐，志穷灾也。", "得童仆贞，终无尤也。", "旅焚其次，亦以伤矣。以旅与下，其义丧也。", "旅于处，未得位也。得其资斧，心未快也。", "终以誉命，上逮也。", "以旅在上，其义焚也。丧牛于易，终莫之闻也。"]}, {"n": 57, "name": "巽", "nameT": "巽", "down": "巽", "up": "巽", "gc": "小亨。利有攸往。利见大人。", "gcT": "小亨。利有攸往。利見大人。", "yao": ["初六：进退，利武人之贞。", "九二：巽在床下，用史巫纷若，吉无咎。", "九三：频巽，吝。", "六四：悔亡，田获三品。", "九五：贞吉悔亡，无不利。无初有终，先庚三日，后庚三日，吉。", "上九：巽在床下，丧其资斧，贞凶。"], "yaoT": ["初六：進退，利武人之貞。", "九二：巽在牀下，用史巫紛若，吉无咎。", "九三：頻巽，吝。", "六四：悔亡，田獲三品。", "九五：貞吉悔亡，无不利。无初有終，先庚三日，後庚三日，吉。", "上九：巽在牀下，喪其資斧，貞凶。"], "tuan": "重巽以申命，刚巽乎中正而志行。柔皆顺乎刚，是以小亨，利有攸往，利见大人。", "dx": "随风，巽；君子以申命行事。", "dxT": "隨風，巽；君子以申命行事。", "xx": ["进退，志疑也。利武人之贞，志治也。", "纷若之吉，得中也。", "频巽之吝，志穷也。", "田获三品，有功也。", "九五之吉，位正中也。", "巽在床下，上穷也。丧其资斧，正乎凶也。"]}, {"n": 58, "name": "兑", "nameT": "兌", "down": "兑", "up": "兑", "gc": "亨。利贞。", "gcT": "亨。利貞。", "yao": ["初九：和兑，吉。", "九二：孚兑，吉，悔亡。", "六三：来兑，凶。", "九四：商兑，未宁，介疾有喜。", "九五：孚于剥，有厉。", "上六：引兑。"], "yaoT": ["初九：和兌，吉。", "九二：孚兌，吉，悔亡。", "六三：來兌，凶。", "九四：商兌，未寧，介疾有喜。", "九五：孚于剝，有厲。", "上六：引兌。"], "tuan": "兑，说也。刚中而柔外，说以利贞，是以顺乎天，而应乎人。说以先民，民忘其劳；说以犯难，民忘其死；说之大，民劝矣哉！", "dx": "丽泽，兑；君子以朋友讲习。", "dxT": "麗澤，兌；君子以朋友講習。", "xx": ["和兑之吉，行未疑也。", "孚兑之吉，信志也。", "来兑之凶，位不当也。", "九四之喜，有庆也。", "孚于剥，位正当也。", "上六引兑，未光也。"]}, {"n": 59, "name": "涣", "nameT": "渙", "down": "坎", "up": "巽", "gc": "亨，王假有庙，利涉大川，利贞。", "gcT": "亨，王假有廟，利涉大川，利貞。", "yao": ["初六：用拯马壮，吉，悔亡。", "九二：涣奔其机，悔亡。", "六三：涣其躬，无悔。", "六四：涣其群，元吉。涣有丘，匪夷所思。", "九五：涣汗其大号，涣王居，无咎。", "上九：涣其血，去逖出，无咎。"], "yaoT": ["初六：用拯馬壯，吉，悔亡。", "九二：渙奔其机，悔亡。", "六三：渙其躬，无悔。", "六四：渙其群，元吉。渙有丘，匪夷所思。", "九五：渙汗其大號，渙王居，无咎。", "上九：渙其血，去逖出，无咎。"], "tuan": "涣，亨。刚来而不穷，柔得位乎外而上同。王假有庙，王乃在中也。利涉大川，乘木有功也。", "dx": "风行水上，涣；先王以享于帝立庙。", "dxT": "風行水上，渙；先王以享于帝立廟。", "xx": ["初六之吉，顺也。", "涣奔其机，得愿也。", "涣其躬，志在外也。", "涣其群，元吉；光大也。", "王居无咎，正位也。", "涣其血，远害也。"]}, {"n": 60, "name": "节", "nameT": "節", "down": "兑", "up": "坎", "gc": "亨。苦节不可贞。", "gcT": "亨。苦節不可貞。", "yao": ["初九：不出户庭，无咎。", "九二：不出门庭，凶。", "六三：不节若，则嗟若，无咎。", "六四：安节，亨。", "九五：甘节，吉；往有尚。", "上六：苦节，贞凶，悔亡。"], "yaoT": ["初九：不出戶庭，无咎。", "九二：不出門庭，凶。", "六三：不節若，則嗟若，无咎。", "六四：安節，亨。", "九五：甘節，吉；往有尚。", "上六：苦節，貞凶，悔亡。"], "tuan": "节，亨，刚柔分，而刚得中。苦节不可贞，其道穷也。说以行险，当位以节，中正以通。天地节而四时成，节以制度，不伤财，不害民。", "dx": "泽上有水，节；君子以制数度，议德行。", "dxT": "澤上有水，節；君子以制數度，議德行。", "xx": ["不出户庭，知通塞也。", "不出门庭，失时极也。", "不节之嗟，又谁咎也。", "安节之亨，承上道也。", "甘节之吉，居位中也。", "苦节贞凶，其道穷也。"]}, {"n": 61, "name": "中孚", "nameT": "中孚", "down": "兑", "up": "巽", "gc": "豚鱼吉，利涉大川，利贞。", "gcT": "豚魚吉，利涉大川，利貞。", "yao": ["初九：虞吉，有它不燕。", "九二：鸣鹤在阴，其子和之，我有好爵，吾与尔靡之。", "六三：得敌，或鼓或罢，或泣或歌。", "六四：月几望，马匹亡，无咎。", "九五：有孚挛如，无咎。", "上九：翰音登于天，贞凶。"], "yaoT": ["初九：虞吉，有它不燕。", "九二：鳴鶴在陰，其子和之，我有好爵，吾與爾靡之。", "六三：得敵，或鼓或罷，或泣或歌。", "六四：月幾望，馬匹亡，无咎。", "九五：有孚攣如，无咎。", "上九：翰音登于天，貞凶。"], "tuan": "中孚，柔在内而刚得中。说而巽，孚，乃化邦也。豚鱼吉，信及豚鱼也。利涉大川，乘木舟虚也。中孚以利贞，乃应乎天也。", "dx": "泽上有风，中孚；君子以议狱缓死。", "dxT": "澤上有風，中孚；君子以議獄緩死。", "xx": ["初九虞吉，志未变也。", "其子和之，中心愿也。", "可鼓或罢，位不当也。", "马匹亡，绝类上也。", "有孚挛如，位正当也。", "翰音登于天，何可长也。"]}, {"n": 62, "name": "小过", "nameT": "小過", "down": "艮", "up": "震", "gc": "亨。利贞。可小事，不可大事。飞鸟遗之音，不宜上宜下，大吉。", "gcT": "亨。利貞。可小事，不可大事。飛鳥遺之音，不宜上宜下，大吉。", "yao": ["初六：飞鸟以凶。", "六二：过其祖，遇其妣；不及其君，遇其臣；无咎。", "九三：弗过防之，从或戕之，凶。", "九四：无咎，弗过遇之。往厉必戒，勿用永贞。", "六五：密云不雨，自我西郊，公弋取彼在穴。", "上六：弗遇过之，飞鸟离之，凶，是谓灾眚。"], "yaoT": ["初六：飛鳥以凶。", "六二：過其祖，遇其妣；不及其君，遇其臣；无咎。", "九三：弗過防之，從或戕之，凶。", "九四：无咎，弗過遇之。往厲必戒，勿用永貞。", "六五：密雲不雨，自我西郊，公弋取彼在穴。", "上六：弗遇過之，飛鳥離之，凶，是謂災眚。"], "tuan": "小过，小者过而亨也。过以利贞，与时行也。柔得中，是以小事吉也。刚失位而不中，是以不可大事也。有飞鸟之象焉，有飞鸟遗之音，不宜上宜下，大吉；上逆而下顺也。", "dx": "山上有雷，小过；君子以行过乎恭，丧过乎哀，用过乎俭。", "dxT": "山上有雷，小過；君子以行過乎恭，喪過乎哀，用過乎儉。", "xx": ["飞鸟以凶，不可如何也。", "不及其君，臣不可过也。", "从或戕之，凶如何也。", "弗过遇之，位不当也。往厉必戒，终不可长也。", "密云不雨，已上也。", "弗遇过之，已亢也。"]}, {"n": 63, "name": "既济", "nameT": "既濟", "down": "离", "up": "坎", "gc": "亨小。利贞。初吉终乱。", "gcT": "亨小。利貞。初吉終亂。", "yao": ["初九：曳其轮，濡其尾，无咎。", "六二：妇丧其茀，勿逐，七日得。", "九三：高宗伐鬼方，三年克之，小人勿用。", "六四：𦈡有衣袽，终日戒。", "九五：东邻杀牛，不如西邻之禴祭，实受其福。", "上六：濡其首，厉。"], "yaoT": ["初九：曳其輪，濡其尾，无咎。", "六二：婦喪其茀，勿逐，七日得。", "九三：高宗伐鬼方，三年克之，小人勿用。", "六四：繻有衣袽，終日戒。", "九五：東鄰殺牛，不如西鄰之禴祭，實受其福。", "上六：濡其首，厲。"], "tuan": "既济，亨，小者亨也。利贞，刚柔正而位当也。初吉，柔得中也。终止则乱，其道穷也。", "dx": "水在火上，既济；君子以思患而豫防之。", "dxT": "水在火上，既濟；君子以思患而豫防之。", "xx": ["曳其轮，义无咎也。", "七日得，以中道也。", "三年克之，惫也。", "终日戒，有所疑也。", "东邻杀牛，不如西邻之时也；实受其福，吉大来也。", "濡其首厉，何可久也。"]}, {"n": 64, "name": "未济", "nameT": "未濟", "down": "坎", "up": "离", "gc": "亨。小狐汔济，濡其尾，无攸利。", "gcT": "亨。小狐汔濟，濡其尾，无攸利。", "yao": ["初六：濡其尾，吝。", "九二：曳其轮，贞吉。", "六三：未济，征凶，利涉大川。", "九四：贞吉，悔亡，震用伐鬼方，三年有赏于大国。", "六五：贞吉，无悔，君子之光，有孚，吉。", "上九：有孚于饮酒，无咎，濡其首，有孚失是。"], "yaoT": ["初六：濡其尾，吝。", "九二：曳其輪，貞吉。", "六三：未濟，征凶，利涉大川。", "九四：貞吉，悔亡，震用伐鬼方，三年有賞于大國。", "六五：貞吉，无悔，君子之光，有孚，吉。", "上九：有孚于飲酒，无咎，濡其首，有孚失是。"], "tuan": "未济，亨；柔得中也。小狐汔济，未出中也。濡其尾，无攸利；不续终也。虽不当位，刚柔应也。", "dx": "火在水上，未济；君子以慎辨物居方。", "dxT": "火在水上，未濟；君子以慎辨物居方。", "xx": ["濡其尾，亦不知极也。", "九二贞吉，中以行正也。", "未济征凶，位不当也。", "贞吉悔亡，志行也。", "君子之光，其晖吉也。", "饮酒濡首，亦不知节也。"]}];
+
+</script>
+<script>
+// 《道德经》81章讲解：ti=本章主题 key=必背名句 bh=白话精讲 gu=古代案例 jin=近现代案例 yong=今日一用
+window.DDJ_NOTES = [
+{n:1,ti:"道不可说",key:"道可道，非常道；名可名，非常名。",
+bh:"能用嘴说清楚的“道”，就不是那个永恒的大道；能叫出名字的，也不是永恒的名。天地刚开始时没有名字（无），有了名字才区分出万物（有）。心里空空、没有成见时，能看到事物的奥妙；带着目的去看，能看到事物的边界和结果。“有”和“无”出自同一个源头，是理解一切奥妙的大门。",
+gu:"《庄子》里，齐桓公在堂上读书，做车轮的轮扁说：您读的是古人的糟粕。真正的手艺“得之于手而应于心，口不能言”，连自己儿子都教不会。——真正的“道”要亲身体会，书本只是指月亮的手指。",
+jin:"袁隆平常说“书本里种不出水稻，电脑里也种不出水稻”。杂交水稻的规律不是坐在屋里想出来的，而是几十年泡在稻田里一株株观察出来的。",
+yong:"今天遇到一件“说不清”的事，别急着下结论，先去做、去观察。"},
+{n:2,ti:"有无相生",key:"有无相生，难易相成……是以圣人处无为之事，行不言之教。",
+bh:"大家都知道什么是美，丑的概念也就出现了；都知道什么是善，不善也就出现了。有和无、难和易、长和短、高和下，都是相对而生的。所以圣人不强行折腾，用自己的行动去教化，做成了事却不占为己有，正因为不居功，功劳反而不会离开他。",
+gu:"春秋时介子推跟随晋文公流亡十九年，曾“割股奉君”。文公回国即位后大赏功臣，介子推却不去争功，背着母亲隐居绵山。后人为纪念他，有了寒食节。",
+jin:"“两弹元勋”邓稼先隐姓埋名28年，连妻子都不知道他在做什么。他做成了惊天动地的事，却从不居功，直到去世后人们才真正认识他。",
+yong:"做一件好事，不说出来，看看心里是什么感觉。"},
+{n:3,ti:"不尚贤",key:"不尚贤，使民不争；不贵难得之货，使民不为盗。",
+bh:"不刻意标榜“能人”，百姓就不会为虚名争斗；不把稀有的东西炒得很贵，人们就不会去偷去抢；不展示诱人的东西，人心就不会乱。所以圣人治理，是让百姓心里清净、肚子吃饱、少些争强、身体强健。",
+gu:"“楚王好细腰，宫中多饿死。”上面的人喜欢什么，下面的人就拼命去迎合，甚至饿死自己。领导者的偏好，会变成全社会的风向。",
+jin:"上世纪80年代长春“君子兰热”，一盆君子兰被炒到几万元，人人抢购，最后泡沫破裂，许多家庭血本无归。“贵难得之货”就是这样搅乱人心的。",
+yong:"今天少看一次“攀比”的内容（晒富、炫耀），留意心是否更安静。"},
+{n:4,ti:"和光同尘",key:"挫其锐，解其纷，和其光，同其尘。",
+bh:"道是空虚的，但用起来永远用不完；深远啊，好像万物的祖宗。磨掉自己的锋芒，解开纷乱的纠结，收敛自己的光芒，和普通人打成一片。它隐没不见，却又真实存在。",
+gu:"唐朝名将郭子仪平定安史之乱，功劳盖世，却从不摆架子，府门常开、谁都能进，对皇帝的猜疑也坦然处之。他功高而不招忌，活到八十五岁，子孙满堂。",
+jin:"季羡林晚年公开请求摘掉“国学大师”“学界泰斗”“国宝”三顶帽子，说自己只是个普通教书人。收起光芒，反而更受人尊敬。",
+yong:"今天说话时少用一次“我”，多听别人说。"},
+{n:5,ti:"多言数穷",key:"天地不仁，以万物为刍狗……多言数穷，不如守中。",
+bh:"天地没有私心偏爱，对万物一视同仁，像对待祭祀用的草狗一样，不特别宠谁。天地之间像个风箱，空着却用之不尽，越动风越多。话说得太多，很快就会走到尽头，不如守住内心的中正。",
+gu:"诸葛亮挥泪斩马谡。马谡是他很器重的人，但违令失街亭，诸葛亮依法处斩，并自请降职三级。法度一视同仁，才能服众。",
+jin:"诺基亚曾是全球手机霸主，但市场规律“不仁”，不会因为你过去辉煌就照顾你。智能手机时代一来，它很快被淘汰。规律对所有人都一样。",
+yong:"今天开会或聊天，少说三句废话。"},
+{n:6,ti:"谷神不死",key:"谷神不死，是谓玄牝……绵绵若存，用之不勤。",
+bh:"山谷般空虚而神妙的力量永远不会消亡，它就像万物的母亲。这母亲之门，就是天地的根源。它连绵不断、若有若无，怎么用也用不完。",
+gu:"孟子说：“源泉混混，不舍昼夜。”有源头的水日夜不停地流，填满一个坑再往前流。有根本的东西才能绵绵不绝。",
+jin:"屠呦呦从东晋葛洪《肘后备急方》“青蒿一握，以水二升渍，绞取汁”中得到启发，改用低温提取青蒿素，拯救了数百万疟疾患者，获得诺贝尔奖。古老智慧像谷神一样，用之不竭。",
+yong:"找到一个让你“充电”的源头（读书、散步、静坐），今天用10分钟。"},
+{n:7,ti:"后身身先",key:"是以圣人后其身而身先；外其身而身存。非以其无私邪，故能成其私。",
+bh:"天地之所以长久，是因为它不为自己而活。圣人把自己放在后面，反而走在前面；把自己置之度外，反而得以保全。正因为没有私心，反而成就了自己。",
+gu:"鲍叔牙和管仲是好友，齐桓公想拜鲍叔牙为相，鲍叔牙却极力推荐曾经射伤桓公的管仲，自己甘居其下。管仲成就霸业，“管鲍之交”也让鲍叔牙名垂千古。",
+jin:"陈嘉庚倾尽家财办学，创办集美学校和厦门大学，自己生活极其简朴。他把自己放在后面，却被称为“华侨旗帜，民族光辉”。",
+yong:"今天让别人先一次：先走、先说、先选。"},
+{n:8,ti:"上善若水",key:"上善若水。水善利万物而不争，处众人之所恶，故几于道。",
+bh:"最高的善像水一样。水滋养万物却不与万物争，甘愿待在众人都不喜欢的低处，所以最接近道。住要选好地方，心要像深渊般沉静，待人要真诚仁爱，说话要守信，做事要有能力，行动要把握时机。正因为不争，所以没有过失。",
+gu:"大禹的父亲鲧治水用“堵”，九年不成；大禹改用“疏”，顺着水往低处流的本性开渠引导，终于治平洪水。顺应水性，就是顺应道。",
+jin:"张桂梅扎根云南贫困山区，创办全国第一所免费女子高中，帮助近两千名女孩走出大山。她选择了别人不愿去的“低处”，却滋养了无数生命。",
+yong:"今天做一件“低处”的事：别人不愿做但对大家有益的小事。"},
+{n:9,ti:"功遂身退",key:"持而盈之，不如其已……功遂身退，天之道。",
+bh:"端着满满一碗水，不如别倒那么满；把刀磨得太锋利，锋刃难以长久。金玉满堂，没人能守得住；富贵了就骄傲，是自己招来祸患。事情做成了就适时退下，这是天道。",
+gu:"范蠡辅佐越王勾践灭吴后，立即泛舟五湖离去，并写信劝文种：“飞鸟尽，良弓藏；狡兔死，走狗烹。”文种不听，最终被赐死。范蠡则经商成为“陶朱公”。",
+jin:"曾国藩攻克天京后，位极人臣，却主动裁撤自己一手建立的湘军，并让弟弟曾国荃回乡养病，避免了功高震主之祸，得以善终。",
+yong:"今天完成一件事后，主动把功劳分给帮你的人。"},
+{n:10,ti:"玄德",key:"生而不有，为而不恃，长而不宰，是谓玄德。",
+bh:"身体和精神合一，能不分离吗？聚集精气、达到柔和，能像婴儿一样吗？清除内心的杂念，能没有瑕疵吗？爱民治国，能不耍心机吗？生养万物而不占有，做了事而不自恃，引导万物而不主宰，这叫最深的德。",
+gu:"《庄子》庖丁解牛：庖丁宰牛十九年，刀刃仍像新磨的一样，因为他“以神遇而不以目视”，顺着牛的天然结构下刀。专注到身心合一，就能举重若轻。",
+jin:"稻盛和夫创办京瓷时，每天反问自己“动机至善，私心了无？”他认为经营者要“作为人，何谓正确”来判断事情，带领两家企业进入世界500强。",
+yong:"今天专心做一件事20分钟，手机放远一点。"},
+{n:11,ti:"无之为用",key:"有之以为利，无之以为用。",
+bh:"三十根辐条汇集到一个车毂上，正因为中间是空的，车才能用。揉泥做碗，正因为碗是空的，才能盛东西。开门窗建房屋，正因为里面是空的，房子才能住人。“有”给人便利，“无”才发挥作用。",
+gu:"诸葛亮“空城计”（见《三国演义》）：大军不在，他索性大开城门、城头抚琴。司马懿疑有埋伏而退兵。“空”本身成了最大的力量。",
+jin:"2007年乔布斯发布iPhone，去掉了当时流行的实体键盘，只留一块“空”的触摸屏。正是这块空白，后来容纳了数百万个应用。",
+yong:"给今天的日程留出一段“空白时间”，什么都不安排。"},
+{n:12,ti:"为腹不为目",key:"五色令人目盲，五音令人耳聋，五味令人口爽……是以圣人为腹不为目。",
+bh:"缤纷的颜色让人眼花，嘈杂的音乐让人耳聋，浓烈的美味让人口味败坏，纵情打猎让人心发狂，稀有的财物让人行为不轨。所以圣人只求吃饱安稳（实在的需要），不追求感官刺激，舍弃外在诱惑，选择内在充实。",
+gu:"商纣王“以酒为池，悬肉为林”，沉迷声色犬马，荒废国政，最终众叛亲离，自焚于鹿台，商朝灭亡。",
+jin:"今天的短视频、手机游戏不断刺激感官，很多人刷到深夜停不下来，注意力被切得粉碎。“五色令人目盲”说的正是这种状态。",
+yong:"今天睡前1小时不看手机，感受“为腹不为目”。"},
+{n:13,ti:"宠辱若惊",key:"宠辱若惊，贵大患若身。",
+bh:"受宠和受辱都让人惊慌，把大祸患看得和身体一样重。为什么受宠也惊慌？因为宠爱本身就是卑下的，得到时惊喜，失去时惊恐。人之所以有大祸患，是因为太看重自己；如果不那么执着于“我”，还有什么祸患呢？能以爱护自身的心去爱护天下的人，才可以把天下托付给他。",
+gu:"苏轼因“乌台诗案”险些丧命，被贬黄州。他没有消沉，写下“竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生”，还在东坡开荒种地，留下《赤壁赋》等千古名篇。",
+jin:"褚时健曾是红塔集团的掌舵人，跌入人生低谷后，七十多岁到哀牢山承包荒山种橙子，十年后“褚橙”名满全国。起落之间，他始终专注做事。",
+yong:"今天被夸或被批评时，心里默念：“这不是我的全部。”"},
+{n:14,ti:"执古御今",key:"执古之道，以御今之有；能知古始，是谓道纪。",
+bh:"看它看不见，叫“夷”；听它听不到，叫“希”；摸它摸不着，叫“微”。这三者无法追问，混而为一。它没有形状的形状，没有物象的物象，叫“恍惚”。迎着它看不见头，跟着它看不见尾。把握古来就有的道，来驾驭今天的事物；能知道万物的原始，就是掌握了道的纲纪。",
+gu:"唐太宗说：“以铜为镜，可以正衣冠；以古为镜，可以知兴替；以人为镜，可以明得失。”他借鉴隋亡教训，开创贞观之治。",
+jin:"牛顿看到苹果落地（传说），想到这背后有一种看不见、摸不着的力——万有引力。规律无形，却支配着万物。",
+yong:"今天读一段历史，想一想它对你眼前的问题有什么启发。"},
+{n:15,ti:"浊以静之",key:"孰能浊以静之徐清？孰能安以久动之徐生？保此道者不欲盈。",
+bh:"古代善于行道的人，精妙通达，深不可测。他们小心谨慎，像冬天过河；警觉戒备，像害怕四邻；庄重像做客；融和像冰雪消融；淳朴像未雕的木头；开阔像山谷；浑厚像浊水。谁能让浑水静下来慢慢变清？谁能在安定中慢慢生发？守住这个道的人不求满。",
+gu:"东晋淝水之战，谢安在家下棋时捷报传来，他看完放在一边继续下棋。客人问起，只淡淡说：“小儿辈遂已破贼。”静定的人，才能在大事面前不乱。",
+jin:"钱学森1950年准备回国时被美国扣留，软禁长达五年。他没有焦躁，而是安心写出《工程控制论》，1955年终于归国，开创了中国航天事业。",
+yong:"今天遇到烦心事，先深呼吸10次，让“浊水”沉淀再说话。"},
+{n:16,ti:"归根复命",key:"致虚极，守静笃；万物并作，吾以观复。……知常曰明。",
+bh:"让心达到极度空虚，牢牢守住宁静。万物蓬勃生长，我看着它们循环往复。万物纷纷芸芸，最后都回到根本。回到根本叫“静”，静叫“复命”，复命叫“常”，懂得这个常理叫“明”。不懂常理而乱来，就会招来凶险。",
+gu:"诸葛亮《诫子书》：“非淡泊无以明志，非宁静无以致远。”宁静是成就大事的根基。",
+jin:"数学家陈景润在一间约6平方米的小屋里，用掉几麻袋草稿纸，静心演算多年，证明了“1+2”，成为哥德巴赫猜想研究的世界领先成果。",
+yong:"今天静坐5分钟，只观察呼吸的一来一往（观复）。"},
+{n:17,ti:"太上下知有之",key:"太上，下知有之……功成事遂，百姓皆谓我自然。",
+bh:"最好的领导者，百姓只知道有他存在；其次的，百姓亲近赞美他；再次的，百姓害怕他；最差的，百姓轻视他。领导者诚信不足，百姓才不信任。好的领导悠然自在，很少发号施令，事情办成了，百姓都说：“我们本来就是这样的。”",
+gu:"相传尧时有老人一边击壤一边唱：“日出而作，日入而息，凿井而饮，耕田而食，帝力于我何有哉！”百姓安居乐业，甚至感觉不到帝王的存在，这就是“太上不知有之”。",
+jin:"教育家陶行知主张“生活即教育”，他办学不靠管束，而是让学生自己动手、自己管理，学生成长后说：“这是我们自己学会的。”",
+yong:"今天帮助别人时，试着只引导，让对方自己找到答案。"},
+{n:18,ti:"大道废有仁义",key:"大道废，有仁义；智慧出，有大伪；六亲不和，有孝慈；国家昏乱，有忠臣。",
+bh:"大道被废弃了，才需要提倡仁义；聪明智巧出现了，才有严重的虚伪；家庭不和睦了，才显出孝子慈父；国家昏乱了，才显出忠臣。被特别表彰的美德，往往说明它正在缺失。",
+gu:"岳飞“精忠报国”，正出现在北宋灭亡、南宋朝廷昏乱的时代。忠臣的光芒越亮，越说明国家已陷入危难。",
+jin:"抗日战争时期，张自忠将军等无数英雄血洒疆场。“国家昏乱有忠臣”——越是危难时刻，越能看见民族的脊梁。",
+yong:"想一想：你最近特别强调的某个“规矩”，是不是因为它正在缺失？"},
+{n:19,ti:"见素抱朴",key:"见素抱朴，少私寡欲。",
+bh:"抛弃自作聪明的巧智，百姓能得到百倍好处；抛弃虚伪的仁义，百姓会恢复孝慈；抛弃巧诈和私利，盗贼就会消失。这三者都只是表面文饰，不够根本。要让人有所归属：保持朴素的本色，减少私心和欲望。",
+gu:"陶渊明做彭泽县令，不愿“为五斗米折腰”去迎接上级督邮，辞官回乡，“采菊东篱下，悠然见南山”。他选择了朴素，也找回了自己。",
+jin:"19世纪美国作家梭罗在瓦尔登湖畔独自生活两年，自己盖小屋、种豆子，写下《瓦尔登湖》，证明人真正需要的其实很少。",
+yong:"今天清理一样不需要的东西，或取消一项不必要的消费。"},
+{n:20,ti:"我独异于人",key:"众人皆有余，而我独若遗……我独异于人，而贵食母。",
+bh:"应诺和呵斥相差多少？善和恶又相差多少？众人熙熙攘攘，像去赴盛宴、像春天登台观景；只有我淡泊宁静，像还不会笑的婴儿。众人都精明，只有我糊涂；众人都有所作为，只有我愚钝。我和别人不同，是因为我看重“食母”——从道那里汲取滋养。",
+gu:"楚王派人请庄子做宰相，庄子在濮水钓鱼，头也不回地说：一只神龟，是宁愿死了被供在庙堂，还是活着在泥里摇尾巴？“吾将曳尾于涂中。”",
+jin:"陈寅恪提出“独立之精神，自由之思想”，一生坚持做学问不随风倒。他与众不同，却成为一代学人的精神坐标。",
+yong:"今天做一个“不随大流”但你认为对的小选择。"},
+{n:21,ti:"惟道是从",key:"孔德之容，惟道是从。",
+bh:"大德的样子，只是顺从道而已。道这个东西，恍恍惚惚。恍惚之中有形象，有实物；深远幽暗中有精质，这精质非常真实，其中有可以验证的规律。从古到今，它的名字一直存在，借着它可以认识万物的起源。",
+gu:"古人在恍惚变化的天象和物候中，找到了可以验证的规律，制定出二十四节气，指导农耕两千多年。这就是“其中有象”“其中有信”。",
+jin:"1869年门捷列夫排出元素周期表，还空出位置预言了尚未发现的元素。后来镓、钪、锗相继被发现，性质和他预言的几乎一样——规律“其精甚真，其中有信”。",
+yong:"今天观察一个反复出现的现象，试着找出背后的规律。"},
+{n:22,ti:"曲则全",key:"曲则全，枉则直，洼则盈，敝则新，少则得，多则惑……夫唯不争，故天下莫能与之争。",
+bh:"委曲反而能保全，弯曲反而能伸直，低洼反而能充盈，破旧反而能更新，少取反而能得到，贪多反而会迷惑。所以圣人守住“一”作为天下的法则。不自我表现反而显明，不自以为是反而彰显，不自夸反而有功，不自大反而长久。正因为不争，天下没人能和他争。",
+gu:"韩信年轻时受“胯下之辱”，他没有拔剑拼命，而是忍了下来。后来他成为汉朝开国大将，“曲”是为了“全”。",
+jin:"俞敏洪1978年、1979年两次高考落榜，第三次才考上北大。后来创办新东方，他常说：“人生就是一个不断失败、不断爬起来的过程。”",
+yong:"今天遇到小冲突时，先退一步，看看结果是否更好。"},
+{n:23,ti:"希言自然",key:"希言自然。故飘风不终朝，骤雨不终日。",
+bh:"少说话、少发号施令，才合乎自然。狂风刮不了一早上，暴雨下不了一整天。谁造成的？天地。天地的狂暴尚且不能长久，何况人呢？所以追求道的人与道同在，追求德的人与德同在。你诚信不足，别人才不信任你。",
+gu:"秦朝统一天下后严刑峻法、大兴土木，像一场暴风骤雨，仅仅十五年就二世而亡。",
+jin:"2000年前后美国互联网泡沫，大量公司凭一个概念股价暴涨，泡沫破裂后纳斯达克指数大幅下跌，许多公司消失。来得猛，去得也快。",
+yong:"今天说话放慢语速，少下命令多商量。"},
+{n:24,ti:"企者不立",key:"企者不立，跨者不行；自见者不明，自是者不彰。",
+bh:"踮起脚尖站不稳，跨大步子走不远；自我表现的人反而不显明，自以为是的人反而不彰显，自我夸耀的人反而没有功劳，自高自大的人反而不能长久。从道的角度看，这些就像剩饭赘瘤，人人厌恶，有道的人不这样做。",
+gu:"战国赵括熟读兵书，“纸上谈兵”无人能及，自以为天下无敌。长平之战他轻率冒进，四十万赵军覆没。",
+jin:"一些企业为了追求“规模第一”，盲目扩张、过度举债，结果资金链断裂、轰然倒塌。踮着脚尖跑步，注定跑不远。",
+yong:"检查一个目标：是否踮着脚、迈太大步了？把它拆小一点。"},
+{n:25,ti:"道法自然",key:"人法地，地法天，天法道，道法自然。",
+bh:"有一个东西浑然天成，在天地之前就存在。它寂静无声、空虚无形，独立而不改变，循环运行而不停止，可以作为天地万物的母亲。我不知道它的名字，勉强叫它“道”，勉强形容它“大”。道大、天大、地大、人也大。人效法地，地效法天，天效法道，道效法它自己本来的样子。",
+gu:"战国李冰修都江堰，不筑大坝硬拦岷江，而是用鱼嘴分水、飞沙堰排沙、宝瓶口引水，顺应水势地形。两千多年过去，它仍在灌溉成都平原。",
+jin:"日本新干线500系列车曾因进隧道产生“隧道音爆”，工程师模仿翠鸟扎入水中几乎不溅水花的长喙，重新设计车头，噪音大减，还更省电。向自然学习，就是“道法自然”。",
+yong:"今天观察一样自然之物（植物、水、天气），想想它教了你什么。"},
+{n:26,ti:"静为躁君",key:"重为轻根，静为躁君。",
+bh:"稳重是轻浮的根本，清静是躁动的主宰。所以君子整天行走也不离开载着行李的车辆；虽然有华丽的景观，却安然处之、超然物外。为什么大国君主还要以轻率的态度治理天下呢？轻率就失去根本，躁动就失去主宰。",
+gu:"周幽王为博褒姒一笑，点燃烽火戏弄诸侯。后来犬戎真的来犯，烽火再燃却无人救援，幽王被杀，西周灭亡。“以身轻天下”的代价就是失去天下。",
+jin:"“老干妈”创始人陶华碧多年坚持稳健经营，不盲目扩张，把一瓶辣酱做成了畅销全国的品牌。稳重是根，是长期发展的底气。",
+yong:"今天做决定前，等10分钟再回复，不在情绪最激动时开口。"},
+{n:27,ti:"无弃人",key:"常善救人，故无弃人；常善救物，故无弃物。",
+bh:"善于行走的不留痕迹，善于说话的没有破绽，善于计算的不用筹码，善于关门的不用门闩却打不开，善于捆绑的不用绳子却解不开。所以圣人常善于挽救人，所以没有被抛弃的人；常善于利用物，所以没有被废弃的物。善人是不善人的老师，不善人是善人的借鉴。",
+gu:"孟尝君门下有会学鸡叫、会学狗偷东西的门客，别人都瞧不起。后来孟尝君在秦国遇险，正是靠这两人偷出狐白裘、学鸡叫骗开函谷关才得以逃脱。",
+jin:"蔡元培执掌北大，“思想自由，兼容并包”，聘请只有中学学历的梁漱溟讲印度哲学，也留用思想守旧却学问精深的辜鸿铭。人尽其才，北大由此焕然一新。",
+yong:"今天找出一样“没用”的旧物，给它一个新用途。"}
+];
+
+</script>
+<script>
+window.DDJ_NOTES.push(
+{n:28,ti:"知雄守雌",key:"知其雄，守其雌，为天下溪……知其白，守其黑，为天下式。",
+bh:"知道什么是刚强，却安守柔弱，甘做天下的溪流；做了天下的溪流，永恒的德就不会离开，回到婴儿般的纯真。知道什么是光明，却安守暗处，成为天下的榜样。知道什么是荣耀，却安守卑下，成为天下的山谷，回归质朴。真正的大制作是不割裂的。",
+gu:"三国时司马懿面对曹爽专权，称病在家，装作老迈昏聩，让对手放松警惕。时机一到，他发动高平陵之变，一举掌握大权。知雄而守雌，以柔藏刚。",
+jin:"一个人能力越强，越懂得低调。许多真正的专家在会上不急于发言，而是先倾听、后表达，反而更有分量。",
+yong:"今天有一件你很擅长的事，试着“守雌”——不抢着表现，先成全别人。"},
+{n:29,ti:"去甚去奢去泰",key:"天下神器，不可为也，为者败之，执者失之……是以圣人去甚，去奢，去泰。",
+bh:"想用强力夺取天下并任意摆布，我看是做不到的。天下是神圣的东西，不能强行操控；强行去做的会失败，死死把持的会失去。万物有的前行有的跟随，有的轻嘘有的急吹，有的强壮有的羸弱，有的安稳有的危险。所以圣人去掉极端、去掉奢侈、去掉过度。",
+gu:"隋炀帝即位后急于建功：大修东都、开凿运河、三征高句丽，百姓不堪重负，天下大乱，隋朝二世而亡。“为者败之”。",
+jin:"1935年澳大利亚为消灭甘蔗害虫，引入了甘蔗蟾蜍。结果蟾蜍没治住害虫，反而泛滥成灾，危害本土物种至今。强行干预自然，常常适得其反。",
+yong:"今天找一件你“用力过猛”的事，降低一档力度。"},
+{n:30,ti:"果而勿强",key:"以道佐人主者，不以兵强天下……果而勿矜，果而勿伐，果而勿骄。",
+bh:"用道辅佐君主的人，不靠武力称霸天下，用兵这种事很快会遭到报应。军队驻扎过的地方荆棘丛生，大战之后必有荒年。善于用兵的达到目的就停止，不敢以此逞强。达到目的不自负、不夸耀、不骄傲，是不得已才用，不能逞强。事物强盛了就会衰老，这叫不合乎道，不合乎道就会早早完结。",
+gu:"汉武帝连年征战，晚年国库空虚、民生凋敝。他下《轮台罪己诏》，承认“朕即位以来，所为狂悖，使天下愁苦”，转而与民休息，才避免了亡秦之祸。",
+jin:"二十世纪上半叶，一些国家奉行军国主义，依靠武力扩张，一时强盛，最终在世界大战中惨败。“物壮则老”，以兵逞强者不能长久。",
+yong:"今天达成一个小目标后，就此打住，不乘胜“炫耀”。"},
+{n:31,ti:"兵者不祥",key:"兵者不祥之器，非君子之器，不得已而用之，恬淡为上。",
+bh:"兵器是不吉祥的东西，人人厌恶，有道的人不使用它。兵器不是君子的工具，万不得已才使用，最好淡然处之。打了胜仗也不要得意，得意就是以杀人为乐，以杀人为乐的人不可能得志于天下。杀人众多，要以悲哀的心情对待；打了胜仗，要用丧礼来处理。",
+gu:"战国名将白起一生百战百胜，长平之战坑杀赵国降卒四十万。他晚年被秦王赐死，临死前叹道：“我固当死。长平之战……我诈而尽坑之，是足以死。”",
+jin:"1945年原子弹在日本爆炸后，“原子弹之父”奥本海默引用印度经典说：“现在我成了死神，世界的毁灭者。”即使是胜利者，面对杀戮也应有哀心。",
+yong:"今天和人有分歧时，避免用“赢”的心态去争论。"},
+{n:32,ti:"知止不殆",key:"始制有名，名亦既有，夫亦将知止，知止所以不殆。",
+bh:"道永远没有名字，它质朴而微小，但天下没有谁能让它臣服。君王如果能守住它，万物会自然归顺。天地阴阳相合，降下甘露，人们不用命令也自然均匀。开始建立制度就有了各种名分，有了名分就要懂得适可而止，知道适可而止就没有危险。道在天下，就像江海汇聚百川。",
+gu:"秦国要驱逐所有外来客卿，李斯上《谏逐客书》：“泰山不让土壤，故能成其大；河海不择细流，故能就其深。”秦王收回成命，最终统一天下。",
+jin:"巴菲特强调“能力圈”：只投资自己真正懂的领域，懂得在哪里停下。他说：重要的不是能力圈有多大，而是知道边界在哪里。",
+yong:"今天给自己定一个“到此为止”的界限：吃饭七分饱、工作按时收尾。"},
+{n:33,ti:"自知者明",key:"知人者智，自知者明；胜人者有力，自胜者强；知足者富。",
+bh:"了解别人是聪明，了解自己才是明智；战胜别人是有力量，战胜自己才是真正的强大；知道满足就是富有，坚持力行就是有志气；不失去根本才能长久，死了而精神不朽才是真正的长寿。",
+gu:"刘邦说：运筹帷幄我不如张良，安抚百姓我不如萧何，带兵打仗我不如韩信，“此三者皆人杰也，吾能用之，此吾所以取天下也”。他既知人，又自知。",
+jin:"林则徐性情急躁，便亲笔写下“制怒”二字挂在堂上，时时提醒自己。战胜自己的脾气，才能担当虎门销烟这样的大事。",
+yong:"写下自己的一个缺点，今天专门“胜”它一次。"},
+{n:34,ti:"不自为大",key:"以其终不自为大，故能成其大。",
+bh:"大道广泛流行，左右无所不在。万物依靠它生长，它不推辞；成就了功业，它不占有名声；养育万物，它不做主宰。它总是没有欲望，可以说很“小”；万物归附它而它不做主宰，又可以说很“大”。正因为它始终不自以为大，所以能成就它的大。",
+gu:"周公辅佐成王，“一沐三握发，一饭三吐哺”，洗一次头三次握着头发出来接待贤士，吃一顿饭三次吐出食物去迎客。他权倾天下却从不自大，天下归心。",
+jin:"天文学家南仁东为建造“中国天眼”FAST，奔走22年，踏遍贵州数百个洼地选址。天眼落成不久他便去世，他把一生献给了这个大工程，却从未把自己当成“大人物”。",
+yong:"今天帮助一个人，然后不提这件事。"},
+{n:35,ti:"淡乎无味",key:"道之出口，淡乎其无味，视之不足见，听之不足闻，用之不足既。",
+bh:"谁掌握了大道，天下人都会来归附；归附而不互相伤害，大家安宁太平。音乐和美食能让过客停步，而道说出来却平淡无味，看它看不见，听它听不到，但用起来却用不完。",
+gu:"周文王行仁政，“三分天下有其二”，周边诸侯纷纷归附。他没有华丽的口号，只是让百姓安居，天下自然向往。",
+jin:"北京同仁堂三百多年坚守“炮制虽繁必不敢省人工，品味虽贵必不敢减物力”的古训。这些话平淡无奇，却让一家药铺传承至今。",
+yong:"今天喝一杯白开水，体会“淡”的滋味。"},
+{n:36,ti:"柔弱胜刚强",key:"将欲歙之，必固张之……将欲夺之，必固与之。是谓微明。柔弱胜刚强。",
+bh:"想要收敛它，必先让它扩张；想要削弱它，必先让它强盛；想要废弃它，必先让它兴盛；想要夺取它，必先给予它。这叫做洞察细微的智慧。柔弱能战胜刚强。鱼不能离开深渊，国家的利器不能轻易示人。",
+gu:"越王勾践兵败后入吴为奴，尝粪问疾，回国后卧薪尝胆十年。吴王夫差骄傲扩张、北上争霸，勾践趁虚而入，一举灭吴。",
+jin:"吉列公司把剃须刀架低价甚至送给用户，再靠持续销售刀片赚钱，开创了“刀架—刀片”商业模式。“将欲取之，必固与之”。",
+yong:"今天先给予：分享一个资源或一句真诚的赞美。"},
+{n:37,ti:"无为而无不为",key:"道常无为而无不为。侯王若能守之，万物将自化。",
+bh:"道永远顺其自然、不妄为，却又没有什么做不成。君王如果能守住它，万物会自然生长变化。生长变化中如果欲望萌发，就用质朴来镇定它。没有贪欲而归于宁静，天下自然安定。",
+gu:"汉初曹参接替萧何做丞相，一切遵循萧何定下的规矩，“萧规曹随”，自己整天饮酒不多事。百姓歌颂：“萧何为法，讲若画一；曹参代之，守而勿失。”天下得以休养生息。",
+jin:"1978年安徽小岗村18户农民按下红手印，搞“大包干”，让农民自己决定种什么、怎么种。第二年粮食产量大增，开启了农村改革。放手，反而什么都成了。",
+yong:"今天放手一件你总想控制的事，让它自然发展。"},
+{n:38,ti:"上德不德",key:"上德不德，是以有德；下德不失德，是以无德。",
+bh:"上德的人不自以为有德，所以真有德；下德的人总不忘标榜德，所以没有德。上德顺其自然、无心而为；下德有心而为。所以失去道才讲德，失去德才讲仁，失去仁才讲义，失去义才讲礼。礼是忠信的浅薄、祸乱的开始。大丈夫立身敦厚，不居于浅薄；存心朴实，不居于浮华。",
+gu:"吴国公子季札出使途经徐国，徐君喜欢他的宝剑却没说出口。季札心里决定回程时送他。等他回来，徐君已死，季札便把剑挂在徐君墓前的树上。没人要求，也没人知道，这就是“上德不德”。",
+jin:"天津的白方礼老人，七十多岁起蹬三轮车，十几年间把挣来的钱捐出资助了三百多名贫困学生，自己却吃最简单的饭、穿捡来的衣服。他从不觉得自己在“做好事”。",
+yong:"今天做一件好事，不求回报，也不发朋友圈。"},
+{n:39,ti:"贵以贱为本",key:"贵以贱为本，高以下为基。",
+bh:"自古得到“一”（道）的：天得一而清明，地得一而安宁，神得一而灵验，河谷得一而充盈，万物得一而生长，侯王得一而使天下安定。所以贵以贱为根本，高以下为基础。所以侯王自称“孤”“寡”“不谷”，这不正是以贱为本吗？不要追求像美玉那样华贵，宁可像石头那样朴实。",
+gu:"刘备是汉室宗亲、一方之主，却三次亲往隆中草庐拜访年轻的诸葛亮。他放低身段，换来了“鞠躬尽瘁”的千古良相。",
+jin:"王永庆16岁开米店，挨家挨户送米上门，还记下每家人口和用米量，在米吃完前主动送到。他从最底层做起，后来建立了台塑集团。",
+yong:"今天向一个“地位不如你”的人请教一个问题。"},
+{n:40,ti:"反者道之动",key:"反者道之动，弱者道之用。天下万物生于有，有生于无。",
+bh:"向相反方向转化，是道的运动规律；柔弱，是道发挥作用的方式。天下万物产生于“有”，“有”产生于“无”。",
+gu:"唐玄宗前期开创“开元盛世”，国力达到顶峰；后期沉溺享乐、重用奸佞，安史之乱爆发，唐朝由盛转衰。盛极而衰，物极必反。",
+jin:"2008年全球金融危机前，房价似乎“只涨不跌”，人人加杠杆。泡沫吹到极点后破裂，雷曼兄弟倒闭，引发全球经济衰退。",
+yong:"今天正顺利时提醒自己留余地；正困难时提醒自己：转机就在其中。"},
+{n:41,ti:"大器晚成",key:"大方无隅，大器晚成，大音希声，大象无形。",
+bh:"上等人听了道，努力践行；中等人听了道，半信半疑；下等人听了道，哈哈大笑——不被嘲笑就不足以成为道。光明的道好像暗昧，前进的道好像后退，平坦的道好像崎岖。最方正的反而没有棱角，最大的器物最晚完成，最大的声音反而听不到，最大的形象反而没有形状。",
+gu:"北宋苏洵年轻时游荡不学，二十七岁才发奋读书，后来与儿子苏轼、苏辙并称“三苏”，同列唐宋八大家。《三字经》说：“苏老泉，二十七，始发愤，读书籍。”",
+jin:"齐白石原是木匠，五十多岁定居北京时画作并不被看好，他六十岁后“衰年变法”，彻底改变画风，终成一代宗师。",
+yong:"今天告诉自己：慢一点没关系，开始做就行。"},
+{n:42,ti:"冲气以为和",key:"道生一，一生二，二生三，三生万物。万物负阴而抱阳，冲气以为和。",
+bh:"道产生统一的元气，元气分为阴阳二气，阴阳相交产生和气，和气化生万物。万物背阴向阳，阴阳二气相互激荡而达到和谐。人们厌恶“孤、寡、不谷”，王公却用来称呼自己。事物有时减损反而增益，有时增益反而减损。强横的人不得好死，我把这作为教导的宗旨。",
+gu:"《黄帝内经》说：“阴平阳秘，精神乃治；阴阳离决，精气乃绝。”中医看病，核心就是调和阴阳，使人体回到“冲气以为和”的平衡。",
+jin:"德国数学家莱布尼茨发明二进制，后来看到传教士寄来的伏羲六十四卦图，惊叹其与二进制相通。今天的计算机世界，正是由0和1两个“阴阳”生出万物。",
+yong:"检查今天的生活：动与静、工作与休息，是否“冲气以为和”？"},
+{n:43,ti:"至柔驰骋至坚",key:"天下之至柔，驰骋天下之至坚；无有入无间。",
+bh:"天下最柔软的东西，能驾驭天下最坚硬的东西；无形的力量，能穿透没有缝隙的东西。我因此知道无为的好处。不用言语的教导，无为的益处，天下很少有人能做到。",
+gu:"北宋张咏（张乖崖）判案时说：“一日一钱，千日千钱，绳锯木断，水滴石穿。”柔弱的水滴，日积月累能穿透坚石。",
+jin:"甘地领导印度人民以“非暴力不合作”对抗英国殖民统治，不用刀枪，最终使印度在1947年获得独立。",
+yong:"今天用温和而坚定的方式表达一个不同意见。"},
+{n:44,ti:"知足不辱",key:"知足不辱，知止不殆，可以长久。",
+bh:"名声和生命哪个更亲？生命和财物哪个更重？得到和失去哪个更有害？过分爱惜必定大量耗费，过多收藏必定大量损失。知道满足就不会受辱，知道适可而止就不会危险，这样才能长久。",
+gu:"西汉疏广、疏受叔侄同为太子老师，名望正盛时，疏广说：“知足不辱，知止不殆。”二人一同辞官回乡，把皇帝赏赐的黄金拿来宴请乡亲，不给子孙留太多钱财。",
+jin:"股市里很多人赚了钱还想赚更多，不断加杠杆，一旦行情反转，不仅利润全无，连本金都赔光。“知止”才能保全。",
+yong:"今天对一件已拥有的东西说一声“够了，谢谢”。"},
+{n:45,ti:"大成若缺",key:"大成若缺，其用不弊；大盈若冲，其用不穷……清静为天下正。",
+bh:"最完满的东西好像有欠缺，但它的作用永不衰竭；最充盈的东西好像是空虚的，但它的作用无穷无尽。最直的好像弯曲，最灵巧的好像笨拙，最好的口才好像木讷。运动能克服寒冷，安静能克服炎热。清静无为才能成为天下的准则。",
+gu:"王羲之的《兰亭序》有多处涂改，按说是“草稿”，却被誉为“天下第一行书”。不完美之中，反而有一种浑然天成的完美。",
+jin:"微信1.0版本功能非常简陋，只能发文字和图片，却不断迭代完善。很多成功的产品都是先“若缺”地上线，在使用中慢慢成长。",
+yong:"今天做一件事，接受“七十分先完成”，不苛求完美。"},
+{n:46,ti:"知足常足",key:"祸莫大于不知足，咎莫大于欲得。故知足之足，常足矣。",
+bh:"天下有道时，战马退回田间耕种；天下无道时，连怀孕的母马都要在战场上生驹。最大的祸患是不知足，最大的过错是贪得无厌。所以懂得满足的那种满足，才是永远的满足。",
+gu:"西晋石崇和王恺斗富，用蜡烛当柴烧、用锦缎做五十里屏障，极尽奢华。后来他因贪财和得罪权贵被杀，临刑时才叹：“奴辈利吾家财。”",
+jin:"2008年美国雷曼兄弟公司追求高收益，杠杆高达三十倍左右，次贷危机一来便轰然倒塌，成为美国历史上最大的破产案之一。",
+yong:"写下今天让你满足的3件小事。"},
+{n:47,ti:"不出户知天下",key:"不出户，知天下；不窥牖，见天道。其出弥远，其知弥少。",
+bh:"不出门，也能知道天下的事；不看窗外，也能认识自然规律。向外跑得越远，懂得反而越少。所以圣人不用亲自经历就能知道，不用亲眼看见就能明了，不刻意去做就能成功。关键在于把握根本规律。",
+gu:"诸葛亮隐居隆中，未出茅庐，就在《隆中对》中为刘备分析天下大势，提出三分天下的战略，后来果然应验。",
+jin:"爱因斯坦在瑞士专利局当职员时，没有实验室，只靠“思想实验”（想象追着光跑会看到什么），就提出了狭义相对论。",
+yong:"今天遇到问题，先静下来想透原理，再动手查资料。"},
+{n:48,ti:"为道日损",key:"为学日益，为道日损。损之又损，以至于无为，无为而无不为。",
+bh:"追求知识，知识一天天增加；追求道，私欲妄念一天天减少。减少再减少，一直到顺其自然、不妄为的境界。做到不妄为，就没有什么做不成。治理天下要常常不扰民，如果总是生事扰民，就不能治理好天下。",
+gu:"西汉初年，汉文帝减轻田租、废除肉刑、取消修建露台的计划，处处做“减法”，与民休息，开创了“文景之治”。",
+jin:"1997年乔布斯回到濒临破产的苹果，把几十条产品线砍到只剩4款。“决定不做什么，和决定做什么一样重要。”苹果由此起死回生。",
+yong:"今天做一次“减法”：删掉一项不必要的待办事项。"},
+{n:49,ti:"以百姓心为心",key:"圣人无常心，以百姓心为心。",
+bh:"圣人没有固定不变的私心，把百姓的心作为自己的心。善良的人，我善待他；不善良的人，我也善待他，这样就得到了善良。守信的人，我信任他；不守信的人，我也信任他，这样就得到了诚信。圣人在天下，收敛自己的意志，使天下人的心归于浑朴。",
+gu:"唐太宗常引用荀子的话：“君者，舟也；庶人者，水也。水则载舟，水则覆舟。”他以百姓的需求为施政出发点，开创贞观之治。",
+jin:"晏阳初放弃优越条件，带着一批博士到河北定县农村，和农民同吃同住，开展平民教育，教农民识字、种田、卫生知识。他把农民的需要当作自己的心愿。",
+yong:"今天站在家人或同事的角度，想一想他们真正需要什么。"},
+{n:50,ti:"善摄生者",key:"出生入死……盖闻善摄生者，陆行不遇兕虎，入军不被甲兵……以其无死地。",
+bh:"人从出生到死亡，长寿的占十分之三，短命的占十分之三，本可长寿却自己走向死亡的也占十分之三。为什么？因为他们过分追求养生享乐。善于养护生命的人，在陆上行走不会遇到犀牛老虎，在军中不会受到兵器伤害，因为他从不把自己置于死地。",
+gu:"唐代孙思邈主张“养性”，饮食有节、起居有常、心态平和，据记载他活了一百多岁，被尊为“药王”。",
+jin:"钟南山院士八十多岁仍坚持锻炼、规律作息，保持充沛精力奋战在一线。真正的养生，是不让自己走进“死地”：不熬夜、不暴饮暴食、不冒无谓的险。",
+yong:"今天远离一个“死地”：熬夜、酒驾、暴食，选一个戒掉。"},
+{n:51,ti:"尊道贵德",key:"道生之，德畜之……是以万物莫不尊道而贵德。",
+bh:"道生成万物，德养育万物，万物呈现各种形态，环境使它们成长。所以万物没有不尊崇道、珍贵德的。道受尊崇、德受珍贵，不是谁命令的，而是自然而然的。生养万物而不占有，做了事而不自恃，引导万物而不主宰，这就是最深的德。",
+gu:"孔子“有教无类”，不论贫富贵贱都收为弟子，教育三千弟子却从不把他们当成私有。弟子们各自成才，又把学问传遍天下。",
+jin:"梁启超的九个子女个个成才，出了三位院士。他在家书中尊重孩子的兴趣，鼓励他们按自己的天性发展，“生而不有，长而不宰”。",
+yong:"今天对孩子或晚辈，少说一句“你应该”，多问一句“你想怎样”。"},
+{n:52,ti:"见小曰明",key:"见小曰明，守柔曰强。用其光，复归其明，无遗身殃。",
+bh:"天下万物有个开始，可以作为天下的母亲。知道了母亲，就能认识孩子；认识了孩子，又要守住母亲，终身没有危险。塞住欲望的孔窍，关上欲望的门户，终身不会劳苦；打开欲望的孔窍，忙着满足私欲，终身不可救药。能看到细微叫“明”，能守住柔弱叫“强”。",
+gu:"《汉书》记载：有人看到邻居家烟囱太直、旁边堆着柴草，劝他把烟囱改弯（曲突）、把柴草搬走（徙薪），主人不听。后来果然失火。“曲突徙薪”就是见小曰明。",
+jin:"安全管理中的“海恩法则”：每一起严重事故背后，平均有29次轻微事故、300起未遂先兆。能从小苗头中看出大问题，才是真正的“明”。",
+yong:"今天留意一个“小苗头”（身体、家庭、工作），立即处理它。"},
+{n:53,ti:"大道甚夷",key:"大道甚夷，而民好径。",
+bh:"假如我稍有一点认识，就会走在大道上，唯一担心的是走上邪路。大道很平坦，人们却喜欢走捷径。朝政腐败、田地荒芜、仓库空虚，却有人穿华服、佩利剑、饱餐美食、财货有余——这就是强盗头子，根本不合乎道！",
+gu:"清朝和珅贪污受贿，家产据说相当于朝廷多年的财政收入，人称“和珅跌倒，嘉庆吃饱”。走捷径敛财，最终被赐自尽。",
+jin:"美国安然公司曾是能源巨头，靠财务造假虚报利润，股价飙升。2001年丑闻败露，公司迅速破产，会计师事务所也随之倒闭。捷径往往是绝路。",
+yong:"今天面对一个“捷径”诱惑时，选择走正路。"},
+{n:54,ti:"善建者不拔",key:"善建者不拔，善抱者不脱……修之于身，其德乃真；修之于家，其德乃余。",
+bh:"善于建树的不会被拔除，善于抱持的不会脱落，子孙祭祀永不断绝。把道修养在自身，德就真实；修养在家庭，德就有余；修养在乡里，德就长久；修养在国家，德就丰盛；修养在天下，德就普及。所以要从自身看自身，从家庭看家庭，以此类推观察天下。",
+gu:"曾子的妻子哄孩子说：“回来给你杀猪吃。”她回来后只是随口说说，曾子却真的把猪杀了：“对孩子不能说谎，否则就是教他骗人。”修身齐家，从言而有信开始。",
+jin:"吴越钱氏把《钱氏家训》代代相传，“利在一身勿谋也，利在天下者必谋之”，近现代涌现出钱学森、钱伟长、钱钟书等一大批杰出人物。",
+yong:"今天和家人分享一条你认为最重要的家规或做人原则。"}
+);
+
+</script>
+<script>
+window.DDJ_NOTES.push(
+{n:55,ti:"比于赤子",key:"含德之厚，比于赤子……物壮则老，谓之不道，不道早已。",
+bh:"德行深厚的人，就像初生的婴儿。毒虫不咬他，猛兽不伤他，凶鸟不抓他。他筋骨柔弱，拳头却握得很牢；整天号哭，嗓子却不沙哑，因为他元气淳和。懂得和谐叫“常”，懂得常叫“明”。贪求享受会招灾，用意气支使精气就是逞强。事物过于强壮就会衰老，这不合乎道，不合乎道就会早早完结。",
+gu:"孟子说：“大人者，不失其赤子之心者也。”真正的大人物，始终保持婴儿般的纯真与真诚。",
+jin:"丰子恺一生保持童心，用简单的线条画孩子、画日常，作品温暖人心。他说：“我向来憧憬于儿童生活。”童心让他的艺术历久弥新。",
+yong:"今天像孩子一样，对一件小事表达纯粹的好奇或快乐。"},
+{n:56,ti:"知者不言",key:"知者不言，言者不知……和其光，同其尘，是谓玄同。",
+bh:"真正懂的人不夸夸其谈，夸夸其谈的人不是真懂。塞住欲望的孔窍，关上欲望的门户，磨掉锋芒，解开纠纷，收敛光芒，混同尘世，这叫“玄同”。达到这种境界的人，不能和他过于亲近，也不能疏远他；不能让他得利，也不能让他受害；不能让他尊贵，也不能让他卑贱，所以被天下所尊重。",
+gu:"司马迁评价飞将军李广：“桃李不言，下自成蹊。”李广不善言辞，但为人真诚，死时天下认识不认识他的人都为之哀痛。",
+jin:"核潜艇总设计师黄旭华隐姓埋名三十年，连父母都不知道他在做什么。他从不对外说自己的成就，却让中国拥有了核潜艇。",
+yong:"今天少说多做：把一件想“说”的事直接“做”出来。"},
+{n:57,ti:"以正治国",key:"以正治国，以奇用兵，以无事取天下……我无为，而民自化。",
+bh:"用正道治理国家，用奇谋指挥作战，用不扰民来取得天下。天下禁忌越多，百姓越贫穷；民间利器越多，国家越混乱；人们技巧越多，奇怪的事越多；法令越森严，盗贼反而越多。所以圣人说：我无为，百姓自然化育；我好静，百姓自然端正；我不扰，百姓自然富足；我无欲，百姓自然淳朴。",
+gu:"刘邦攻入咸阳后，废除秦朝繁苛法令，只与百姓“约法三章”：杀人者死，伤人及盗抵罪。简单清楚，秦地百姓大喜，人心归汉。",
+jin:"改革开放初期设立经济特区，减少不必要的审批和管制，激发了民间活力。“我无事而民自富”，政策“放”对了，百姓自己就会创造财富。",
+yong:"今天给家里或团队减少一条不必要的规定。"},
+{n:58,ti:"祸福相倚",key:"祸兮福之所倚，福兮祸之所伏。",
+bh:"政治宽厚，百姓就淳朴；政治严苛，百姓就狡诈。灾祸啊，幸福依傍在它里面；幸福啊，灾祸潜伏在它里面。谁知道它们的究竟？正会转为邪，善会转为恶。所以圣人方正而不割伤人，锐利而不刺伤人，直率而不放肆，光亮而不刺眼。",
+gu:"塞翁失马：边塞老人的马跑了，邻居来安慰，他说“焉知非福”；后来马带回一匹骏马，邻居来贺，他说“焉知非祸”；儿子骑马摔断腿，后来却因此免于征战保住性命。",
+jin:"史玉柱的巨人大厦因资金链断裂烂尾，他一度负债两亿多元。低谷中他潜心做市场调研，东山再起，还清全部债务。祸中藏福，福中也要防祸。",
+yong:"想一件最近的“坏事”，写下它可能带来的一个好处。"},
+{n:59,ti:"治人事天莫若啬",key:"治人事天，莫若啬……是谓深根固柢，长生久视之道。",
+bh:"治理百姓、侍奉上天，没有比“啬”（爱惜精力、节俭）更重要的了。只有爱惜，才能早作准备；早作准备就是不断积德；不断积德就无往不胜；无往不胜就看不到力量的极限，就可以拥有国家。掌握了治国的根本，国家就能长久。这叫根深蒂固、长生久视之道。",
+gu:"春秋时齐国名相晏子，身居相位却吃粗粮、穿旧衣、乘劣马，把俸禄分给贫困的亲友。他节俭爱民，辅佐三代齐君五十余年。",
+jin:"日本金刚组创立于公元578年，专做寺庙建筑，传承一千四百多年。它长期专注本业、稳健经营，是世界上最古老的企业之一——“深根固柢”。",
+yong:"今天“啬”一次：节省一份精力，早睡半小时。"},
+{n:60,ti:"若烹小鲜",key:"治大国，若烹小鲜。",
+bh:"治理大国，就像煎小鱼，不能总去翻动，翻多了鱼就碎了。用道来治理天下，鬼神也不起作用了；不是鬼神不起作用，而是它不伤人；不是它不伤人，而是圣人也不伤人。双方都不伤害百姓，德就都归于百姓了。",
+gu:"西汉末年王莽篡位后，频繁改制：几年之内多次改革币制、更改官名地名、推行“王田制”。百姓无所适从，天下大乱，新朝仅十五年便覆灭。",
+jin:"1988年美国总统里根在国情咨文演讲中引用了“治大国若烹小鲜”，提醒政府不要过度干预。这句话早已传遍世界。",
+yong:"今天对一件正在进行的事“少翻动”，耐心等它熟。"},
+{n:61,ti:"大者宜为下",key:"大国者下流，天下之交，天下之牝……大者宜为下。",
+bh:"大国要像江河下游，处于天下交汇之处，像天下的雌性。雌性常以安静胜过雄性，因为安静而处下。大国对小国谦下，就能取得小国的信任；小国对大国谦下，就能得到大国的接纳。大国不过想兼顾养护别人，小国不过想被接纳。双方都能满足愿望，大国尤其应该谦下。",
+gu:"唐朝国力强盛，却对周边民族开放包容，长安城里胡商云集、多国留学生求学，唐太宗被尊为“天可汗”。强大而能处下，天下归心。",
+jin:"二战后美国实施“马歇尔计划”，援助西欧国家重建经济，既帮助了欧洲复兴，也赢得了长期的盟友与市场。大者处下，各得其所。",
+yong:"今天作为“强势一方”时，主动放低姿态一次。"},
+{n:62,ti:"道者万物之奥",key:"道者万物之奥，善人之宝，不善人之所保……人之不善，何弃之有？",
+bh:"道是万物的庇护所，是善人的法宝，也是不善之人的保障。美好的言辞可以换来尊重，美好的行为可以影响他人。人即使有不善，怎能抛弃他呢？所以立天子、设三公时，与其献上玉璧和驷马，不如献上这个道。古人为什么看重道？不正是因为有求就能得到，有罪就能免除吗？",
+gu:"西晋周处年轻时横行乡里，与猛虎、蛟龙并称“三害”。他得知后幡然悔悟，杀虎斩蛟，又拜陆云为师，发奋改过，最终成为忠臣良将。",
+jin:"清朝末代皇帝溥仪经过改造，于1959年获特赦，后来成为普通公民，写下《我的前半生》。人之不善，何弃之有。",
+yong:"今天给一个犯过错的人（包括自己）一次重新开始的机会。"},
+{n:63,ti:"为大于其细",key:"图难于其易，为大于其细；天下难事，必作于易；天下大事，必作于细。",
+bh:"以无为的态度去作为，以无事的方式去做事，以无味当作味。把小看作大，把少看作多，用德来回报怨恨。解决难题要从容易处着手，做大事要从细微处开始。天下的难事一定从容易的做起，天下的大事一定从细小的做起。所以圣人始终不贪大，反而成就了大。轻易许诺必定失信，把事情看得太容易必定遇到更多困难。",
+gu:"扁鹊见蔡桓公，说“君有疾在腠理”，桓公不信；病到肌肤、肠胃，扁鹊屡次提醒，桓公都不理。最后病入骨髓，无药可救。《韩非子》正是用这个故事解释本章。",
+jin:"1985年海尔张瑞敏发现76台冰箱有质量缺陷，当众带头把它们砸掉。从细节抓质量，海尔后来成长为世界级家电品牌。",
+yong:"把一件“难事”拆成第一个最小步骤，今天就做这一步。"},
+{n:64,ti:"慎终如始",key:"合抱之木，生于毫末；九层之台，起于累土；千里之行，始于足下……慎终如始，则无败事。",
+bh:"局面安定时容易维持，事情未露迹象时容易谋划，脆弱时容易分解，微小时容易消散。要在事情没发生前就处理，在混乱没出现前就治理。合抱的大树从细小的萌芽长成，九层高台从一筐筐泥土筑起，千里远行从脚下第一步开始。人们做事，常在快成功时失败。如果结尾时像开始一样谨慎，就不会失败。",
+gu:"唐太宗晚年渐生骄奢，魏征上《十渐不克终疏》，列举他十个方面“不能善始善终”。太宗看后深为警醒，把奏疏写在屏风上，早晚阅读。",
+jin:"1986年美国“挑战者号”航天飞机升空73秒后爆炸，原因是一个小小的O形密封圈在低温下失效。工程师曾提出担忧，却未被重视。",
+yong:"今天把一件快完成的事认真收尾，检查最后一遍。"},
+{n:65,ti:"不以智治国",key:"以智治国，国之贼；不以智治国，国之福。",
+bh:"古代善于行道的人，不是教百姓变得机巧，而是让他们保持淳朴。百姓难治，是因为机巧心太多。用巧诈治国，是国家的祸害；不用巧诈治国，是国家的福气。懂得这两者的差别，就是治国的法则。永远懂得这个法则，叫做“玄德”。（注：这里的“智”指机巧诈术，“愚”指淳朴，不是让人愚昧。）",
+gu:"武则天时期重用酷吏来俊臣、周兴，用巧诈罗织罪名。后来周兴被告发，来俊臣用他自己发明的酷刑“请君入瓮”审他。以诈治人，终被诈所害。",
+jin:"2015年德国大众汽车被曝在柴油车中安装作弊软件，检测时降低排放、实际行驶时超标。“排放门”让大众赔偿数百亿美元，信誉严重受损。",
+yong:"今天和人打交道时，不耍小聪明，直来直去。"},
+{n:66,ti:"善下为百谷王",key:"江海所以能为百谷王者，以其善下之……以其不争，故天下莫能与之争。",
+bh:"江海之所以能成为百川之王，是因为它善于处在低下的位置。所以圣人想在百姓之上，必须言语谦下；想在百姓之前，必须把自己放在后面。这样，他居上而百姓不觉得负担，居前而百姓不觉得受害，天下人乐于推戴而不厌弃。因为他不争，天下没有人能和他争。",
+gu:"唐太宗广开言路，魏征前后进谏二百多次，常常当面顶撞。太宗虽有时气恼，仍虚心接受。魏征死后，太宗叹道：“魏征没，朕亡一镜矣。”",
+jin:"河南许昌的胖东来超市，以善待员工、真诚服务顾客闻名，甚至主动提醒顾客“不需要买这么多”。它把自己放低，反而赢得了无数人的喜爱。",
+yong:"今天用谦下的语气提一个请求：“能不能请您……”"},
+{n:67,ti:"我有三宝",key:"我有三宝，持而保之：一曰慈，二曰俭，三曰不敢为天下先。",
+bh:"天下人都说我的道大，却不像任何具体的东西。我有三件法宝，一直持守：第一是慈爱，第二是节俭，第三是不敢居于天下人之先。因为慈爱，所以能勇敢；因为节俭，所以能宽广；因为不敢为天下先，所以能成为众人的首领。舍弃慈爱求勇敢、舍弃节俭求宽广、舍弃退让求争先，就是走向死路。",
+gu:"范仲淹少年时家贫，在寺中苦读，每天煮一锅粥，冷凝后划成四块，早晚各吃两块（断齑画粥）。后来他做了高官仍然节俭，却用俸禄购置义田救济族人。",
+jin:"叶嘉莹先生一生致力于传播中华诗词，生活简朴，却把自己的积蓄三千余万元捐出，设立“迦陵基金”支持古典诗词研究。慈与俭，成就了她的大。",
+yong:"今天践行三宝之一：一句慈爱的话、一笔节省的钱、一次礼让。"},
+{n:68,ti:"不争之德",key:"善用人者，为之下。是谓不争之德，是谓用人之力。",
+bh:"善于做将帅的不逞勇武，善于作战的不轻易发怒，善于胜敌的不与敌人正面硬拼，善于用人的对人谦下。这叫做不争的德行，这叫做善用别人的力量，这叫做符合天道，是自古以来的最高准则。",
+gu:"燕昭王为报齐仇，筑黄金台招揽天下贤士，对郭隗执弟子礼。乐毅、邹衍、剧辛等纷纷来投，乐毅率军连下齐国七十余城。",
+jin:"华为提出“让听得见炮声的人来呼唤炮火”，把决策权交给一线员工。领导者“为之下”，反而调动了千军万马。",
+yong:"今天真诚地向团队里的一个人请教，听他的意见。"},
+{n:69,ti:"哀者胜矣",key:"祸莫大于轻敌，轻敌几丧吾宝。故抗兵相加，哀者胜矣。",
+bh:"用兵的人有句话：我不敢主动进攻而宁愿防守，不敢前进一寸而宁愿后退一尺。这就是：有阵势却像没有阵势，要举臂却像没有手臂，要拿兵器却像没有兵器，面对敌人却像没有敌人。祸患没有比轻敌更大的，轻敌几乎会丧失我的法宝。所以两军实力相当时，心怀悲悯的一方会获胜。",
+gu:"赤壁之战，曹操号称八十万大军，认为孙刘联军不堪一击，轻敌冒进，将战船连在一起。周瑜火攻，曹军大败。",
+jin:"1812年拿破仑率六十余万大军远征俄国，自信能速战速决。俄军坚壁清野、诱敌深入，严冬中法军几乎全军覆没，拿破仑帝国由此走向衰落。",
+yong:"今天对一件“小事”认真对待，不因它简单而轻视。"},
+{n:70,ti:"被褐怀玉",key:"吾言甚易知，甚易行……知我者希，则我者贵。是以圣人被褐怀玉。",
+bh:"我的话很容易理解，很容易实行，天下却没人能理解，没人能实行。言论有宗旨，行事有根据。正因为人们不理解这一点，所以不理解我。理解我的人很少，效法我的人就更可贵了。所以圣人外面穿着粗布衣服，怀里却揣着美玉。",
+gu:"楚人卞和得到一块璞玉，先后献给两位楚王，都被认为是石头，以欺君之罪被砍去双脚。直到楚文王时让人剖开，才发现是稀世美玉，命名为“和氏璧”。",
+jin:"画家梵高生前作品几乎卖不出去，长期贫困潦倒，被人视为怪人。他去世后，作品成为世界上最珍贵的艺术品之一。“被褐怀玉”，真宝常藏在不起眼处。",
+yong:"今天发现身边一个“不起眼”的人的闪光点，告诉他。"},
+{n:71,ti:"知不知上",key:"知不知，上；不知知，病。",
+bh:"知道自己有所不知，是最高明的；不知道却自以为知道，是一种毛病。圣人没有这种毛病，因为他把这种毛病当作毛病。正因为把毛病当作毛病，所以没有毛病。",
+gu:"孔子对子路说：“知之为知之，不知为不知，是知也。”承认不知道，才是真正的智慧。",
+jin:"心理学上的“邓宁-克鲁格效应”（1999年提出）发现：能力越差的人越容易高估自己，能力越强的人反而越清楚自己的不足。",
+yong:"今天坦然说一次：“这个我不太懂，请教一下。”"},
+{n:72,ti:"自知不自见",key:"民不畏威，则大威至……是以圣人自知不自见，自爱不自贵。",
+bh:"当百姓不再畏惧统治者的威压时，更大的祸乱就要来了。不要逼迫百姓无处安居，不要压榨百姓无法生存。只有不压迫百姓，百姓才不会厌恶统治者。所以圣人有自知之明而不自我炫耀，爱惜自己而不自视高贵。",
+gu:"西周周厉王暴虐，百姓议论纷纷，他派人监视，谁议论就杀谁。召公劝谏：“防民之口，甚于防川。”厉王不听，三年后国人暴动，厉王出逃。",
+jin:"18世纪末法国王室奢靡，百姓赋税沉重、饥寒交迫，1789年法国大革命爆发，攻占巴士底狱，最终国王被送上断头台。",
+yong:"今天对比你弱势的人（孩子、下属、服务员）多一分体谅。"},
+{n:73,ti:"天网恢恢",key:"勇于敢则杀，勇于不敢则活……天网恢恢，疏而不失。",
+bh:"勇于逞强就会招致杀身之祸，勇于不逞强就能保全性命。这两种勇，一个有利一个有害。天所厌恶的，谁知道原因？天道不争却善于取胜，不说话却善于回应，不召唤却自动到来，坦然从容却善于谋划。天网广大无边，虽然稀疏，却不会漏掉任何东西。",
+gu:"南宋秦桧以“莫须有”罪名害死岳飞，生前权倾朝野。死后他的铁铸跪像被放在岳飞墓前，跪了几百年，受千万人唾骂。",
+jin:"甘肃“白银案”凶手作案多年后潜逃隐匿，2016年警方通过DNA技术锁定并抓获了他，距首起案件已过去28年。天网恢恢，疏而不失。",
+yong:"今天遇事选择“勇于不敢”：不冒无谓的险，不逞一时之强。"},
+{n:74,ti:"民不畏死",key:"民不畏死，奈何以死惧之？",
+bh:"百姓不怕死了，为什么还用死来吓唬他们？如果百姓真的怕死，对作乱的人抓来杀掉，谁还敢作乱？总有专管杀人的去执行。代替专管杀人的去杀人，就像代替木匠去砍木头，很少有不伤到自己手的。",
+gu:"秦末陈胜、吴广带领戍卒赶路，因大雨误期，按秦法当斩。陈胜说：“今亡亦死，举大计亦死，等死，死国可乎？”严刑逼到绝路，反而激起了起义。",
+jin:"1764年意大利学者贝卡里亚在《论犯罪与刑罚》中指出：预防犯罪靠的是刑罚的确定性，而非残酷性。这一思想深刻影响了现代法治。",
+yong:"今天和孩子或同事沟通，不用“吓唬”的方式，改为讲清道理。"},
+{n:75,ti:"民之饥",key:"民之饥，以其上食税之多，是以饥。",
+bh:"百姓之所以饥饿，是因为统治者征收赋税太多。百姓之所以难治，是因为统治者政令繁多、任意妄为。百姓之所以轻视死亡，是因为统治者奉养太奢侈。只有不把养尊处优当回事的人，才比过分看重享受的人高明。",
+gu:"唐代柳宗元在《捕蛇者说》中写：蒋氏宁愿冒着生命危险捕毒蛇抵税，也不愿恢复交赋税，因为“赋敛之毒，有甚是蛇者乎”！",
+jin:"2006年1月1日起，中国全面取消农业税，结束了延续两千六百多年的“皇粮国税”，减轻了亿万农民的负担。",
+yong:"今天反省：自己是否给身边人“加税”太多（要求太多、索取太多）？"},
+{n:76,ti:"柔弱处上",key:"人之生也柔弱，其死也坚强……故坚强者死之徒，柔弱者生之徒。",
+bh:"人活着时身体柔软，死了就变得僵硬。草木活着时柔嫩脆弱，死了就变得干枯。所以坚强的属于死亡一类，柔弱的属于生存一类。军队逞强就会被消灭，树木强硬就会被砍伐。强大的处于下位，柔弱的处于上位。",
+gu:"老子的老师常摐病重，老子去看望。常摐张开嘴问：“我的舌头还在吗？”“在。”“牙齿还在吗？”“没了。”老子领悟：舌头因柔软而存，牙齿因刚硬而亡。（见《说苑》）",
+jin:"柯达公司1975年就发明了数码相机，却固守利润丰厚的胶卷业务，不肯转型。数码时代来临，2012年柯达申请破产保护。“木强则折”。",
+yong:"今天在一个固执的观点上“软”下来，试着接受另一种可能。"},
+{n:77,ti:"损有余补不足",key:"天之道，其犹张弓与？……天之道，损有余而补不足。",
+bh:"天道就像拉弓射箭：高了就压低，低了就抬高；拉得过满就放松，拉得不足就补足。天道是减少有余的去补充不足的；人道却不是这样，常常减少不足的去奉养有余的。谁能把有余的拿来奉献天下？只有有道的人。所以圣人有所作为而不自恃，有了功劳而不居功，不想显示自己的贤能。",
+gu:"范仲淹用俸禄在苏州购置良田千亩，设立“范氏义庄”，用田租救济族中贫困者，婚丧嫁娶、读书考试都有资助。义庄延续了八百多年。",
+jin:"2020年底，中国现行标准下农村贫困人口全部脱贫。通过转移支付、对口帮扶，让发达地区帮助欠发达地区，体现了“损有余而补不足”。",
+yong:"今天把你“有余”的东西（时间、物品、知识）分一点给“不足”的人。"},
+{n:78,ti:"柔弱于水",key:"天下莫柔弱于水，而攻坚强者莫之能胜……受国之垢，是谓社稷主。",
+bh:"天下没有比水更柔弱的了，但攻击坚强的东西，没有什么能胜过水，因为没有什么能代替它。弱胜强、柔胜刚，天下没人不知道，却没人能做到。所以圣人说：能承受国家屈辱的，才配做国家的君主；能承担国家灾祸的，才配做天下的君王。正面的话听起来像反话。",
+gu:"商汤时大旱多年，汤在桑林祈雨，以身为祭品，说：“余一人有罪，无以万夫；万夫有罪，在余一人。”把天下的过错都揽在自己身上，百姓感动。",
+jin:"曼德拉为反对种族隔离坐牢27年。出狱后他没有报复，而是推动和解，成为南非首位黑人总统。他承受了最大的屈辱，也成就了最大的事业。",
+yong:"今天主动承担一个“不全是你的错”的责任。"},
+{n:79,ti:"天道无亲",key:"和大怨，必有余怨……天道无亲，常与善人。",
+bh:"调和深仇大怨，必然还留有余怨，这怎么能算是妥善呢？所以圣人像持有借据存根的债主，却不向人逼债。有德的人像掌管借据的人那样宽容，无德的人像收税的人那样苛刻。天道没有偏爱，总是帮助善良的人。",
+gu:"蔺相如因功位居廉颇之上，廉颇不服，扬言要羞辱他。蔺相如处处避让：“先国家之急而后私仇也。”廉颇听后负荆请罪，二人结为刎颈之交。",
+jin:"二战后，德国和法国这对世仇于1963年签署《爱丽舍条约》，从敌人变为欧洲一体化的核心伙伴。化解大怨，靠的是宽容与远见。",
+yong:"今天放下一个小怨：不再提一件让你不舒服的旧事。"},
+{n:80,ti:"小国寡民",key:"甘其食，美其服，安其居，乐其俗。",
+bh:"国家小、百姓少。即使有各种器具也不使用；让百姓重视生命而不远徙；虽有车船，却无需乘坐；虽有兵器，却无处陈列。让人们回到结绳记事的淳朴。百姓吃得香甜，穿得美好，住得安适，过得快乐。邻国相望，鸡犬之声相闻，百姓到老死也不互相往来。",
+gu:"陶渊明在《桃花源记》中描绘了一个“土地平旷，屋舍俨然，有良田美池桑竹之属……黄发垂髫，并怡然自乐”的世外桃源，正是“小国寡民”的理想图景。",
+jin:"喜马拉雅山中的小国不丹，提出“国民幸福总值”，不单以经济增长衡量发展，而是重视百姓的幸福感、文化与环境保护。",
+yong:"今天用心吃一顿饭，感受“甘其食，安其居”的满足。"},
+{n:81,ti:"为而不争",key:"信言不美，美言不信……圣人不积，既以为人己愈有，既以与人己愈多。天之道，利而不害；圣人之道，为而不争。",
+bh:"真实的话不一定好听，好听的话不一定真实。善良的人不巧辩，巧辩的人不善良。真正懂的人不卖弄广博，卖弄广博的人不是真懂。圣人不私自积藏，尽力帮助别人，自己反而更充实；尽力给予别人，自己反而更丰富。天道利益万物而不伤害，圣人做事而不争夺。",
+gu:"战国邹忌问妻、妾、客人：“我和城北徐公谁美？”三人都说他美。后来见到徐公，自知远不如。他悟到：妻子偏爱我，妾怕我，客人有求于我。他以此劝齐威王广开言路，齐国大治。“美言不信”。",
+jin:"钱钟书、杨绛夫妇生活简朴，却把全部稿费捐给清华大学，设立“好读书”奖学金，帮助了许多贫困学子。“既以与人己愈多”。",
+yong:"今天说一句“不好听但真实”的话，并用善意说出来。"}
+);
+
+</script>
+<script>
+// 六十四卦讲解：ti=卦义 bh=白话(卦辞+大象) yao=六爻白话(初→上) gu=古代案例 jin=近现代案例 yong=今日一用
+window.GUA_NOTES = [
+{n:1,ti:"自强不息",bh:"乾卦六爻全阳，象征天。卦辞“元亨利贞”：伟大的开始、通达、适宜、正固。《象传》说：天的运行刚健不停，君子要效法它，自强不息。乾卦用“龙”的成长讲人生的六个阶段。",
+yao:["潜龙勿用：能力未成，先潜心积累","见龙在田：初露头角，宜拜见贵人","终日乾乾：白天勤奋，夜里警惕，虽危无咎","或跃在渊：可进可退，审时度势","飞龙在天：大展宏图，正当其位","亢龙有悔：升到极点，骄满必悔"],
+gu:"朱元璋起兵后采纳朱升的建议“高筑墙，广积粮，缓称王”，先潜龙勿用、积蓄实力，再一步步跃渊、飞天，最终建立明朝。",
+jin:"中国航天从1970年“东方红一号”起步，经历载人航天、探月、建成空间站，一步一个台阶，正是“天行健，君子以自强不息”。",
+yong:"判断你现在处于乾卦哪一爻？据此决定是“潜”还是“跃”。"},
+{n:2,ti:"厚德载物",bh:"坤卦六爻全阴，象征地。卦辞说像母马一样柔顺而有耐力，先迷失后找到主导，安守正道吉祥。《象传》说：大地的形势宽厚顺承，君子要效法它，以深厚的德行承载万物。",
+yao:["履霜坚冰至：踩到霜，就知寒冬将至","直方大：正直、端方、广大，自然顺利","含章可贞：内含才华，辅佐他人不居功","括囊：扎紧口袋，谨言慎行","黄裳元吉：居中守正，谦和大吉","龙战于野：阴盛到极点，与阳相争两伤"],
+gu:"萧何辅佐刘邦，镇守关中、输送粮草兵员，从不争功，正是坤卦“含章可贞，或从王事，无成有终”。刘邦评功时把他列为第一。",
+jin:"华为多年前就预见芯片供应可能被切断，默默研发“备胎”芯片。2019年遭遇断供时，“备胎”一夜转正——这就是“履霜，坚冰至”的远见。",
+yong:"今天找到一个“霜”的信号（小问题），提前做准备。"},
+{n:3,ti:"万事开头难",bh:"屯卦上坎（水、险）下震（雷、动），像草木破土而出时的艰难。卦辞说：大亨通，利于守正，不宜轻举妄动，利于建立助手和根据地。《象传》：云雷交加，君子要经营筹划、理清头绪。",
+yao:["磐桓：徘徊不前，宜守正、找帮手","屯如邅如：进退两难，耐心等待十年","即鹿无虞：追鹿没向导，不如放弃","乘马班如：求助有缘人，前往吉利","屯其膏：恩泽难施，小事可成大事凶","泣血涟如：困顿至极，不可久留"],
+gu:"曾国藩初建湘军时屡战屡败，靖港一战大败后甚至投水自尽被救起。他稳扎稳打、广招人才，终于站稳脚跟。创业初期，正是“屯”。",
+jin:"1999年，18个人在杭州湖畔花园的一间民房里创办了阿里巴巴，起初艰难拮据。他们先“利建侯”——组建团队，才有了后来的发展。",
+yong:"新开始的事遇到困难时，提醒自己：这是“屯”，先找帮手、理头绪。"},
+{n:4,ti:"启蒙教育",bh:"蒙卦上艮（山）下坎（水），山下有险，像蒙昧未开。卦辞：“匪我求童蒙，童蒙求我”——不是老师去求学生，而是学生主动来求教；问一次就答，反复乱问就不答了。《象传》：山下出泉，君子要果断行动、培育品德。",
+yao:["发蒙：启发蒙昧，适当约束","包蒙：包容蒙昧者，吉","勿用取女：见利忘身者不可取","困蒙：困于蒙昧而远离良师，吝","童蒙：像孩童般虚心求教，吉","击蒙：严厉纠正，但防过度"],
+gu:"北宋杨时去拜见老师程颐，程颐正在打盹，杨时和同学静立门外等候，等程颐醒来，门外雪已深一尺。“程门立雪”正是“童蒙求我”。",
+jin:"华罗庚初中毕业后自学数学，在杂志上发表论文，被清华大学熊庆来教授发现，破格请到清华。学生主动求学、老师慧眼识才，造就了一代数学大师。",
+yong:"今天主动向一位老师（或书本）请教一个你真正想知道的问题。"},
+{n:5,ti:"耐心等待",bh:"需卦上坎（云、险）下乾（天），云在天上还没下雨，象征等待。卦辞：有诚信，光明亨通，守正吉祥，利于渡过大河。《象传》：君子在等待中饮食宴乐、修养身心，积蓄力量。",
+yao:["需于郊：在远处等，保持常态无咎","需于沙：渐近有小言语，终吉","需于泥：陷入泥中，招来寇盗","需于血：身处危地，顺势脱出","需于酒食：安心养精蓄锐，守正吉","入于穴：意外来客，恭敬相待终吉"],
+gu:"姜太公在渭水边垂钓，直钩离水三尺，“愿者上钩”，耐心等待明主。周文王出猎遇见他，拜为太师，后来辅佐武王灭商。",
+jin:"上世纪60年代斯坦福大学的“棉花糖实验”：能忍住不吃第一颗棉花糖、等待第二颗的孩子，长大后在学业等方面往往表现更好。会等待，是一种能力。",
+yong:"今天有件想立刻得到的东西，试着等一等，用这段时间准备自己。"},
+{n:6,ti:"慎争止讼",bh:"讼卦上乾（天）下坎（水），天向上、水向下，背道而驰，象征争讼。卦辞：心中有诚信却受阻，保持警惕，适中而止则吉，坚持到底则凶。《象传》：君子做事要在开始时就谋划好，防患于未然。",
+yao:["不永所事：不纠缠争讼，终吉","不克讼：争不赢就退回，免灾","食旧德：守本分，安享旧业","不克讼：回心转意，安守正道吉","讼元吉：遇公正裁判，大吉","或锡之鞶带：靠争讼得来的荣耀，终被剥夺"],
+gu:"清代张英在京做官，老家人为宅基地与邻居争执，写信求援。张英回诗：“千里修书只为墙，让他三尺又何妨？”家人让出三尺，邻居感动也让三尺，成了“六尺巷”。",
+jin:"苹果与三星打了多年专利官司，耗费巨额律师费、精力，最终于2018年和解。“讼，终凶”——争讼往往两败俱伤。",
+yong:"今天与人有分歧，先想“作事谋始”：怎样从一开始就避免冲突？"},
+{n:7,ti:"师出以律",bh:"师卦上坤（地）下坎（水），地中有水，象征聚众成军。卦辞：用兵要守正，由德高望重的长者统率才吉。《象传》：君子要包容百姓、养育民众，民众就是力量之源。",
+yao:["师出以律：出兵要有纪律，否则凶","在师中：主帅居中得宠，吉","师或舆尸：指挥不一，大败","师左次：暂时撤退驻扎，无咎","田有禽：师出有名，由长者统帅","开国承家：论功封赏，小人勿用"],
+gu:"明代戚继光组建“戚家军”，选兵严格、纪律严明，“冻死不拆屋，饿死不掳掠”，抗击倭寇百战百胜。这就是“师出以律”。",
+jin:"中国女排在主教练郎平带领下严格训练、团结一心，2016年里约奥运会逆境中夺冠。一支队伍的战斗力，来自纪律和统一的指挥。",
+yong:"今天为你负责的一件事定一条清晰的“纪律”（规则）。"},
+{n:8,ti:"亲比团结",bh:"比卦上坎（水）下坤（地），水在地上，紧密相依，象征亲密团结。卦辞：亲比是吉祥的，要反省自己是否坚守正道；犹豫不来的人，晚了就凶。《象传》：先王因此封建万国、亲近诸侯。",
+yao:["有孚比之：以诚信亲附，无咎","比之自内：发自内心的亲近，守正吉","比之匪人：亲近了不该亲近的人","外比之：向外亲附贤者，吉","显比：光明正大的团结，不强求","比之无首：迟迟不亲附，无好结果"],
+gu:"刘备、关羽、张飞情同手足（《三国演义》称“桃园结义”），以诚相待、生死与共，从一无所有发展到三分天下有其一。",
+jin:"二战后欧洲国家从煤钢共同体开始，一步步走向联合，形成了欧盟。以诚信合作取代彼此敌对，使欧洲获得了长期和平。",
+yong:"今天主动联系一位很久没联系的朋友，真诚问候。"},
+{n:9,ti:"小有积蓄",bh:"小畜卦上巽（风）下乾（天），风在天上吹，能积蓄云气却还不足以下雨。卦辞：亨通，乌云密布却没有下雨（时机未到）。《象传》：君子要修美自己的文采与德行，继续积累。",
+yao:["复自道：回到正道，有何咎","牵复：被牵引回正道，吉","舆说辐：车轮脱辐，夫妻反目","有孚：以诚信化解忧患","有孚挛如：以诚信联合邻人，共富","既雨既处：积蓄已满，须知适可而止"],
+gu:"苏秦早年游说秦王失败，“黑貂之裘弊，黄金百斤尽”，狼狈回家。他发愤苦读，困了就用锥子刺大腿，积累一年后再出山，终佩六国相印。",
+jin:"“1.01的365次方约等于37.8，0.99的365次方约等于0.03。”每天进步一点点，看似微小，长期积累便是巨大差距。",
+yong:"今天为一个长期目标积累一小步（读10页书、存一点钱）。"},
+{n:10,ti:"如履虎尾",bh:"履卦上乾（天）下兑（泽），上下尊卑分明，象征践行礼仪。卦辞：踩到老虎尾巴，老虎却不咬人，亨通——只要以礼谨慎行事，即使处境危险也能平安。《象传》：君子分辨上下名分，安定民心。",
+yao:["素履：本色朴素地前行，无咎","履道坦坦：走平坦大道，幽静守正吉","眇能视：自不量力，被虎所咬","履虎尾愬愬：小心翼翼，终吉","夬履：果断行事，仍要警惕","视履考祥：回顾所行，周全大吉"],
+gu:"晏子出使楚国，楚王让他走狗洞羞辱他。晏子说：“出使狗国才走狗门。”楚王只好让他从大门进。他守礼有节、不卑不亢，在危险的外交场合全身而退。",
+jin:"2003年杨利伟乘神舟五号首次飞天，他严格按照操作规程完成每一个动作。航天这种“履虎尾”的高危事业，靠的就是对规则的敬畏。",
+yong:"今天做一件有风险的事时，先列一个步骤清单，按规矩来。"},
+{n:11,ti:"天地交泰",bh:"泰卦上坤（地）下乾（天）。地气上升、天气下降，天地交流，象征通泰。卦辞：小的去、大的来，吉祥亨通。《象传》：君主要裁度天地之道，辅助天地之宜，帮助百姓。",
+yao:["拔茅茹：拔一根茅草带起一片，同类共进吉","包荒：包容广大，得中道","无平不陂：没有只平不坡的路，艰难中守正","翩翩：不靠财富，以诚相交","帝乙归妹：降尊纡贵，以此得福","城复于隍：城墙倒塌回沟，泰极将否"],
+gu:"唐太宗与魏征等大臣君臣交心，上下沟通无阻，开创“贞观之治”，几乎达到“路不拾遗，夜不闭户”。上下交而其志同，就是泰。",
+jin:"1977年恢复高考，让无数青年凭知识改变命运，社会上下重新流动起来，为改革开放储备了大批人才。上下交流，国家就通泰。",
+yong:"今天主动和“上面”或“下面”的人（领导/下属、父母/孩子）沟通一次。"},
+{n:12,ti:"闭塞不通",bh:"否卦上乾（天）下坤（地）。天气上升、地气下沉，天地不交，象征闭塞。卦辞：不是人道，不利君子守正，大的去、小的来。《象传》：君子要以节俭的品德避开灾难，不可贪图荣禄。",
+yao:["拔茅茹：同类相守，守正吉","包承：小人顺承得吉，大人否而亨","包羞：包藏羞耻","有命无咎：奉天命行事，同伴受福","休否：否运将止，要时刻警惕“其亡其亡”","倾否：闭塞到头被推翻，先否后喜"],
+gu:"东汉末年宦官专权，两次“党锢之祸”打压正直士人，上下隔绝、言路堵塞，最终爆发黄巾起义，东汉走向灭亡。",
+jin:"1929年美国股市崩盘，引发大萧条：银行倒闭、工厂停工、大批人失业。经济像血管堵塞一样陷入“否”。此时节俭自守，是度过难关的根本。",
+yong:"今天如果感到“不通”，先节俭自守，不冒进。"},
+{n:13,ti:"和同于人",bh:"同人卦上乾（天）下离（火），火向上与天相亲，象征与人和同。卦辞：在旷野中与人和同（广泛、公开），亨通，利于渡过大河。《象传》：君子要分类聚族，辨别事物的异同。",
+yao:["同人于门：出门就与人和同，无咎","同人于宗：只和宗族亲近，狭隘","伏戎于莽：埋伏军队，三年不兴","乘其墉：登上城墙却不进攻，回头是吉","先号啕而后笑：先哭后笑，终相遇","同人于郊：在郊外和同，无悔"],
+gu:"春秋时齐桓公“九合诸侯，一匡天下”，以“尊王攘夷”的共同目标团结各国，成为春秋首霸。",
+jin:"1991年林纳斯发布Linux内核，向全世界开放源代码。成千上万的程序员不分国界协作，使它成为全球服务器和安卓手机的基础。“同人于野”，广泛而公开地合作。",
+yong:"今天找到和一个“不同意见者”的共同点。"},
+{n:14,ti:"大有收获",bh:"大有卦上离（火、日）下乾（天），太阳高照天上，万物尽显，象征大有收获。卦辞：大亨通。《象传》：君子要遏止邪恶、发扬善良，顺应天命。",
+yao:["无交害：不交往害人之事，艰难则无咎","大车以载：大车装载，能担重任","公用亨于天子：把财富献给天下，小人不能","匪其彭：不炫耀富盛，无咎","厥孚交如：以诚信交往，威严吉","自天祐之：上天保佑，吉无不利"],
+gu:"范蠡离开越国后经商，“十九年之中三致千金”，又多次把财富分给贫穷的朋友和乡亲，被尊为“商圣”。大有而不独占，才能长久大有。",
+jin:"比尔·盖茨创立微软成为世界首富后，与妻子成立基金会，把大部分财富用于全球卫生和教育事业。“公用亨于天子”——财富回馈天下。",
+yong:"今天盘点自己“大有”的东西，拿出一部分与人分享。"},
+{n:15,ti:"谦谦君子",bh:"谦卦上坤（地）下艮（山），高山藏于地下，象征谦虚。卦辞：亨通，君子能有好结果。《象传》：君子要减少多余的、增益不足的，衡量事物而公平施予。谦卦六爻全吉，是六十四卦中唯一没有凶咎的卦。",
+yao:["谦谦君子：谦而又谦，可以渡大川","鸣谦：谦虚而有好名声，守正吉","劳谦君子：有功劳仍谦虚，有终吉","撝谦：发挥谦德，无不利","不富以其邻：以谦德团结邻人，可征伐不服","鸣谦：名声在外仍谦，可用兵正己"],
+gu:"《论语》记载：鲁国战败撤退，孟之反主动殿后掩护大军。快进城门时，他鞭打着马说：“不是我敢于殿后，是马跑不快啊。”有功不居，孔子称赞他“不伐”。",
+jin:"1952年以色列邀请爱因斯坦担任总统，他婉言谢绝，说自己缺乏处理人事的经验和才能。名满天下却清楚自己的分寸，这就是“劳谦君子”。",
+yong:"今天受到表扬时，真诚地把功劳分一部分给他人。"},
+{n:16,ti:"和乐安豫",bh:"豫卦上震（雷）下坤（地），雷出地上，万物振奋，象征喜悦安乐。卦辞：利于建立诸侯、出兵作战。《象传》：先王因此制作音乐、崇尚德行，隆重祭祀上天与祖先。",
+yao:["鸣豫：得意忘形张扬享乐，凶","介于石：坚定如石，见机即行，守正吉","盱豫：谄媚求乐，迟疑必悔","由豫：众人由他得乐，大有收获","贞疾：长期有隐患，但不至于亡","冥豫：沉溺享乐，及时改变则无咎"],
+gu:"南唐后主李煜精通诗词音乐，却沉溺享乐、不理国政，最终国破被俘，写下“问君能有几多愁，恰似一江春水向东流”。“鸣豫，凶”。",
+jin:"1939年冼星海创作《黄河大合唱》，激昂的歌声唱遍大江南北，鼓舞了无数人投身抗战。这就是“作乐崇德”——音乐凝聚人心。",
+yong:"今天听一首振奋人心的音乐，但注意乐而不淫。"},
+{n:17,ti:"随时而动",bh:"随卦上兑（泽）下震（雷），雷在泽中潜藏，象征随从、顺应。卦辞：大亨通，利于守正，无咎。《象传》：君子在天晚时就回家休息——顺应时间规律。",
+yao:["官有渝：观念随变化，出门交往有功","系小子：跟随小人，失去君子","系丈夫：跟随贤者，舍弃小人","随有获：随从有所收获，守正为要","孚于嘉：诚信追随美善，吉","拘系之：坚定的追随，至诚感神"],
+gu:"魏征原是太子李建成的谋士，玄武门之变后，唐太宗不计前嫌重用他。魏征也认清时势，转而尽心辅佐，成为一代名臣。“随时之义大矣哉”。",
+jin:"腾讯早年靠电脑端QQ起家，移动互联网兴起时，推出了微信，顺应时代从“电脑时代”跨入“手机时代”。随时而动，才不会被淘汰。",
+yong:"今天顺应作息：天黑后减少工作，早点休息（向晦入宴息）。"},
+{n:18,ti:"整治积弊",bh:"蛊卦上艮（山）下巽（风），风在山下被阻，器物久置生虫，象征积弊需要整治。卦辞：大亨通，利于渡大河；行动前三天要周密谋划，之后三天要反复检查。《象传》：君子要振奋民心、培育德行。",
+yao:["干父之蛊：纠正父辈的弊端，终吉","干母之蛊：纠正母辈过失，不可太刚","干父之蛊：小有悔，无大咎","裕父之蛊：宽容积弊，前往受辱","干父之蛊用誉：用美德纠正，得赞誉","不事王侯：高尚其事，超然自守"],
+gu:"明朝万历初年，张居正面对积弊重重的朝政，推行考成法、清丈田亩、实行一条鞭法，使明朝财政一度扭亏为盈。这就是“干父之蛊”。",
+jin:"1993年IBM陷入巨额亏损，郭士纳临危受命，打破官僚积弊、推动转型为服务型公司，让这头“大象”重新跳起舞来。",
+yong:"今天找一个拖延已久的“积弊”（坏习惯、乱抽屉），动手整治。"},
+{n:19,ti:"亲临督导",bh:"临卦上坤（地）下兑（泽），地在泽上，居高临下，象征亲临、监督、领导。卦辞：大亨通，利于守正；到了八月会有凶险（盛极转衰）。《象传》：君子教化百姓的思想无穷无尽，容纳保护百姓无边无际。",
+yao:["咸临：以感化来领导，守正吉","咸临：感化而治，吉无不利","甘临：靠甜言蜜语，无益，忧而改之无咎","至临：亲自到位，无咎","知临：以智慧领导，大君之宜，吉","敦临：以敦厚领导，吉"],
+gu:"康熙皇帝六次南巡，亲自视察黄河、淮河治理工程，实地查看河堤，听取民情，使河患大为减少。领导亲临一线，才知实情。",
+jin:"惠普公司创始人提倡“走动式管理”：管理者不坐在办公室，而是走到员工中间，了解一线情况，被许多企业效仿。",
+yong:"今天到“一线”看一看：亲自去现场了解一件你负责的事。"},
+{n:20,ti:"观察示范",bh:"观卦上巽（风）下坤（地），风行地上，吹遍万物，象征观察与被观察。卦辞：祭祀时洗手后还没献祭，内心虔诚庄严，令人敬仰。《象传》：先王巡视四方，观察民情，设立教化。",
+yao:["童观：像孩童般浅看，小人无咎","窥观：从门缝偷看，眼界狭窄","观我生：观察自己的行为，决定进退","观国之光：观察国家的光辉，宜做贵宾","观我生：君子反观自己，无咎","观其生：观察他人，也被他人观察"],
+gu:"周代设有“采诗官”，到民间收集歌谣，帮助君主“观风俗，知得失”。《诗经》中的许多民歌就是这样流传下来的。",
+jin:"社会学家费孝通深入江苏吴江开弦弓村实地调查，写成《江村经济》，开创了中国社会学的田野研究。真正了解社会，要靠“观”。",
+yong:"今天花10分钟观察身边一个人或一件事，不评判，只记录。"},
+{n:21,ti:"明罚敕法",bh:"噬嗑卦上离（火、电）下震（雷），雷电交加，象征用刑罚咬合障碍。卦形像嘴里咬着一根硬物，必须咬断才能合上。卦辞：亨通，利于用刑狱。《象传》：先王明确刑罚，整饬法令。",
+yao:["屦校灭趾：小惩大诫，无咎","噬肤灭鼻：咬到软肉，用刑稍过","噬腊肉遇毒：遇到小麻烦，终无大咎","噬干胏得金矢：艰难中守正，吉","噬干肉得黄金：守中道而警惕，无咎","何校灭耳：罪大恶极，凶"],
+gu:"汉文帝出行，有人惊了御马，文帝要重罚，廷尉张释之只按律判罚金。他说：“法者，天子所与天下公共也。”法律对天子和百姓都一样，不能随意加重。",
+jin:"1952年新中国处理刘青山、张子善贪污案，二人虽有功劳，仍被依法严惩，震动全国。明罚敕法，才能清除障碍。",
+yong:"今天给自己或团队的规则“明”一下：写清楚，执行到位。"},
+{n:22,ti:"文质彬彬",bh:"贲卦上艮（山）下离（火），山下有火，照亮山上的草木，象征装饰、文饰。卦辞：亨通，小事有利。《象传》：君子要修明各项政务，但不敢用文饰来草率断狱。上九“白贲，无咎”：最高的装饰是朴素无华。",
+yao:["贲其趾：装饰脚，舍车步行","贲其须：修饰胡须，随人而动","贲如濡如：装饰润泽，永守正吉","贲如皤如：素白之美，求婚不为寇","贲于丘园：装饰园林，礼薄而终吉","白贲：以素为饰，返璞归真，无咎"],
+gu:"孔子说：“质胜文则野，文胜质则史。文质彬彬，然后君子。”内在实质与外在修饰要相称，过分朴素显得粗野，过分修饰显得浮夸。",
+jin:"许多商品过度包装，一盒月饼包装比月饼还贵；而一些品牌提倡简约设计，去掉不必要的装饰，反而赢得口碑。“白贲无咎”。",
+yong:"今天简化一个“过度装饰”的东西：一份PPT、一段话、一身打扮。"},
+{n:23,ti:"剥落待复",bh:"剥卦上艮（山）下坤（地），五阴在下、一阳在上，阴气逐渐剥蚀阳气，像山体风化剥落。卦辞：不利于有所前往。《象传》：在上者要厚待下面的百姓，使根基稳固，才能安居。",
+yao:["剥床以足：床脚被剥，根基动摇，凶","剥床以辨：剥到床身，凶","剥之无咎：与小人决裂，无咎","剥床以肤：剥及肌肤，凶","贯鱼以宫人宠：率众顺从，无不利","硕果不食：仅存的硕果，君子得民心"],
+gu:"明朝末年，土地兼并、宦官专权、党争不断、天灾频发，国家根基一层层被剥蚀。崇祯皇帝虽勤政，也无力回天。",
+jin:"雅虎曾是互联网巨头，却在搜索、社交、移动等浪潮中一次次错失机会，业务逐步被剥离，2017年核心业务被出售。",
+yong:"在不顺时，守住你的“硕果”（最核心的能力或关系），等待转机。"},
+{n:24,ti:"一阳来复",bh:"复卦上坤（地）下震（雷），雷在地中，一阳从下面复生，象征回归、复兴（对应冬至）。卦辞：亨通，出入没有疾病，朋友来无咎；七天一个循环。《象传》：先王在冬至这天关闭关口，让阳气安静生长。",
+yao:["不远复：走不远就回头，无悔元吉","休复：美好的回归，吉","频复：屡失屡复，危而无咎","中行独复：在群体中独自回归正道","敦复：敦厚地回归，无悔","迷复：迷途不返，凶"],
+gu:"孔子称赞颜回“不迁怒，不贰过”，《系辞》说：“颜氏之子……有不善未尝不知，知之未尝复行也。”这就是“不远复”——一发现错误就立刻改正。",
+jin:"2008年星巴克创始人舒尔茨回归公司，面对业绩下滑，他让全美七千多家门店同时关门数小时，重新培训员工做好一杯咖啡，带领公司回归初心、重新增长。",
+yong:"发现自己偏离了某个好习惯？今天就“不远复”——马上回来。"},
+{n:25,ti:"不妄为",bh:"无妄卦上乾（天）下震（雷），天下雷行，万物不敢妄动。卦辞：大亨通，利于守正；如果不正就有灾祸，不利于前往。《象传》：先王顺应天时，养育万物。无妄也指意外之灾——不妄为，也要坦然面对意外。",
+yao:["无妄往吉：真诚不妄地前往，吉","不耕获：不贪求，顺其自然有利","无妄之灾：意外之祸，非己之过","可贞：守正则无咎","无妄之疾：不用药也会好","无妄行有眚：此时妄动必有灾"],
+gu:"“城门失火，殃及池鱼”：城门着火，人们取护城河的水救火，水干了，鱼全死了。鱼并没有做错什么，这就是“无妄之灾”。",
+jin:"金融市场常有“黑天鹅”事件：无法预测、影响巨大。真正稳健的投资者不妄动、不赌博，并为意外留出余地。",
+yong:"今天面对一件意外的坏事，先不怪罪，只问：下一步怎么做？"},
+{n:26,ti:"大积蓄",bh:"大畜卦上艮（山）下乾（天），天在山中，象征大的积蓄。卦辞：利于守正，不在家吃闲饭，吉；利于渡大河。《象传》：君子要多学习前人的言论和事迹，来积蓄自己的德行。",
+yao:["有厉利已：有危险，宜暂停","舆说輹：车轴脱落，暂不前进","良马逐：良马驰骋，艰难守正","童牛之牿：在小牛角上绑木，防患于未然","豮豕之牙：制服猪牙，从根本制约","何天之衢：畅通天路，大亨通"],
+gu:"北宋司马光用十九年时间主持编写《资治通鉴》，“多识前言往行”，把一千三百多年的历史经验汇成一部巨著，供后世借鉴。",
+jin:"2008年挪威斯瓦尔巴全球种子库启用，在北极冻土中保存了全世界上百万份作物种子，为人类农业留下“大畜”。",
+yong:"今天读一个前人的故事或语录，记在本子上（多识前言往行）。"},
+{n:27,ti:"颐养正道",bh:"颐卦上艮（山）下震（雷），外实中虚，像张开的嘴，象征养育、饮食。卦辞：守正吉，观察一个人怎样养人、怎样养己，看他自己追求什么样的食物。《象传》：君子要谨慎言语、节制饮食。",
+yao:["观我朵颐：舍己之灵龟，羡人之食，凶","颠颐：向下求养，违背常理","拂颐：违背养生之道，凶","颠颐吉：向下求养贤者，吉","拂经：守正居中，吉","由颐：天下由他得养，大吉"],
+gu:"三国杨修聪明过人，却屡次卖弄口舌、揣测曹操心思，最终因“鸡肋”一事被曹操借故处死。“病从口入，祸从口出”。",
+jin:"世界卫生组织将不健康饮食列为慢性病的主要风险之一，现代营养学提倡“合理膳食、少油少盐”。“节饮食”在今天仍是健康第一要诀。",
+yong:"今天一餐只吃七分饱，并少说一句不必要的话。"},
+{n:28,ti:"非常之时",bh:"大过卦上兑（泽）下巽（木），泽水淹没了树木，四阳在中、两阴在外，像屋梁中间粗两头弱，压弯了。卦辞：栋梁弯曲，利于有所前往，亨通。《象传》：君子要独立不惧，隐退也不苦闷。",
+yao:["藉用白茅：用白茅垫物，谨慎无咎","枯杨生稊：枯杨发新芽，老夫得少妻","栋桡：栋梁弯曲，凶","栋隆：栋梁隆起，吉","枯杨生华：枯杨开花，难以长久","过涉灭顶：涉水灭顶，虽凶无咎"],
+gu:"项羽率军救赵，渡河后“皆沉船，破釜甑，烧庐舍，持三日粮”，以示必死。楚军以一当十，大破秦军。非常之时，须用非常之举。",
+jin:"1998年亚洲金融危机中，国际炒家冲击港元，香港特区政府罕见地动用外汇储备入市干预，成功击退炒家。危急时刻，“独立不惧”。",
+yong:"面对压力过大的事，先给“栋梁”加固：减轻负担、找人分担。"},
+{n:29,ti:"重险中守信",bh:"坎卦上下都是坎（水），重重险陷。卦辞：有诚信，内心亨通，行动会得到尊重。《象传》：水不断流来，君子要保持德行恒常，反复练习教化之事。坎卦教人：身处险境，心要诚、要坚持练习。",
+yao:["习坎入于坎窞：陷入深坑，凶","坎有险：险中求小得","来之坎坎：进退皆险，勿动","樽酒簋贰：真诚简约，终无咎","坎不盈：险尚未满，平则无咎","系用徽纆：被困三年，凶"],
+gu:"周文王被商纣王囚禁在羑里七年，身陷险境。他没有绝望，在狱中推演八卦为六十四卦，“文王拘而演周易”。",
+jin:"海伦·凯勒幼年失明失聪，身处无声无光的“重险”之中。她坚持一遍遍学习，学会读写和说话，最终从大学毕业，成为著名作家和演说家。",
+yong:"今天面对困难时，重复练习一件基本功（习坎）。"},
+{n:30,ti:"附丽光明",bh:"离卦上下都是离（火、日），光明相继。离是“附丽”，火必须依附于物才能燃烧。卦辞：利于守正，亨通，畜养母牛（柔顺）吉。《象传》：光明接连升起，大人要以持续的光明照耀四方。",
+yao:["履错然：步履交错，敬慎无咎","黄离：黄色的光，居中大吉","日昃之离：夕阳西下，不乐则嗟叹","突如其来如：突然而来，焚死弃","出涕沱若：流泪忧戚，终吉","王用出征：出征除恶，有嘉"],
+gu:"孔子开创私学，弟子三千、贤者七十二，学问代代相传，“薪尽火传”。光明不在一时，而在“继明照四方”。",
+jin:"1879年爱迪生发明实用的白炽灯，经过上千次试验才找到合适的灯丝材料。从此人类的夜晚被照亮，光明“附丽”于电，传遍世界。",
+yong:"今天把你学到的一点光明（知识、经验）传给另一个人。"},
+{n:31,ti:"以虚受人",bh:"咸卦上兑（泽、少女）下艮（山、少男），山上有泽，山泽通气，象征感应。卦辞：亨通，利于守正，娶妻吉。《象传》：君子要以虚怀若谷的心接纳他人。“咸”是无心之感，真诚才能感人。",
+yao:["咸其拇：感应在脚趾，刚开始","咸其腓：感应在小腿，妄动凶","咸其股：感应在大腿，盲从则吝","憧憧往来：心神不定，朋从尔思","咸其脢：感应在背，无悔","咸其辅颊舌：只靠嘴巴感应，浅薄"],
+gu:"伯牙弹琴，心在高山，钟子期说“巍巍乎若泰山”；心在流水，钟子期说“洋洋乎若江河”。子期死后，伯牙破琴绝弦。“高山流水”就是心灵的感应。",
+jin:"心理学家罗杰斯提出“共情”：放下评判，真诚地站在对方角度倾听。现代心理咨询、教育、管理都把共情作为沟通的基础。",
+yong:"今天和人谈话时，先放下自己的看法，完整听对方说完。"},
+{n:32,ti:"恒久之道",bh:"恒卦上震（雷）下巽（风），雷风相伴，象征恒久。卦辞：亨通，无咎，利于守正，利于有所前往。《象传》：君子要坚守自己的立场，不轻易改变方向。",
+yao:["浚恒：一开始就求深求恒，凶","悔亡：守中则悔恨消失","不恒其德：德行不恒，必受羞辱","田无禽：方向错了，再久也无获","恒其德：恒守德行，因人而异","振恒：动摇不定，凶"],
+gu:"王羲之练字极为刻苦，相传他每天练完字就到池塘里洗笔砚，久而久之池水都变黑了（墨池）。几十年如一日，终成“书圣”。",
+jin:"樊锦诗从北大毕业后来到敦煌，一守就是五十多年，推动莫高窟的保护和数字化，被称为“敦煌的女儿”。恒，是最朴素的力量。",
+yong:"选一件小事，今天开始连续坚持21天。"}
+];
+
+</script>
+<script>
+window.GUA_NOTES.push(
+{n:33,ti:"适时退避",bh:"遯卦上乾（天）下艮（山），天下有山，山虽高而天远避之，象征退隐。两阴从下渐长，小人势力上升，君子应当退避。卦辞：亨通，小事利于守正。《象传》：君子远离小人，不必憎恶，但要保持威严。",
+yao:["遯尾：退在最后，危险，勿有所往","执之用黄牛之革：坚定意志，不可动摇","系遯：有牵挂难退，危","好遯：心甘情愿地退，君子吉","嘉遯：退得恰到好处，守正吉","肥遯：从容远退，无不利"],
+gu:"东汉严子陵是光武帝刘秀的同学，刘秀称帝后多次请他做官，他坚辞不受，隐居富春江垂钓。后人称颂“云山苍苍，江水泱泱，先生之风，山高水长”。",
+jin:"2004年IBM把个人电脑业务出售给联想，主动退出利润微薄的领域，集中资源发展服务与软件。懂得适时退出，也是一种智慧。",
+yong:"今天远离一个消耗你的人或事，不必吵闹，只需保持距离。"},
+{n:34,ti:"壮而守礼",bh:"大壮卦上震（雷）下乾（天），雷在天上轰鸣，四阳壮盛。卦辞：利于守正。《象传》：君子不合礼的事不做。越是强盛，越要守规矩，否则像公羊顶篱笆，角被卡住进退两难。",
+yao:["壮于趾：脚上逞强，前往凶","贞吉：守中正，吉","小人用壮：逞强如羊触藩，角被卡","藩决不羸：篱笆打开，壮于大车","丧羊于易：丢了羊（失去刚强），无悔","羝羊触藩：不能退不能进，艰则吉"],
+gu:"清朝年羹尧平定青海立下大功，却居功自傲：接见官员要人跪迎、给皇帝的奏章也敢草率。最终被雍正列出九十二条大罪，赐其自尽。",
+jin:"1912年泰坦尼克号被称为“永不沉没”的巨轮，船上救生艇严重不足，航行中又对冰山警告重视不够，首航即撞冰山沉没。越强大，越要敬畏规则。",
+yong:"今天在你最“强”的领域，主动遵守一条你平时可能忽略的规矩。"},
+{n:35,ti:"光明晋升",bh:"晋卦上离（日）下坤（地），太阳从地面升起，象征上进、晋升。卦辞：康侯得到天子赏赐的马匹，一天之内三次被接见。《象传》：君子要自己彰显光明的德行。",
+yao:["晋如摧如：进而受阻，守正宽裕无咎","晋如愁如：进时忧愁，守正得福","众允：得到众人信任，悔亡","晋如鼫鼠：像鼫鼠贪而无能，危","失得勿恤：不计得失，前往吉","晋其角：进到顶端，只宜自治"],
+gu:"唐玄宗请姚崇做宰相，姚崇先提出“十事要说”：施政以仁义、不求边功、宦官不干政等，玄宗全部答应，他才上任，帮助开创了“开元之治”。晋升靠的是“自昭明德”。",
+jin:"董明珠从格力的一名普通业务员做起，凭着认真和诚信，一步步成为销售冠军、经营部长，最终成为公司董事长。",
+yong:"今天主动展示一次自己的真实能力（自昭明德），不靠关系。"},
+{n:36,ti:"用晦而明",bh:"明夷卦上坤（地）下离（日），太阳落入地下，光明受伤，象征黑暗时期。卦辞：利于在艰难中守正。《象传》：君子治理众人时，用晦藏光明的方式，反而更明智。",
+yao:["明夷于飞：垂下翅膀，三日不食","夷于左股：伤了左腿，用壮马救之吉","明夷于南狩：南征得大首领，不可急","入于左腹：知晓内情，及时离去","箕子之明夷：箕子装疯，利于守正","不明晦：先登于天，后入于地"],
+gu:"商纣王暴虐，叔父箕子劝谏不听，便披发装疯，被贬为奴，保全了自己和内心的光明。周灭商后，他向周武王陈述治国大法《洪范》。",
+jin:"霍金21岁患上渐冻症，被预言只能活两年。他在身体被禁锢的“黑暗”中坚持思考，提出了霍金辐射等重要理论，写出《时间简史》。",
+yong:"在不利环境中，今天先“晦”：少说话，把光明留在心里。"},
+{n:37,ti:"正家而天下定",bh:"家人卦上巽（风）下离（火），风从火出，由内向外，象征家庭。卦辞：利于女子守正。《象传》：君子说话要有实际内容，行动要有恒常规矩。家正则天下安定。",
+yao:["闲有家：一开始就立好家规，悔亡","无攸遂：主内持家，守正吉","家人嗃嗃：严厉些虽有悔，终吉","富家：使家富裕，大吉","王假有家：以德感化家人，勿忧","有孚威如：诚信而有威严，终吉"],
+gu:"孟子幼年丧父，母亲为了给他好的成长环境，三次搬家，从墓地旁搬到市集旁，最后搬到学宫旁，孟子才开始学习礼仪。“孟母三迁”是齐家的典范。",
+jin:"翻译家傅雷给远在海外的儿子傅聪写了大量家书，教他做人、做艺术，后来结集为《傅雷家书》。“言有物而行有恒”，家风影响一生。",
+yong:"今天和家人一起定一条小家规，并自己先做到。"},
+{n:38,ti:"同而存异",bh:"睽卦上离（火）下兑（泽），火向上、泽向下，彼此背离，象征乖离、分歧。卦辞：小事吉。《象传》：君子要在大同中保存小异。分歧中也能找到合作。",
+yao:["丧马勿逐：马丢了不用追，自会回来","遇主于巷：在小巷遇到主人，无咎","见舆曳：车被拖、牛被阻，无初有终","睽孤：孤立中遇到良友，危而无咎","厥宗噬肤：同宗亲近，前往无咎","睽孤见豕负涂：疑心生暗鬼，疑去则吉"],
+gu:"管仲曾在争位时射中公子小白（齐桓公）的衣带钩，两人是仇敌。齐桓公即位后，听从鲍叔牙的建议，不计前嫌拜管仲为相，成就了霸业。",
+jin:"1955年万隆亚非会议上，与会国家社会制度、意识形态各不相同，周恩来提出“求同存异”，推动会议达成了团结合作的共识。",
+yong:"今天和一个意见不同的人合作时，先说出“我们的共同点是……”"},
+{n:39,ti:"见险而止",bh:"蹇卦上坎（水、险）下艮（山、止），山上有水，前有险阻，象征行路艰难。卦辞：利于西南（平坦），不利于东北（险峻），利于见贵人，守正吉。《象传》：君子要反省自身，修养德行。",
+yao:["往蹇来誉：前往艰难，回来得誉","王臣蹇蹇：为国为民奔波，非为己","往蹇来反：前往有难，返回","往蹇来连：前往有难，回来联合众人","大蹇朋来：大难中朋友来助","往蹇来硕：回来有大收获，宜见大人"],
+gu:"唐代玄奘为求真经西行，穿越沙漠戈壁、翻越雪山，历经十七年、行程五万里，最终带回佛经六百多部。艰难中他不断反身修德，从未放弃。",
+jin:"1934年起，中国工农红军进行了二万五千里长征，翻雪山、过草地，在极端艰难中保存了革命力量。“大蹇朋来”——越难越要团结。",
+yong:"今天遇到阻碍时，先停下来反省：是不是自己哪里需要调整？"},
+{n:40,ti:"解难宽恕",bh:"解卦上震（雷）下坎（雨），雷雨交加，冰雪消融，万物复苏，象征困难解除。卦辞：利于西南；没有事就回来恢复常态，有事要及早去做。《象传》：君子要赦免过错、宽恕罪行。",
+yao:["无咎：险难初解，无咎","田获三狐：打猎得三狐，守正吉","负且乘：背着东西又坐车，招盗","解而拇：解开脚上的束缚，朋友来","君子维有解：君子能解难，小人退","射隼于高墉：射下高墙上的恶鸟，无不利"],
+gu:"楚庄王宴请群臣，烛火被风吹灭，有人趁黑拉扯王妃衣服，王妃扯下他的帽缨告状。楚庄王却让所有人都扯下帽缨再点灯，不追究。后来一位将军在战场上拼死救了楚庄王，正是当年那个人。（绝缨之宴）",
+jin:"1995年南非成立“真相与和解委员会”，由图图大主教主持，让种族隔离时期的施害者坦白真相、受害者得到承认，以和解代替报复，帮助国家走出仇恨。",
+yong:"今天原谅一个人的一次小过错，解开心里的结。"},
+{n:41,ti:"损下益上",bh:"损卦上艮（山）下兑（泽），减损下面的泽水来增高上面的山，象征减损。卦辞：有诚信，大吉，无咎；用两簋简单的食物就能祭祀。《象传》：君子要克制愤怒、抑制欲望。损不一定是坏事，该减的减，才能得益。",
+yao:["已事遄往：事毕速去帮助，酌量减损","弗损益之：不损自己而益人","三人行则损一人：三人行损一人，一人行得其友","损其疾：减少毛病，速有喜","或益之十朋之龟：得到大益，元吉","弗损益之：不损而益，大得志"],
+gu:"孔子读《易》读到损、益二卦，喟然长叹。子夏问为什么，孔子说：“自损者益，自益者缺。”主动减损自己的人反而得益，一味求益的人反而会缺损。（见《说苑》）",
+jin:"上世纪80年代起，通用电气的韦尔奇提出“数一数二”战略：不能做到行业第一或第二的业务就整顿、出售或关闭。大胆“做减法”，让公司更强。",
+yong:"今天“惩忿窒欲”：忍住一次发火，或放下一个不必要的欲望。"},
+{n:42,ti:"损上益下",bh:"益卦上巽（风）下震（雷），风雷相助，减损上面来增益下面，象征增益。卦辞：利于有所前往，利于渡大河。《象传》：君子看到善行就学习，有了过错就改正。",
+yao:["利用为大作：适合做大事，元吉","或益之十朋之龟：得大益，永贞吉","益之用凶事：用于救灾，诚信无咎","中行告公从：以中道建议，被采纳","有孚惠心：真心施惠，大吉","莫益之：只求自益不益人，凶"],
+gu:"西汉少女缇萦上书汉文帝，愿意入宫为奴替父赎罪，并指出肉刑让人无法改过自新。汉文帝深受感动，下令废除肉刑。这是“损上益下”的仁政。",
+jin:"2006年起，中国逐步对农村和城市义务教育阶段学生免除学杂费，到2008年全面实现免费义务教育，让亿万孩子受益。",
+yong:"今天学习一个别人的优点（见善则迁），改掉一个自己的小毛病。"},
+{n:43,ti:"果断决除",bh:"夬卦上兑（泽）下乾（天），五阳在下、一阴在上，阳刚要决除最后的阴柔，象征决断。卦辞：在朝廷上公开宣布小人的罪状，以诚信号令，但要警惕，不宜动武。《象传》：君子要把恩惠施给下面的人，不可居德自傲。",
+yao:["壮于前趾：冒进不胜，为咎","惕号：警惕呼号，夜里有兵也不怕","壮于頄：怒形于色，凶","臀无肤：坐立不安，牵羊悔亡","苋陆夬夬：果断中行，无咎","无号：无人呼救，终有凶"],
+gu:"西汉吕后死后，吕氏外戚准备作乱。太尉周勃、丞相陈平果断联合，夺取北军兵权，一举诛灭诸吕，迎立汉文帝，汉朝转危为安。",
+jin:"2007年网飞（Netflix）在DVD租赁业务正赚钱时，果断推出流媒体服务，后来又大力投资原创内容，从一家租碟公司成长为全球流媒体巨头。",
+yong:"今天对一件犹豫很久的事做出决断，并公开说出来。"},
+{n:44,ti:"警惕初遇",bh:"姤卦上乾（天）下巽（风），天下有风，无处不遇，一阴从下面突然出现遇到五阳，象征相遇。卦辞：女子过于强盛，不宜娶她——提醒小人初现时就要警惕。《象传》：君主颁布命令，告示四方。",
+yao:["系于金柅：把车牢牢刹住，防阴滋长","包有鱼：厨中有鱼，不宜给宾客","臀无肤：坐立不安，危而无大咎","包无鱼：失去民心，凶","以杞包瓜：含藏美德，天降福","姤其角：遇于角端，吝而无咎"],
+gu:"唐玄宗宠信安禄山，让他身兼三镇节度使，有人提醒他必反，玄宗不信。一阴初生时不加防范，终于酿成安史之乱。",
+jin:"网络诈骗中的“杀猪盘”，常以“偶遇”开始：一个陌生人在网上主动搭讪、嘘寒问暖，再诱导投资。对“偶遇”保持警惕，是姤卦的现代启示。",
+yong:"今天对一个突如其来的“好机会”或陌生人，先问三个问题再行动。"},
+{n:45,ti:"聚众有备",bh:"萃卦上兑（泽）下坤（地），泽在地上，水聚成泽，象征聚集。卦辞：君王来到宗庙，利于见贵人，用大牲祭祀吉。《象传》：君子要整治兵器，防备意外。人聚在一起时，也最容易出乱子。",
+yao:["乃乱乃萃：时乱时聚，一握为笑","引吉：被引荐而聚，诚信即可","萃如嗟如：聚而叹息，往无咎","大吉无咎：大吉才能无咎","萃有位：聚有其位，要永守正","赍咨涕洟：叹息流泪，无咎"],
+gu:"东晋永和九年（353年），王羲之与谢安等四十余位名士在兰亭雅集，曲水流觞、饮酒赋诗。王羲之为诗集作序，留下千古名篇《兰亭集序》。",
+jin:"2008年北京奥运会，数百个国家和地区的运动员齐聚一堂，同时组织者做了周密的安保和应急准备。“萃”之时，必须“戒不虞”。",
+yong:"今天组织一次小聚（家人或朋友），并提前想好可能的意外。"},
+{n:46,ti:"积小成高",bh:"升卦上坤（地）下巽（木），树木从地中生长，逐渐升高，象征上升。卦辞：大亨通，宜见大人，不用忧虑，向南出发吉。《象传》：君子要顺应德行，积累小善成就崇高伟大。",
+yao:["允升：得到信任而上升，大吉","孚乃利用禴：诚信即可简祭，无咎","升虚邑：升入空城，畅通无阻","王用亨于岐山：受到尊崇，吉","贞吉升阶：守正步步登阶，吉","冥升：盲目求升，宜守正不息"],
+gu:"西汉匡衡家贫无烛，凿穿墙壁借邻居的灯光读书，又去富人家做工不要报酬，只求借书来读。日积月累，终成大学问家，官至丞相。",
+jin:"莫言出生在山东农村，小学没读完就辍学放牛，靠着自学和长期写作，一步步成长，2012年获得诺贝尔文学奖。",
+yong:"今天往上走一小级台阶：比昨天多做一点点。"},
+{n:47,ti:"困中致命遂志",bh:"困卦上兑（泽）下坎（水），泽中的水漏到下面，泽干涸了，象征困穷。卦辞：亨通，守正的大人吉，无咎；此时说话没人信。《象传》：君子在困境中宁可舍弃生命，也要实现志向。",
+yao:["臀困于株木：困坐树桩，三年不见","困于酒食：困于享乐，宜祭祀","困于石：困于石，据于蒺藜，凶","来徐徐：缓慢前来，困于金车","劓刖：受伤受困，慢慢有喜","困于葛藟：被藤缠住，悔悟则吉"],
+gu:"司马迁因为李陵辩护而受宫刑，这是奇耻大辱。他忍辱负重，“究天人之际，通古今之变”，完成了被誉为“史家之绝唱”的《史记》。",
+jin:"张海迪5岁时因病高位截瘫，无法上学。她在病床上自学完成了小学到大学的课程，学会多门外语，翻译和创作了大量作品。困而不失其志。",
+yong:"今天写下：即使处境不顺，我仍坚持的一个志向是____。"},
+{n:48,ti:"井养不穷",bh:"井卦上坎（水）下巽（木），木桶下到水里打水上来，象征水井。卦辞：村落可以迁移，水井却不能迁走，井水不会枯竭也不会溢出，来来往往的人都靠它。《象传》：君子要慰劳百姓，劝勉大家互相帮助。",
+yao:["井泥不食：井底淤泥，无人取用","井谷射鲋：井水只能养小鱼，瓮破漏","井渫不食：井已淘净却没人用，可惜","井甃：修砌井壁，无咎","井冽寒泉食：井水清凉，人人可饮","井收勿幕：井口不盖，人人受益，大吉"],
+gu:"新疆吐鲁番的坎儿井，把天山雪水通过地下暗渠引到绿洲，减少蒸发，千百年来养育了一代代人。“井养而不穷”。",
+jin:"19世纪末起，美国企业家卡内基捐资建造了两千五百多座公共图书馆，免费向所有人开放。这些“知识之井”至今仍滋养着无数读者。",
+yong:"今天做一件“公共之井”的事：分享一份资料、维护一处公共环境。"},
+{n:49,ti:"顺天应人的变革",bh:"革卦上兑（泽）下离（火），水火相克、相互变化，象征变革。卦辞：到了合适的时候才能取信于人，大亨通，利于守正，悔恨消失。《象传》：君子要修订历法，明确时令。变革要顺天应人、把握时机。",
+yao:["巩用黄牛之革：时机未到，坚守不动","己日乃革之：时机到了才变革，吉","革言三就：变革方案反复讨论三次","改命吉：有诚信地改变天命，吉","大人虎变：大人变革如虎纹鲜明","君子豹变：君子随之改变，小人革面"],
+gu:"战国商鞅在秦国变法，先“徙木立信”取信于民，再推行废井田、奖耕战等措施。秦国由此富强，为统一六国打下基础。",
+jin:"1868年日本开始明治维新，废藩置县、学习西方技术和制度，在几十年内由封建国家变为近代工业国家。",
+yong:"今天想改变一个习惯，先做一个小承诺并兑现（取信于己）。"},
+{n:50,ti:"鼎新立命",bh:"鼎卦上离（火）下巽（木），木上燃火，用鼎烹煮食物，象征鼎新、建立新秩序。卦辞：大吉，亨通。《象传》：君子要端正自己的位置，严守使命。鼎也是国家权力的象征。",
+yao:["鼎颠趾：鼎翻倒出旧渣，有利","鼎有实：鼎中有食物，慎防嫉妒","鼎耳革：鼎耳变了，暂时不通","鼎折足：鼎足折断，倾覆，凶","鼎黄耳金铉：中正得配，利守正","鼎玉铉：玉制鼎杠，大吉"],
+gu:"楚庄王陈兵周朝边境，向周大夫王孙满询问九鼎的大小轻重，意在夺取天下。王孙满回答：“在德不在鼎。”国家的分量在于德行，而不在于宝器。",
+jin:"2020年《中华人民共和国民法典》通过，这是新中国第一部以“法典”命名的法律，系统规范了人们生活中的各种民事关系。“正位凝命”，以制度立新秩序。",
+yong:"今天把一件事的角色和责任“定位”清楚：谁负责、做到什么程度。"},
+{n:51,ti:"临震不惊",bh:"震卦上下都是震（雷），惊雷接连而来。卦辞：亨通；雷声传来人们惊恐，之后却谈笑自如；雷声震惊百里，主祭者手中的祭器也不掉落。《象传》：君子在震动中要心怀恐惧、修身反省。",
+yao:["震来虩虩：先惊恐后笑语，吉","震来厉：丧失财物，七日复得","震苏苏：惊恐不安，谨慎行事无灾","震遂泥：受惊陷入泥中","震往来厉：往来皆危，守中无失","震索索：惊恐张望，邻居受震当预防"],
+gu:"曹操和刘备“煮酒论英雄”，曹操说：“天下英雄，唯使君与操耳。”刘备大惊，筷子掉在地上，恰好一声惊雷，他借口怕雷掩饰过去。（见《三国演义》）临震而能自持，才能保全自己。",
+jin:"2010年丰田汽车因质量问题在全球召回数百万辆车，社长丰田章男在美国国会公开道歉，此后公司全面反省、加强质量管理。“恐惧修省”，从震动中成长。",
+yong:"今天遇到让你“一惊”的消息，先稳住，再问：我能从中反省什么？"},
+{n:52,ti:"知止而止",bh:"艮卦上下都是艮（山），两山重叠，象征静止。卦辞：止住背部（不为外物所动），行走在庭院中也看不见人，无咎。《象传》：君子思虑不超出自己的本位。该止则止，该行则行。",
+yao:["艮其趾：一开始就止住，无咎","艮其腓：止住小腿，心中不快","艮其限：止于腰部，危险熏心","艮其身：止住自身，无咎","艮其辅：管住嘴巴，言有序","敦艮：敦厚地止，吉"],
+gu:"孔子说：“不在其位，不谋其政。”曾子补充：“君子思不出其位。”做好自己本位的事，不越界、不乱伸手。",
+jin:"日本寿司师傅小野二郎一生只做寿司，九十多岁仍在店里，被称为“寿司之神”。专注于一件事，止于一处，反而做到极致。",
+yong:"今天专注于自己“本位”的一件事，不分心去管别人的事。"},
+{n:53,ti:"循序渐进",bh:"渐卦上巽（木）下艮（山），山上的树木逐渐长高，象征循序渐进。卦辞：女子出嫁吉，利于守正——婚嫁要按礼一步步来。《象传》：君子要积累贤德，改善风俗。六爻用大雁由水边飞向高处比喻渐进。",
+yao:["鸿渐于干：大雁到水边，小有危险","鸿渐于磐：到磐石上，饮食和乐","鸿渐于陆：到陆地，冒进有凶","鸿渐于木：到树上，找到栖枝","鸿渐于陵：到山陵，终能胜","鸿渐于陆：高飞远去，羽毛可为仪"],
+gu:"相传李白小时候逃学，看见一位老婆婆在磨铁杵，说要磨成绣花针。李白深受触动，回去发奋读书。“只要功夫深，铁杵磨成针。”",
+jin:"中国高铁从引进国外技术开始，一步步消化吸收再创新，最终实现自主研发，建成世界上规模最大的高铁网络。没有一步登天，只有循序渐进。",
+yong:"把一个大目标拆成“大雁的六步”，今天只走第一步。"},
+{n:54,ti:"知终知敝",bh:"归妹卦上震（长男）下兑（少女），少女主动追随长男，象征嫁妹，也暗示位置不当。卦辞：前往凶，无所利。《象传》：君子要考虑长久的结局，预知可能的弊端。",
+yao:["归妹以娣：以陪嫁身份出嫁，如跛能行","眇能视：眼睛不好仍能看，利守静","归妹以须：等待时机","归妹愆期：延误婚期，迟归有时","帝乙归妹：衣着朴素胜过华丽，吉","女承筐无实：虚而无实，无所利"],
+gu:"汉元帝时王昭君主动请求远嫁匈奴，促成汉匈之间几十年的和平。她出塞不是一时冲动，而是带着长远的使命，“永终知敝”。",
+jin:"现代社会“闪婚闪离”现象不少，往往因为只看一时感情，没有考虑长久相处的现实问题。归妹卦提醒：开始一段关系前，先想想长久的结局。",
+yong:"今天做一个决定前，先想想一年后的结果。"},
+{n:55,ti:"丰盛防衰",bh:"丰卦上震（雷）下离（电），雷电交加，象征丰盛盛大。卦辞：亨通，君王能达到此境，不必忧虑，宜像正午的太阳普照天下。《象传》：君子要审理诉讼、执行刑罚。彖传提醒：日中则昃，月盈则食。",
+yao:["遇其配主：遇到相配的主人，往有尚","丰其蔀：遮蔽太多，日中见斗","丰其沛：遮蔽更甚，折断右臂","丰其蔀：遇到同德的主人，吉","来章：招来贤才，有庆有誉","丰其屋：房屋丰大却无人，凶"],
+gu:"北宋张择端的《清明上河图》描绘了汴京的繁华：商铺林立、车水马龙。然而盛极之时缺乏忧患，不久之后便发生“靖康之变”，汴京陷落。",
+jin:"上世纪80年代末日本经济高度繁荣，房地产和股市暴涨，据说仅东京皇居一带的地价，就抵得上美国加州的全部土地。泡沫破裂后，日本陷入长期低迷，被称为“失去的十年”。",
+yong:"今天在顺利之时，写下一条“万一不顺”的预案。"},
+{n:56,ti:"旅途守正",bh:"旅卦上离（火）下艮（山），山上燃火，火势蔓延不停留，象征旅行、漂泊。卦辞：小亨通，旅行时守正吉。《象传》：君子要明察审慎地使用刑罚，不拖延关押。在外要谦和、谨慎、守正。",
+yao:["旅琐琐：旅途中猥琐计较，招灾","旅即次：住进客舍，有钱有仆，守正","旅焚其次：客舍被烧，失去仆人，危","旅于处：得到安身之所，心仍不快","射雉一矢亡：一箭射雉，终得美誉","鸟焚其巢：骄傲失所，先笑后哭"],
+gu:"孔子周游列国十四年，在陈蔡之间被困断粮，弟子都有怨气。孔子依然讲学弹琴，说：“君子固穷，小人穷斯滥矣。”在旅途中守住了正道。",
+jin:"詹天佑12岁赴美留学，学成归国后主持修建京张铁路，克服重重困难，成为中国人自主设计修建的第一条干线铁路。远行求学，不忘守正报国。",
+yong:"今天出门在外（或在新环境）时，多一分礼貌与谨慎。"},
+{n:57,ti:"顺风而入",bh:"巽卦上下都是巽（风），风连续吹拂，无孔不入，象征顺从、渗透。卦辞：小亨通，利于有所前往，宜见大人。《象传》：君子要反复申明命令，推行政事。柔顺而有方向，才能深入人心。",
+yao:["进退：犹疑不决，宜像武人般坚定","巽在床下：过于卑顺，用诚意则吉","频巽：屡次勉强顺从，吝","悔亡：田猎获三品，有功","先庚三日后庚三日：变更前后都谨慎，吉","巽在床下：卑顺过度，丧失资斧，凶"],
+gu:"唐代文成公主远嫁吐蕃，带去了农耕技术、医药、典籍和工匠，像春风一样把中原文化渐渐吹入雪域高原，促进了汉藏友好。",
+jin:"1956年起国家大力推广普通话，通过学校、广播、电视长期坚持，像风一样渗入生活。如今普通话已普及到绝大多数人口。",
+yong:"今天想说服别人，不要硬推，而是温和地反复说明（申命行事）。"},
+{n:58,ti:"喜悦讲习",bh:"兑卦上下都是兑（泽），两泽相连、相互滋润，象征喜悦。卦辞：亨通，利于守正。《象传》：君子要和朋友一起讲论学习。真正的喜悦来自分享与成长，而不是讨好。",
+yao:["和兑：和顺的喜悦，吉","孚兑：诚信的喜悦，吉","来兑：主动讨好求悦，凶","商兑未宁：权衡喜悦，心不安定","孚于剥：信任小人，危险","引兑：引诱人取乐"],
+gu:"《论语》开篇：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？”学习的喜悦和朋友相聚的快乐，正是兑卦“朋友讲习”的精神。",
+jin:"抗战时期的西南联大，物质极其匮乏，师生却在茅草屋里切磋学问、自由讨论，培养出杨振宁、李政道等一大批杰出人才。",
+yong:"今天和一位朋友交流一个你最近学到的知识。"},
+{n:59,ti:"化散为聚",bh:"涣卦上巽（风）下坎（水），风吹水面，波纹四散，象征涣散，也象征化解。卦辞：亨通，君王来到宗庙，利于渡大河，利于守正。《象传》：先王祭祀上帝、建立宗庙，凝聚人心。",
+yao:["用拯马壮：用壮马救助，吉","涣奔其机：散时奔向依靠，悔亡","涣其躬：散去私心，无悔","涣其群：散去小团体，大吉","涣汗其大号：发布号令如出汗，无咎","涣其血：远离伤害，无咎"],
+gu:"东汉光武帝刘秀打败王郎后，缴获大量部下与王郎私通的书信。他看也不看，当众烧掉，说：“令反侧子自安。”人心从此安定，涣散转为凝聚。",
+jin:"1998年长江、松花江等流域发生特大洪水，军民齐心协力抗洪抢险，在灾难中凝聚起强大的力量，“万众一心”。",
+yong:"今天化解一个小群体中的隔阂：主动做一次沟通的桥梁。"},
+{n:60,ti:"节制有度",bh:"节卦上坎（水）下兑（泽），泽上有水，泽能容纳水但有限度，象征节制。卦辞：节制则亨通，但过分苦节不可固守。《象传》：君子要制定制度和标准，评议德行。",
+yao:["不出户庭：知道时机不对就不出门","不出门庭：时机到了不出，凶","不节若：不节制，必然嗟叹","安节：安然节制，亨通","甘节：乐于节制，吉","苦节：过度节制，守之凶"],
+gu:"司马光在《训俭示康》中告诫儿子：“由俭入奢易，由奢入俭难。”他一生生活简朴，把节俭作为家风传下去。",
+jin:"富兰克林年轻时为自己制定了13条美德，第一条就是“节制”，每天记录检查。他从印刷工人成长为科学家、外交家和美国开国元勋之一。",
+yong:"今天为一样东西设定“节”：手机使用时间、零食、花费。"},
+{n:61,ti:"中心诚信",bh:"中孚卦上巽（风）下兑（泽），两阴在中、四阳在外，中心虚空，象征内心诚信。卦辞：诚信能感化猪和鱼这样的生物，吉祥，利于渡大河。《象传》：君子要审慎议论刑狱，宽缓死刑。",
+yao:["虞吉：安守诚信，吉，三心二意不安","鸣鹤在阴：鹤鸣子和，诚心相应","得敌：遇到对手，或进或退无常","月几望：月将圆，舍弃同类无咎","有孚挛如：以诚信牵系众人，无咎","翰音登于天：虚声上天，守之凶"],
+gu:"秦末楚人季布重诺守信，当时流传“得黄金百斤，不如得季布一诺”。后来他遭到刘邦追捕，许多人冒死保护他，正是因为他的信誉。",
+jin:"晚清胡雪岩创办胡庆余堂药号，亲笔写下“戒欺”匾额挂在内堂：“采办务真，修制务精。”这块匾至今仍在，药号也传承了一百多年。",
+yong:"今天兑现一个你曾经答应过别人但还没做的小承诺。"},
+{n:62,ti:"小事宜过",bh:"小过卦上震（雷）下艮（山），山上有雷，声音稍过，象征小有过越。卦辞：亨通，利于守正，可做小事，不可做大事；飞鸟留下鸣声，不宜向上而宜向下，大吉。《象传》：君子行为宁可过于恭敬，丧事宁可过于哀伤，用度宁可过于节俭。",
+yao:["飞鸟以凶：鸟飞太高，凶","过其祖遇其妣：不越君位，无咎","弗过防之：不加防范，恐受害","弗过遇之：不过分而相遇，勿用","密云不雨：时机未到，不可强求","弗遇过之：过高如飞鸟离网，凶"],
+gu:"张良年轻时在下邳桥上遇见一位老人，老人故意把鞋扔到桥下，让张良去捡，又让他给自己穿上。张良强忍着恭敬照做。老人赞他“孺子可教”，传给他《太公兵法》。“行过乎恭”。",
+jin:"日本新干线的清洁团队在列车停靠的短短几分钟内完成整车清扫，并在列车到站时向乘客鞠躬致意，被称为“七分钟奇迹”。在小事上多做一点，就是卓越。",
+yong:"今天在一件小事上“过”一点：多一分恭敬、多一分节俭。"},
+{n:63,ti:"既成思危",bh:"既济卦上坎（水）下离（火），水在火上，水火相济，六爻全部当位，象征事情已经完成。卦辞：小有亨通，利于守正；开始吉利，最终可能混乱。《象传》：君子要思虑可能的祸患，预先防备。",
+yao:["曳其轮：拉住车轮，谨慎无咎","妇丧其茀：丢失车帘，七日自得","高宗伐鬼方：三年才胜，小人勿用","繻有衣袽：船漏时备好破布，终日戒备","东邻杀牛：大祭不如诚心小祭","濡其首：沾湿头部，危险"],
+gu:"唐太宗问群臣：创业难还是守成难？魏征说守成更难，因为得天下后容易骄奢。太宗说：“守成之难，当与诸公慎之。”他在成功后仍居安思危。",
+jin:"黑莓手机曾是商务人士的标配，一度占据美国智能手机市场主导地位。但它满足于已有的成功，对触屏时代反应迟缓，很快失去了市场。“初吉终乱”。",
+yong:"今天对一件已经完成的事，再做一次“复盘”，找出潜在隐患。"},
+{n:64,ti:"未济中的希望",bh:"未济卦上离（火）下坎（水），火在水上，水火不交，六爻全部不当位，象征事情尚未完成。卦辞：亨通；小狐狸快渡过河时沾湿了尾巴，没有什么好处。《象传》：君子要谨慎辨别事物，使各得其所。《周易》以“未济”结束，表示终点就是新的起点。",
+yao:["濡其尾：沾湿尾巴，不知节制，吝","曳其轮：拉住车轮，守正吉","未济征凶：贸然前进凶，利涉大川","震用伐鬼方：奋发三年，有赏于大国","君子之光：君子光辉，有诚信，吉","有孚于饮酒：以诚自信，但饮酒过度则失"],
+gu:"《战国策》里有人劝秦王：“行百里者半于九十。”走一百里路，走了九十里只能算一半。最后一段最难，小狐狸就是在快到岸时湿了尾巴。",
+jin:"孙中山临终前留下遗嘱：“革命尚未成功，同志仍须努力。”事业未竟，正是“未济”；而未济中蕴含着继续前行的希望。",
+yong:"今天对一件“快完成”的事，用起点的态度认真对待最后一步。"}
+);
+
+</script>
+<script>
+// 30天学习计划：每天《道德经》2-3章 + 《易经》2-3卦 + 一篇“对读”（仿书中“《道德经》第X章与《易经》第Y卦”的分析方法）
+// 章节和卦的分配在 app.js 中按顺序自动计算：第1-21天每天3章，第22-30天每天2章；第1-26天每天2卦，第27-30天每天3卦。
+window.SEAS = [
+  {name:"启航海", days:[1,6], desc:"认识道与乾坤，打好地基"},
+  {name:"守中海", days:[7,12], desc:"学会不争、谦虚与随时"},
+  {name:"归根海", days:[13,18], desc:"理解无为、反者道之动"},
+  {name:"上善海", days:[19,24], desc:"修身齐家，损益之道"},
+  {name:"既济海", days:[25,30], desc:"变革、诚信与未济新生"}
+];
+window.PLAN = [
+{d:1,isle:"道源岛",theme:"道与天",pair:[1,1],
+an:"《道德经》第一章与《易经》第一卦乾卦，同是两部经典的开篇。老子说“无名，天地之始；有名，万物之母”，乾卦说“大哉乾元，万物资始”——都在讲万物的源头。道不可说，乾元不可见，却推动着一切生长。乾卦用“潜、见、惕、跃、飞、亢”六条龙讲人生的节奏，正是“常有欲，以观其徼”的具体展开。学习第一天，先记住：源头无形，力量无穷；君子效法它，自强不息。"},
+{d:2,isle:"谷神岛",theme:"生生不息",pair:[6,3],
+an:"《道德经》第六章“谷神不死”与《易经》第三卦屯卦，都讲“生”。谷神是空虚而能生养的母体，绵绵不绝；屯卦是草木刚破土，艰难却充满生机。老子告诉我们源头“用之不勤”，屯卦告诉我们起步“利建侯”——找帮手、理头绪。两者合看：生命力来自虚空的源头，而开始的艰难是生长的必经之路，不必害怕。"},
+{d:3,isle:"若水岛",theme:"不争与止讼",pair:[8,6],
+an:"《道德经》第八章“上善若水……夫唯不争，故无尤”，与《易经》第六卦讼卦正好一正一反。讼卦是天与水背道而驰而起争端，卦辞警告“终凶”；第八章则说水利万物而不争，所以没有怨咎。讼卦的解药就在第八章：像水一样处下、善利、不争。大象“作事谋始”，更是教我们在争端发生前就把事情想清楚。"},
+{d:4,isle:"抱一岛",theme:"抱一与亲比",pair:[10,8],
+an:"《道德经》第十章“载营魄抱一，能无离乎”，与《易经》第八卦比卦，都讲“合一”。第十章是身心合一、专注如婴儿；比卦是人与人亲密团结，“比之自内，贞吉”。真正的团结从内心的“抱一”开始：自己身心不散乱，才能以诚信亲附他人。而“生而不有，长而不宰”，正是比卦九五“显比”的领导之道——光明正大，不强求。"},
+{d:5,isle:"冬川岛",theme:"谨慎前行",pair:[15,10],
+an:"《道德经》第十五章“豫焉若冬涉川，犹兮若畏四邻”，与《易经》第十卦履卦“履虎尾，不咥人”，描绘的是同一种状态：小心翼翼走在危险之中。古之善为士者像冬天过冰河，君子履卦像踩着老虎尾巴。两者都告诉我们：谨慎不是胆小，而是安全通过险境的方法；保持“不欲盈”的心，就能“履道坦坦”。"},
+{d:6,isle:"复命岛",theme:"大道与否泰",pair:[18,12],
+an:"《道德经》第十八章“大道废，有仁义……国家昏乱，有忠臣”，与《易经》第十二卦否卦相互印证。否卦是天地不交、上下闭塞的时代，正是“大道废”的状态；此时“君子以俭德辟难”。老子提醒我们：特别被表彰的美德，往往说明它正在缺失。读懂否卦，就能理解第十八章的深意；守住俭德，就能在闭塞中保全自己，等待否极泰来。"},
+{d:7,isle:"抱朴岛",theme:"素朴与大有",pair:[19,14],
+an:"《道德经》第十九章“见素抱朴，少私寡欲”，与《易经》第十四卦大有卦看似矛盾：一个讲少，一个讲多。其实大有卦的关键在“匪其彭，无咎”——富有而不炫耀；上九“自天祐之，吉无不利”，是因为“履信思乎顺”。真正的大有，恰恰来自素朴的心。守朴的人拥有再多，也不会被拥有所伤。"},
+{d:8,isle:"曲全岛",theme:"曲则全与谦",pair:[22,15],
+an:"《道德经》第二十二章“曲则全，枉则直……不自伐，故有功；不自矜，故长”，与《易经》第十五卦谦卦是最天然的一对。谦卦是高山藏于地下，六爻全吉；第二十二章说圣人不自见、不自是、不自伐、不自矜，所以天下莫能与之争。两者合看：谦不是装出来的低姿态，而是懂得“曲”中有“全”的大智慧。"},
+{d:9,isle:"自然岛",theme:"道法自然与随",pair:[25,17],
+an:"《道德经》第二十五章“人法地，地法天，天法道，道法自然”，与《易经》第十七卦随卦都讲“顺应”。随卦大象说“君子以向晦入宴息”——天黑了就休息，这就是最朴素的“法自然”。第二十五章给出了顺应的层次，随卦给出了顺应的方法：随时、随势、随善。顺应不是盲从，而是与规律同行。"},
+{d:10,isle:"守雌岛",theme:"为天下式与临",pair:[28,19],
+an:"《道德经》第二十八章“知其雄，守其雌，为天下溪……知其白，守其黑，为天下式”，与《易经》第十九卦临卦都讲领导者的姿态。临卦是居高临下，但大象说“教思无穷，容保民无疆”——以包容和教化来领导。第二十八章则说领导者要守雌、守黑、守辱，像溪谷一样容纳。合看：真正的“临”，不是压在上面，而是像山谷一样承载众人。"},
+{d:11,isle:"不祥岛",theme:"兵者不祥与刑罚",pair:[31,21],
+an:"《道德经》第三十一章“兵者不祥之器……不得已而用之”，与《易经》第二十一卦噬嗑卦“利用狱”同讲强制手段。噬嗑卦要咬断口中的障碍，所以需要“明罚敕法”；第三十一章则提醒，即使用强制手段取胜，也要“以丧礼处之”。合看：刑罚和武力是必要的工具，但必须清楚、公正、出于不得已，并怀有悲悯之心。"},
+{d:12,isle:"微明岛",theme:"物极必反与剥",pair:[36,23],
+an:"《道德经》第三十六章“将欲歙之，必固张之；将欲弱之，必固强之”，与《易经》第二十三卦剥卦讲的是同一个规律：盛极必衰。剥卦五阴剥一阳，像山体层层风化；但上九“硕果不食”，留下了下一轮复生的种子（紧接着就是复卦）。第三十六章称这种洞察为“微明”。读懂了剥，就不会在顺境中忘形，也不会在逆境中绝望。"},
+{d:13,isle:"无为岛",theme:"无为与无妄",pair:[37,25],
+an:"《道德经》第三十七章“道常无为而无不为”，与《易经》第二十五卦无妄卦（不妄为）可谓同义。无妄卦说“其匪正有眚，不利有攸往”——不守正就会出问题；第三十七章说侯王守住无为，万物自化。两者共同告诉我们：不妄为不是什么都不做，而是不做违背规律的事。上九“无妄行有眚”，正是“为者败之”的写照。"},
+{d:14,isle:"反复岛",theme:"反者道之动",pair:[40,28],
+an:"《道德经》第四十章“反者道之动，弱者道之用”，与《易经》第二十八卦大过卦相互发明。大过卦栋梁中间太重、两头太弱，被压弯了——这是“过”的极致；物极则反，所以九二“枯杨生稊”，在极端中又见新生。第四十章用最短的话说出了规律，大过卦则给出了应对：“独立不惧，遁世无闷”。"},
+{d:15,isle:"至柔岛",theme:"至柔与习坎",pair:[43,29],
+an:"《道德经》第四十三章“天下之至柔，驰骋天下之至坚”，与《易经》第二十九卦坎卦都以“水”为象。坎卦是重重险陷，但水“行险而不失其信”，不断流动、终能穿越；第四十三章说水这种至柔之物能穿透至坚。合看：面对险境，靠的不是硬碰，而是像水一样持续、诚信、反复练习（习坎），终将穿越。"},
+{d:16,isle:"感通岛",theme:"知天下与感应",pair:[47,31],
+an:"《道德经》第四十七章“不出户，知天下”，与《易经》第三十一卦咸卦（感应）相通。为什么不出门能知天下？因为万物之间存在感应，就像咸卦山泽通气。咸卦大象“君子以虚受人”——心虚才能感通，正如第四十七章说向外跑得越远反而知道越少。合看：静下来、虚其心，就能感知人与事的本质。"},
+{d:17,isle:"摄生岛",theme:"摄生与大壮",pair:[50,34],
+an:"《道德经》第五十章“善摄生者……以其无死地”，与《易经》第三十四卦大壮卦形成鲜明对照。大壮是强盛之时，九三“羝羊触藩”——逞强的公羊把角卡在篱笆里，进退不得，这就是自陷“死地”。第五十章则告诉我们，善于保护生命的人从不把自己置于死地。合看：越强越要守礼（非礼弗履），才能长久。"},
+{d:18,isle:"用晦岛",theme:"复归其明与明夷",pair:[52,36],
+an:"《道德经》第五十二章“用其光，复归其明，无遗身殃”，与《易经》第三十六卦明夷卦“君子以莅众，用晦而明”几乎是同一句话。明夷是太阳落入地下、光明受伤的时期；老子说要收敛外放的光芒，回归内在的明。箕子装疯保全自己与大道，正是这种智慧。黑暗中藏起光，不是放弃光，而是为了守住光。"},
+{d:19,isle:"正家岛",theme:"以正治国与家人",pair:[57,37],
+an:"《道德经》第五十七章“以正治国……我无为而民自化”，与《易经》第三十七卦家人卦“正家而天下定矣”，都把“正”作为治理的根本。家人卦从家庭开始：言有物、行有恒，立好家规；第五十七章推到国家：以正道治国、少扰民。合看：治国从齐家开始，齐家从正身开始。"},
+{d:20,isle:"倚伏岛",theme:"祸福相倚与解",pair:[58,40],
+an:"《道德经》第五十八章“祸兮福之所倚，福兮祸之所伏”，与《易经》第四十卦解卦（紧接在蹇卦之后）讲的都是转化。蹇卦是行路艰难，解卦是雷雨交加后冰雪消融。祸中藏着转机，困难解除后要“赦过宥罪”，不记仇、不翻旧账。合看：既不被灾祸压垮，也不在解脱后得意，平常心对待起落。"},
+{d:21,isle:"损益岛",theme:"大者宜为下与益",pair:[61,42],
+an:"《道德经》第六十一章“大国者下流……大者宜为下”，与《易经》第四十二卦益卦“损上益下，民说无疆”是同一种智慧。益卦的“益”恰恰来自上面的“损”：在上者放低身段、惠及下面，大家都受益。第六十一章说大国对小国谦下，就能取得信任。今天还要特别读第四十八章与第四十一卦（损卦），体会“为道日损”。"},
+{d:22,isle:"毫末岛",theme:"未兆易谋与姤",pair:[64,44],
+an:"《道德经》第六十四章“其未兆易谋……合抱之木，生于毫末”，与《易经》第四十四卦姤卦配合极妙。姤卦是一阴从下面刚刚出现，像小苗头；初六“系于金柅”，要在一开始就刹住。第六十四章说“为之于未有，治之于未乱”。合看：好事从毫末积起，坏事也从毫末开始；在“未兆”时处理，成本最低。"},
+{d:23,isle:"百谷岛",theme:"善下与萃聚",pair:[66,45],
+an:"《道德经》第六十六章“江海所以能为百谷王者，以其善下之”，与《易经》第四十五卦萃卦（聚集）互为因果。萃卦是泽在地上，水自然汇聚；为什么会聚？因为低。第六十六章说圣人欲上民，必以言下之。萃卦还提醒“除戎器，戒不虞”——人聚之时要防意外。合看：善下而聚，聚而有备。"},
+{d:24,isle:"井泉岛",theme:"用人与井养",pair:[68,48],
+an:"《道德经》第六十八章“善用人者，为之下，是谓不争之德”，与《易经》第四十八卦井卦“井养而不穷”相合。井处在最低处，却供养所有人；“井收勿幕”，井口不盖，人人可用。善用人的领导像一口井，把自己放在下面，滋养众人，众人的力量也就成了他的力量。"},
+{d:25,isle:"革新岛",theme:"知病与变革",pair:[71,49],
+an:"《道德经》第七十一章“知不知，上；不知知，病……夫唯病病，是以不病”，与《易经》第四十九卦革卦相承接。变革的前提是承认问题（病病）；革卦说“己日乃孚”，时机成熟、取信于人才能变革，还要“革言三就”反复商议。合看：先诚实地知道自己的不足，再稳妥地改变，才能“顺乎天而应乎人”。"},
+{d:26,isle:"震惧岛",theme:"勇于不敢与震",pair:[73,51],
+an:"《道德经》第七十三章“勇于敢则杀，勇于不敢则活”，与《易经》第五十一卦震卦“君子以恐惧修省”相得益彰。震卦惊雷连连，懂得恐惧的人反而“笑言哑哑”，不失祭器；第七十三章说敢于“不敢”才是真勇。合看：敬畏不是懦弱，而是在惊雷面前稳住、反省、修正自己。“天网恢恢，疏而不失”，敬畏之心让人远离祸患。"},
+{d:27,isle:"渐进岛",theme:"民不畏死与丰",pair:[74,55],
+an:"《道德经》第七十四章“民不畏死，奈何以死惧之”，与《易经》第五十五卦丰卦“君子以折狱致刑”都谈到刑罚。丰卦是盛大之时，此时更要明察公正地断案；第七十四章警告不可滥用严刑、代替天道杀人。同时丰卦“日中则昃”，盛时也要想到衰。今天还学渐卦、归妹：一切贵在循序渐进、知终知敝。"},
+{d:28,isle:"巽风岛",theme:"柔弱处上与巽",pair:[76,57],
+an:"《道德经》第七十六章“坚强者死之徒，柔弱者生之徒”，与《易经》第五十七卦巽卦（风）都推崇柔。风最柔，却无孔不入；巽卦“申命行事”，柔中有方向、反复而深入。第七十六章用活的草木与枯槁对比：柔软代表生机。合看：柔不是软弱，而是有韧性、能渗透、能长久的力量。"},
+{d:29,isle:"中孚岛",theme:"常与善人与诚信",pair:[79,61],
+an:"《道德经》第七十九章“有德司契，无德司彻……天道无亲，常与善人”，与《易经》第六十一卦中孚卦（诚信）一脉相承。中孚是心中诚信，诚到能感化猪鱼；第七十九章的圣人手执借据却不逼债，以宽厚待人。合看：天道不偏爱谁，只是总站在诚信善良的人一边。"},
+{d:30,isle:"未济岛",theme:"信言不美与未济",pair:[81,64],
+an:"《道德经》第八十一章与《易经》第六十四卦未济卦共同圆满“信言不美”与未济终焉的循环。信言为本质维度，未济为循环维度。持守朴素之真，接续未成之业，在终点与起点间永续希望。老子总结“信言不美，美言不信”，圣人不积；未济卦象征未完成、重新开始，寓意火水相济、慎辨物居方。两者共同指引：内在真诚不华，外在谨慎收尾，在未济中希望永存。唯有君子以慎辨物居方，才能既济未济相继。"}
+];
+
+// 书中“生命密码”编号对读（前两位=《道德经》章，后两位=《易经》卦）。这里只作为对读练习入口。
+window.CODE_PAIRS = {
+"4841":"《道德经》第四十八章“为学日益，为道日损”与《易经》第四十一卦损卦，是全书最贴切的一组对读。损卦“损下益上”，大象“君子以惩忿窒欲”；第四十八章“损之又损，以至于无为”。两者都在说：真正的提升来自减法——减去愤怒、欲望、多余的事务。孔子读到损益二卦叹息“自损者益，自益者缺”，正是这组对读的注脚。",
+"1222":"《道德经》第十二章“五色令人目盲……圣人为腹不为目”与《易经》第二十二卦贲卦（装饰）相互印证。贲卦讲文饰之美，但最高境界是上九“白贲，无咎”——以素为饰、返璞归真。第十二章提醒感官刺激会让人迷失。合看：适度的修饰让生活有美感，过度的修饰则遮蔽本心；为腹不为目，就是选择内在的充实。",
+"2136":"《道德经》第二十一章“孔德之容，惟道是从……其中有精，其精甚真，其中有信”与《易经》第三十六卦明夷卦（光明受伤）相合。明夷是外在黑暗之时，“君子以莅众，用晦而明”；第二十一章说道恍惚幽暗，其中却有真实的精质与可信的规律。合看：外面再暗，只要内心惟道是从，光明就藏在其中，从未消失。",
+"8164":"《道德经》第八十一章与《易经》第六十四卦未济卦（即第30天“未济岛”的对读）：信言不美、圣人不积、为而不争；未济象征终点即起点，君子以慎辨物居方。内在真诚，外在谨慎，在未完成中保持希望。"
+};
+
+</script>
+<script>
+(function(){
+"use strict";
+const DDJ=window.DDJ, GUA=window.GUA, DN=window.DDJ_NOTES, GN=window.GUA_NOTES, PLAN=window.PLAN, SEAS=window.SEAS, CODES=window.CODE_PAIRS;
+const main=document.getElementById('main');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const CN='零一二三四五六七八九';
+const cnum=n=>n<=10?(n===10?'十':CN[n]):n<20?'十'+(n%10?CN[n%10]:''):CN[Math.floor(n/10)]+'十'+(n%10?CN[n%10]:'');
+
+// ---------- 八卦与五行配色 ----------
+const TRI={
+ '乾':{b:[1,1,1],x:'天',de:'健',song:'乾三连',fam:'父',wx:'jin',wn:'金'},
+ '坤':{b:[0,0,0],x:'地',de:'顺',song:'坤六断',fam:'母',wx:'tu',wn:'土'},
+ '震':{b:[1,0,0],x:'雷',de:'动',song:'震仰盂',fam:'长男',wx:'mu',wn:'木'},
+ '巽':{b:[0,1,1],x:'风',de:'入',song:'巽下断',fam:'长女',wx:'mu',wn:'木'},
+ '坎':{b:[0,1,0],x:'水',de:'陷',song:'坎中满',fam:'中男',wx:'shui',wn:'水'},
+ '离':{b:[1,0,1],x:'火',de:'丽',song:'离中虚',fam:'中女',wx:'huo',wn:'火'},
+ '艮':{b:[0,0,1],x:'山',de:'止',song:'艮覆碗',fam:'少男',wx:'tu',wn:'土'},
+ '兑':{b:[1,1,0],x:'泽',de:'说（悦）',song:'兑上缺',fam:'少女',wx:'jin',wn:'金'}
+};
+const TRI_NAMES=Object.keys(TRI);
+const tc=t=>`var(--${TRI[t].wx})`;
+const bits=g=>[...TRI[g.down].b,...TRI[g.up].b];          // 从下往上
+const gcols=g=>[tc(g.down),tc(g.down),tc(g.down),tc(g.up),tc(g.up),tc(g.up)];
+const fullName=g=>g.up===g.down?g.name+'为'+TRI[g.up].x:TRI[g.up].x+TRI[g.down].x+g.name;
+function hexSVG(b,w,cols){const lh=w*0.1,gap=w*0.17;let r='';
+  b.forEach((v,i)=>{const y=(b.length-1-i)*gap,c=cols?cols[i]:'var(--ink)',half=w*0.42;
+    r+=v?`<rect x="0" y="${y}" width="${w}" height="${lh}" rx="${lh/3}" fill="${c}"/>`:`<rect x="0" y="${y}" width="${half}" height="${lh}" rx="${lh/3}" fill="${c}"/><rect x="${w-half}" y="${y}" width="${half}" height="${lh}" rx="${lh/3}" fill="${c}"/>`;});
+  return `<svg class="hexa" width="${w}" viewBox="0 0 ${w} ${(b.length-1)*gap+lh}" role="img" aria-label="卦象">${r}</svg>`;}
+const guaSVG=(g,w)=>hexSVG(bits(g),w,gcols(g));
+const triSVG=(t,w)=>hexSVG(TRI[t].b,w,[tc(t),tc(t),tc(t)]);
+const SEA_C=['var(--s1)','var(--s2)','var(--s3)','var(--s4)','var(--s5)'];
+const seaIdx=d=>Math.floor((d-1)/6);
+
+// ---------- 吉祥物“易宝” ----------
+function mascot(mood,size,cls){const m=mood==='sad'?'M40 66 Q50 58 60 66':mood==='happy'?'M38 60 Q50 74 62 60':'M42 63 Q50 68 58 63';
+  return `<svg class="mascot ${cls||''}" width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">
+   <ellipse cx="36" cy="94" rx="10" ry="5" fill="#F5A623"/><ellipse cx="64" cy="94" rx="10" ry="5" fill="#F5A623"/>
+   <circle cx="50" cy="50" r="42" fill="#fff" stroke="#18263A" stroke-width="3"/>
+   <path d="M50 8 A42 42 0 0 1 50 92 A21 21 0 0 1 50 50 A21 21 0 0 0 50 8Z" fill="#18263A"/>
+   <circle cx="50" cy="29" r="6" fill="#18263A"/><circle cx="50" cy="71" r="6" fill="#fff"/>
+   <g class="eye"><circle cx="35" cy="44" r="9" fill="#fff" stroke="#18263A" stroke-width="2"/><circle cx="37" cy="45" r="4.5" fill="#18263A"/></g>
+   <g class="eye"><circle cx="65" cy="44" r="9" fill="#fff" stroke="#18263A" stroke-width="2"/><circle cx="67" cy="45" r="4.5" fill="#18263A"/></g>
+   <circle cx="26" cy="58" r="5" fill="#FF8FA3" opacity=".8"/><circle cx="74" cy="58" r="5" fill="#FF8FA3" opacity=".8"/>
+   <path d="${m}" fill="none" stroke="#E5484D" stroke-width="4" stroke-linecap="round"/></svg>`;}
+const CHEER=['答得漂亮！','一点就通！','对啦，继续！','妙哉！','学而时习之，不亦说乎！','好眼力！'];
+const COMFORT=['没关系，错题已收好。','失之东隅，收之桑榆。','知不知，上——再看一遍就记住了。','曲则全，下一题加油！'];
+
+// ---------- 进度存储 ----------
+const KEY='yidao-island-v1';
+const fresh=()=>({xp:0,days:{},seen:{},mistakes:[],dates:[],trad:false,rate:0.85,unlockAll:false,trainerBest:0,sound:true,badges:{},bestCombo:0});
+let S=fresh();
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(fresh(),JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>dkey(new Date());
+function markStudy(){const t=today();if(!S.dates.includes(t)){S.dates.push(t);save();}}
+function streak(){const set=new Set(S.dates);let n=0;const d=new Date();if(!set.has(today()))d.setDate(d.getDate()-1);
+  while(set.has(dkey(d))){n++;d.setDate(d.getDate()-1);}return n;}
+const LEVELS=[[0,'童生'],[300,'秀才'],[900,'举人'],[1800,'进士'],[3000,'翰林'],[4500,'大儒'],[6500,'悟道者']];
+function level(){let i=0;while(i+1<LEVELS.length&&S.xp>=LEVELS[i+1][0])i++;const cur=LEVELS[i],nx=LEVELS[i+1];
+  return {name:cur[1],pct:nx?(S.xp-cur[0])/(nx[0]-cur[0]):1};}
+// ---------- 添加到手机桌面 ----------
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(curView==='map'||curView==='settings')go(curView);});
+const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+function installHTML(){
+  if(standalone())return '<div>已经在手机桌面上啦，以后点图标就能直接学习。</div>';
+  return `${deferredPrompt?'<div class="row"><button class="btn go" data-install>一键添加到桌面</button></div>':''}
+   <div class="tablewrap"><table class="t">
+    <tr><th>手机</th><th>操作</th></tr>
+    <tr><td>苹果 iPhone</td><td>用 <b>Safari</b> 打开本页 → 点底部的“分享”按钮（方框带向上箭头）→ 选“<b>添加到主屏幕</b>” → 点“添加”</td></tr>
+    <tr><td>安卓手机</td><td>用 <b>Chrome</b>（或手机自带浏览器）打开本页 → 点右上角 ⋮ → 选“<b>添加到主屏幕</b>”或“<b>安装应用</b>”</td></tr>
+    <tr><td>在微信里打开的</td><td>先点右上角 ··· → 选“<b>在浏览器打开</b>”，再按上面的方法操作</td></tr>
+   </table></div>
+   <div class="note">添加后桌面上会出现“易道能力岛”的太极小图标，点开就是全屏，第一次打开后没网也能学。进度保存在这部手机里；电脑和手机的进度不互通，可用下方“进度码”搬过来。</div>`;}
+function bindInstall(root){root.querySelectorAll('[data-install]').forEach(b=>b.onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();const r=await deferredPrompt.userChoice;deferredPrompt=null;if(r.outcome==='accepted')toast('已添加到桌面');go(curView);});}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2400);}
+
+// ---------- 音效与彩带 ----------
+let AC=null;
+function tone(notes,type){if(!S.sound)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+  notes.forEach(([f,t,d])=>{const o=AC.createOscillator(),g=AC.createGain();o.type=type||'sine';o.frequency.value=f;o.connect(g);g.connect(AC.destination);
+    const s=AC.currentTime+t;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.18,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+d);o.start(s);o.stop(s+d+0.02);});}catch(e){}}
+const SFX={ok:()=>tone([[660,0,.15],[990,.1,.25]],'triangle'),no:()=>tone([[220,0,.25],[180,.12,.3]],'sawtooth'),
+  win:()=>tone([[523,0,.2],[659,.15,.2],[784,.3,.2],[1047,.45,.45]],'triangle'),stamp:()=>tone([[140,0,.15]],'square'),click:()=>tone([[880,0,.06]],'sine')};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cvs=document.getElementById('fx'),ctx=cvs.getContext('2d');let parts=[],raf=0;
+function confetti(n,x,y){if(reduce)return;const cs=getComputedStyle(document.documentElement);
+  const cols=['--s1','--s2','--s3','--s4','--s5','--gold','--huo'].map(k=>cs.getPropertyValue(k).trim());
+  cvs.width=innerWidth;cvs.height=innerHeight;x=x??innerWidth/2;y=y??innerHeight/3;
+  for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=3+Math.random()*7;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-4,r:3+Math.random()*4,c:cols[i%cols.length],l:60+Math.random()*40,rot:Math.random()*6});}
+  if(!raf)raf=requestAnimationFrame(tick);}
+function tick(){ctx.clearRect(0,0,cvs.width,cvs.height);parts=parts.filter(p=>p.l-->0);
+  parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.25;p.vx*=.98;p.rot+=.2;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.c;ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r);ctx.restore();});
+  raf=parts.length?requestAnimationFrame(tick):0;if(!raf)ctx.clearRect(0,0,cvs.width,cvs.height);}
+
+// ---------- 成就 ----------
+const BADGES=[
+ ['first','初登岛','完成第一座岛','var(--s1)','登'],
+ ['full','满朱印','一次闯关拿满三颗星','var(--gold)','满'],
+ ['combo5','五连对','测验中连续答对5题','var(--s5)','连'],
+ ['combo10','十全十美','连续答对10题','var(--huo)','十'],
+ ['streak3','三日不辍','连续学习3天','var(--s2)','恒'],
+ ['streak7','七日来复','连续学习7天（复卦“七日来复”）','var(--mu)','复'],
+ ['sea1','启航成功','完成启航海6座岛','var(--s1)','航'],
+ ['half','半程','完成15座岛','var(--s3)','半'],
+ ['trainer','卦象达人','卦象训练营答对18题以上','var(--shui)','卦'],
+ ['review','知错能改','在错题本中答对10题','var(--tu)','改'],
+ ['all','既济未济','完成全部30座岛','var(--s5)','道']
+];
+function award(id){if(S.badges[id])return;S.badges[id]=today();save();const b=BADGES.find(x=>x[0]===id);setTimeout(()=>{toast('获得成就：'+b[1]+'！');SFX.win();confetti(80);},700);}
+function checkBadges(){const done=Object.values(S.days).filter(x=>x.stars>0).length;
+  if(done>=1)award('first');if(done>=15)award('half');if(done>=30)award('all');
+  if([1,2,3,4,5,6].every(d=>S.days[d]&&S.days[d].stars>0))award('sea1');
+  const st=streak();if(st>=3)award('streak3');if(st>=7)award('streak7');
+  if(S.bestCombo>=5)award('combo5');if(S.bestCombo>=10)award('combo10');}
+
+// ---------- 计划 ----------
+const dayCh=d=>d<=21?[3*d-2,3*d-1,3*d]:[64+2*(d-22),65+2*(d-22)];
+const dayGua=d=>d<=26?[2*d-1,2*d]:[53+3*(d-27),54+3*(d-27),55+3*(d-27)];
+const unlocked=d=>S.unlockAll||d===1||!!(S.days[d-1]&&S.days[d-1].stars>0);
+const nextDay=()=>{for(let d=1;d<=30;d++)if(!(S.days[d]&&S.days[d].stars>0))return d;return 30;};
+const learnedCh=new Set(),learnedGua=new Set();
+function refreshLearned(){learnedCh.clear();learnedGua.clear();for(let d=1;d<=30;d++)if(S.days[d]&&S.days[d].stars>0){dayCh(d).forEach(n=>learnedCh.add(n));dayGua(d).forEach(n=>learnedGua.add(n));}}
+const chDay=n=>{for(let d=1;d<=30;d++)if(dayCh(d).includes(n))return d;};
+const guaDay=n=>{for(let d=1;d<=30;d++)if(dayGua(d).includes(n))return d;};
+
+// ---------- 朗读 ----------
+function speak(text){
+  if(!('speechSynthesis' in window)){toast('当前浏览器不支持朗读');return;}
+  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.replace(/[“”]/g,''));u.lang='zh-CN';u.rate=S.rate||0.85;
+  const v=speechSynthesis.getVoices().find(v=>/zh[-_]CN/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u);}
+
+// ---------- 顶栏 ----------
+const NAV=[['map','学习地图'],['lib','经典库'],['trainer','卦象训练营'],['review','错题本'],['code','编号对读'],['basics','入门须知'],['settings','设置']];
+let curView='map';
+function renderTop(){
+  const L=level();
+  document.getElementById('logomas').innerHTML=mascot('idle',34);
+  document.getElementById('stats').innerHTML=`<span class="chip lv">${L.name}</span><span class="chip xp"><span class="xpbar"><div style="width:${Math.round(L.pct*100)}%"></div></span>${S.xp} 经验</span><span class="chip fire">连续 ${streak()} 天</span><button class="chip snd" id="snd" aria-label="音效开关">${S.sound?'音效 开':'音效 关'}</button>`;
+  document.getElementById('snd').onclick=()=>{S.sound=!S.sound;save();renderTop();SFX.click();};
+  document.getElementById('tabs').innerHTML=NAV.map(([k,t])=>`<button data-nav="${k}" class="${curView===k||(curView==='day'&&k==='map')?'on':''}">${t}${k==='review'&&S.mistakes.length?` · ${S.mistakes.length}`:''}</button>`).join('');
+}
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');if(b){SFX.click();go(b.dataset.nav);}});
+document.getElementById('logo').addEventListener('click',()=>go('map'));
+function go(v,arg){curView=v;if(window.speechSynthesis)speechSynthesis.cancel();refreshLearned();
+  ({map:renderMap,day:renderDay,lib:renderLib,trainer:renderTrainer,review:renderReview,code:renderCode,basics:renderBasics,settings:renderSettings})[v](arg);
+  renderTop();window.scrollTo(0,0);}
+
+// ---------- 地图 ----------
+function renderMap(){
+  checkBadges();
+  const nd=nextDay(),p=PLAN[nd-1],done=Object.values(S.days).filter(x=>x.stars>0).length;
+  const stars=Object.values(S.days).reduce((a,x)=>a+(x.stars||0),0);
+  const tipN=1+Math.floor(Date.now()/864e5)%81,tip=DN[tipN-1];
+  const showTip=!standalone()&&innerWidth<760&&!S.hideInstall;
+  main.innerHTML=`<section class="view">
+   ${showTip?`<div class="panel talk">${mascot('happy',48)}<div style="min-width:0;flex:1"><b>把易道能力岛放到手机桌面</b><div class="note">像英语能力岛一样，点图标就能学。</div>
+     <div class="row" style="margin-top:6px">${deferredPrompt?'<button class="btn go small" data-install style="background:var(--s2);color:#fff">一键添加</button>':''}<button class="btn small" id="howto">怎么添加</button><button class="btn small" id="hidetip">不再提示</button></div></div></div>`:''}
+   <div class="today">
+    <div class="hero" style="background:linear-gradient(135deg,${SEA_C[seaIdx(nd)]},var(--s4))">
+      <div class="eyebrow">今日航程 · 第 ${nd} 天 / 30 · ${SEAS[seaIdx(nd)].name}</div>
+      <div class="big">${p.isle}</div>
+      <div class="fun" style="font-size:18px">${esc(p.theme)}</div>
+      <ul>
+        <li>读经：《道德经》第 ${dayCh(nd).join('、')} 章</li>
+        <li>观象：${dayGua(nd).map(n=>GUA[n-1].name+'卦').join('、')}</li>
+        <li>对读：第 ${p.pair[0]} 章 × ${GUA[p.pair[1]-1].name}卦，再闯关 12 题</li>
+      </ul>
+      <div class="row"><button class="btn" data-day="${nd}">出发登岛 →</button><span class="note">约 40–60 分钟</span></div>
+    </div>
+    <div class="panel" style="display:grid;gap:14px">
+      <div class="talk">${mascot('happy',64)}<div class="bubble"><b>易宝每日一句</b><br>“${esc(tip.key.split('……')[0])}”<span class="note">（第${tipN}章）</span></div></div>
+      <div class="tiles">
+        <div class="tile" style="--c:var(--s1)"><span class="eyebrow">已登岛</span><b>${done}/30</b></div>
+        <div class="tile" style="--c:var(--gold)"><span class="eyebrow">金星</span><b>${stars}/90</b></div>
+        <div class="tile" style="--c:var(--s3)"><span class="eyebrow">已学章节</span><b>${learnedCh.size}/81</b></div>
+        <div class="tile" style="--c:var(--s5)"><span class="eyebrow">已学卦</span><b>${learnedGua.size}/64</b></div>
+      </div>
+    </div>
+   </div>
+   <div class="head2"><h2 class="fun">五海三十岛</h2><span class="note">闯关拿到至少一颗星，就能解锁下一座岛</span></div>
+   <div class="map" id="map"></div>
+   <div class="head2"><h2 class="fun">成就徽章 <span class="note">${Object.keys(S.badges).length}/${BADGES.length}</span></h2></div>
+   <div class="badges">${BADGES.map(b=>`<div class="badge${S.badges[b[0]]?'':' off'}" style="--c:${b[3]}" title="${esc(b[2])}"><i>${b[4]}</i><div><b>${b[1]}</b><div class="note">${esc(b[2])}</div></div></div>`).join('')}</div>
+  </section>`;
+  main.querySelector('[data-day]').onclick=()=>{SFX.click();go('day',{d:nd});};
+  if(showTip){bindInstall(main);document.getElementById('howto').onclick=()=>go('settings',{install:true});document.getElementById('hidetip').onclick=()=>{S.hideInstall=true;save();go('map');};}
+  drawMap();
+}
+function drawMap(){
+  const box=document.getElementById('map');if(!box)return;
+  const cols=box.clientWidth<640?3:6,W=cols===3?520:1000,rowH=cols===3?190:240,top=80,sfs=cols===3?24:28;
+  const rowsPerSea=6/cols,rows=30/cols,H=top+rows*rowH+44*SEAS.length;
+  let pts=[],svg='';
+  for(let d=1;d<=30;d++){const i=d-1,r=Math.floor(i/cols),c=i%cols,sea=seaIdx(d);
+    const cc=r%2?cols-1-c:c;pts.push([(W/cols)*(cc+.5),top+r*rowH+sea*44+rowH*.45+((d*37)%5-2)*7]);}
+  SEAS.forEach((s,k)=>{const y0=top+k*rowsPerSea*rowH+k*44-50;
+    svg+=`<rect x="0" y="${y0+10}" width="${W}" height="${rowsPerSea*rowH+44}" fill="${SEA_C[k]}" opacity=".13"/>`;
+    svg+=`<g transform="translate(16 ${y0+16})"><rect width="${s.name.length*sfs+(cols===3?96:300)}" height="${sfs+14}" rx="${(sfs+14)/2}" fill="${SEA_C[k]}"/>
+      <text x="14" y="${sfs}" font-size="${sfs}" fill="#fff" style="font-family:var(--f-brush)">${s.name}</text>
+      <text x="${s.name.length*sfs+22}" y="${sfs-4}" font-size="${cols===3?13:15}" fill="#fff" style="font-family:var(--f-fun)">第${s.days[0]}–${s.days[1]}天${cols===3?'':' · '+s.desc}</text></g>`;});
+  for(let k=0;k<22;k++){const x=(k*173)%W,y=top+(k*131)%(H-top);svg+=`<path class="wave" style="animation-delay:-${k%6}s" d="M${x} ${y} q10 -8 20 0 t20 0"/>`;}
+  svg+=`<path class="path" d="M${pts.map(p=>p.join(' ')).join(' L')}"/>`;
+  const nd=nextDay(),R=cols===3?60:56,fs=cols===3?24:23;
+  pts.forEach(([x,y],i)=>{const d=i+1,p=PLAN[i],st=S.days[d],lock=!unlocked(d),col=SEA_C[seaIdx(d)];
+    let blob='',rim='';const n=10;for(let k=0;k<n;k++){const a=k/n*Math.PI*2,rr=R*(0.84+0.16*Math.sin(d*3.1+k*2.3));
+      blob+=(k?'L':'M')+(x+Math.cos(a)*rr*1.2).toFixed(1)+' '+(y+Math.sin(a)*rr*.72).toFixed(1);
+      rim+=(k?'L':'M')+(x+Math.cos(a)*(rr+9)*1.2).toFixed(1)+' '+(y+6+Math.sin(a)*(rr+9)*.72).toFixed(1);}
+    const trees=lock?'':[[-0.55,-0.5],[0.6,-0.45]].map(([a,b],k)=>`<circle class="tree" cx="${x+a*R}" cy="${y+b*R}" r="${R*.16}" fill="${k?'var(--mu)':'#3FC07A'}"/><rect x="${x+a*R-2}" y="${y+b*R+R*.12}" width="4" height="${R*.14}" fill="var(--tu)"/>`).join('');
+    const starRow=st&&st.stars?Array.from({length:3},(_,k)=>`<path transform="translate(${x-30+k*22} ${y+R*.58}) scale(.9)" d="${STAR_D}" fill="${k<st.stars?'var(--gold)':'#ffffff88'}" stroke="#fff" stroke-width="1.5"/>`).join(''):'';
+    const lockI=lock?`<g transform="translate(${x-9} ${y+R*.42})"><rect y="7" width="18" height="13" rx="3" fill="#fff"/><path d="M4 8V5a5 5 0 0 1 10 0v3" stroke="#fff" stroke-width="2.5" fill="none"/></g>`:'';
+    const boat=d===nd?`<g class="boat"><path d="M${x+R*1.05} ${y-R*.55} l34 0 l-6 10 l-22 0z" fill="var(--huo)"/><path d="M${x+R*1.05+17} ${y-R*.55} v-26 l14 18z" fill="#fff" stroke="var(--ink)" stroke-width="1"/></g>`:'';
+    svg+=`<g class="isle${lock?' lock':''}" data-d="${d}" tabindex="${lock?-1:0}" role="button" aria-label="第${d}天 ${p.isle}${lock?'（未解锁）':''}"><g class="grp">
+      <path class="rim" d="${rim}Z"/><path class="land" d="${blob}Z" fill="${col}"/>${trees}
+      <text x="${x}" y="${y-R*.05}" text-anchor="middle" font-size="${fs*.6}" fill="#fff">第${d}天</text>
+      <text x="${x}" y="${y+fs*.85}" text-anchor="middle" font-size="${fs}" fill="#fff" style="font-family:var(--f-brush)">${p.isle}</text>${starRow}${lockI}</g>${boat}</g>`;});
+  box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="学习地图">${svg}</svg>`;
+  box.querySelectorAll('.isle').forEach(g=>{const f=()=>{const d=+g.dataset.d;if(!unlocked(d)){SFX.no();toast('先完成第'+(d-1)+'天的闯关，才能登上这座岛');return;}SFX.click();go('day',{d});};
+    g.addEventListener('click',f);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}});});
+}
+const STAR_D='M10 0 L12.9 6.2 L19.5 6.9 L14.5 11.4 L15.9 18 L10 14.6 L4.1 18 L5.5 11.4 L0.5 6.9 L7.1 6.2Z';
+let rsz;window.addEventListener('resize',()=>{clearTimeout(rsz);rsz=setTimeout(()=>{if(curView==='map')drawMap();},200);});
+
+// ---------- 章节 / 卦 渲染 ----------
+function chapterHTML(n){const t=DDJ[n-1],no=DN[n-1];const txt=S.trad?t.t:t.s;
+  return `<article class="page" style="--pc:${n<=37?'var(--s3)':'var(--s2)'}">
+   <div class="ph"><span class="tag">${n<=37?'道经':'德经'} · 第${cnum(n)}章</span><h3>${esc(no.ti)}</h3>
+    <span class="tools"><button class="btn small" data-speak="${n}">朗读</button><button class="btn small" data-recite="${n}">背诵</button></span></div>
+   <div class="yw" id="yw-${n}">${esc(txt)}</div>
+   <div class="key"><div class="lab" style="--lc:var(--jin)">必背名句</div>${esc(no.key)}</div>
+   <div class="bh"><div class="lab">白话精讲</div>${esc(no.bh)}</div>
+   <div class="cases"><div class="case gu"><div class="lab">古代案例</div>${esc(no.gu)}</div><div class="case jin"><div class="lab">近现代案例</div>${esc(no.jin)}</div></div>
+   <div class="yong">今日一用：${esc(no.yong)}</div></article>`;}
+function guaHTML(n){const g=GUA[n-1],no=GN[n-1],tr=S.trad,b=bits(g),cl=gcols(g);
+  const pos=g.yao.map((y,i)=>{const t=tr?g.yaoT[i]:y;const k=t.indexOf('：')>-1?t.indexOf('：'):t.indexOf('，');return [t.slice(0,k),t.slice(k+1)];});
+  const rows=pos.map((p,i)=>`<div><span class="bar${i<6&&!b[i]?' yin':''}" style="--c:${i<6?cl[i]:'var(--muted)'}"></span><div class="t"><span class="p">${esc(p[0])}</span>：${esc(p[1])}</div><div class="w">${i<6?esc(no.yao[i]):(n===1?'群龙无首：刚而不为首，吉':'利永贞：柔顺而长守正道')}</div></div>`);
+  return `<article class="page" style="--pc:${tc(g.up)}">
+   <div class="ph"><span class="tag">第${cnum(n)}卦</span><h3>${fullName(g)} · ${esc(no.ti)}</h3>
+    <span class="tools"><button class="btn small" data-speakg="${n}">朗读</button></span></div>
+   <div class="gtop">${guaSVG(g,100)}
+     <div class="trilegend"><span><i style="--c:${tc(g.up)}"></i>上卦 ${g.up}（${TRI[g.up].x} · 五行属${TRI[g.up].wn}）</span><span><i style="--c:${tc(g.down)}"></i>下卦 ${g.down}（${TRI[g.down].x} · 五行属${TRI[g.down].wn}）</span></div>
+     <div style="min-width:0;flex:1 1 260px"><div class="lab">卦辞</div><div class="yw" style="font-size:19px">${esc(tr?g.nameT:g.name)}：${esc(tr?g.gcT:g.gc)}</div>
+     <div class="lab" style="margin-top:6px">大象传</div><div style="font-family:var(--f-serif)">${esc(tr?g.dxT:g.dx)}</div></div></div>
+   <div class="bh"><div class="lab">白话精讲</div>${esc(no.bh)}</div>
+   <div><div class="lab">六爻（从下往上：先读最下面的初爻）</div><div class="yao">${rows.join('')}</div></div>
+   <details><summary>彖传原文</summary><div style="margin-top:6px;font-family:var(--f-serif)">${esc(g.tuan)}</div></details>
+   <div class="cases"><div class="case gu"><div class="lab">古代案例</div>${esc(no.gu)}</div><div class="case jin"><div class="lab">近现代案例</div>${esc(no.jin)}</div></div>
+   <div class="yong">今日一用：${esc(no.yong)}</div></article>`;}
+function bindText(root){
+  root.querySelectorAll('[data-speak]').forEach(b=>b.onclick=()=>speak(DDJ[b.dataset.speak-1].s));
+  root.querySelectorAll('[data-speakg]').forEach(b=>b.onclick=()=>{const g=GUA[b.dataset.speakg-1];speak(g.name+'。'+g.gc+g.yao.join('')+'象曰：'+g.dx);});
+  root.querySelectorAll('[data-recite]').forEach(b=>{let lv=0;b.onclick=()=>{lv=(lv+1)%4;SFX.click();const n=+b.dataset.recite,el=document.getElementById('yw-'+n);const txt=S.trad?DDJ[n-1].t:DDJ[n-1].s;
+    if(!lv){el.textContent=txt;b.textContent='背诵';return;}
+    const ratio=[0,.3,.6,1][lv];let k=0;el.innerHTML=[...txt].map(c=>/[，。；：、？！“”‘’,]/.test(c)?c:`<span class="c${((k++*7919)%100)/100<ratio?' h':''}">${esc(c)}</span>`).join('');
+    el.querySelectorAll('.c.h').forEach(s=>s.onclick=()=>{s.classList.remove('h');SFX.click();});b.textContent=['背诵','遮30%','遮60%','全遮'][lv];};});
+}
+
+// ---------- 对读 ----------
+function pairHTML(c,gn,an,head){const g=GUA[gn-1];
+  return `<div class="vs"><div class="side" style="background:var(--s3)"><div class="eyebrow" style="color:#fff">道德经</div><b class="fun" style="font-size:20px;font-weight:400">第${c}章 ${esc(DN[c-1].ti)}</b></div><span class="x">×</span>
+    <div class="side" style="background:${tc(g.up)}"><div class="eyebrow" style="color:#fff">易经</div><b class="fun" style="font-size:20px;font-weight:400">${fullName(g)}</b></div></div>
+   <div class="bookwrap"><div class="book" id="book">
+   <p class="hd">${head||''}《道德经》第${cnum(c)}章 · 《易经》第${cnum(gn)}卦${fullName(g)}</p>
+   <p class="q1">道德经：${esc(DN[c-1].key)}</p>
+   <p class="q2">易经：${esc(g.name)}，${esc(g.gc)}　象曰：${esc(g.dx)}</p>
+   <p class="an">${esc(an)}</p></div></div>
+   <div class="row"><button class="btn small" id="flip">改为横排阅读</button><button class="btn small" id="spk">朗读对读</button></div>`;}
+function bindPair(an){const b=document.getElementById('flip');if(!b)return;b.onclick=()=>{const k=document.getElementById('book');k.classList.toggle('h');b.textContent=k.classList.contains('h')?'改为竖排阅读':'改为横排阅读';};
+  document.getElementById('spk').onclick=()=>speak(an);}
+
+// ---------- 课程页 ----------
+function renderDay({d,step}){
+  const p=PLAN[d-1];S.seen[d]=S.seen[d]||[];
+  const steps=[...(d===1?[['intro','入门']]:[]),['ddj','读经'],['gua','观象'],['pair','对读'],['quiz','闯关']];
+  step=step||steps[0][0];if(!S.seen[d].includes(step)){S.seen[d].push(step);save();}
+  markStudy();
+  const nav=`<div class="dayhead" style="--sc:${SEA_C[seaIdx(d)]}"><div><div class="eyebrow">第 ${d} 天 · ${SEAS[seaIdx(d)].name}</div><h2>${p.isle} · ${esc(p.theme)}</h2></div>
+    <div class="steps">${steps.map(([k,t])=>`<button data-step="${k}" class="${k===step?'on':''} ${S.seen[d].includes(k)?'seen':''}">${t}</button>`).join('')}</div></div>`;
+  let body='';
+  if(step==='intro')body=basicsHTML();
+  if(step==='ddj')body=dayCh(d).map(chapterHTML).join('');
+  if(step==='gua')body=dayGua(d).map(guaHTML).join('');
+  if(step==='pair')body=`<div class="talk">${mascot('happy',56)}<div class="bubble">今天的对读：把一章《道德经》和一卦《易经》放在一起看，找找它们说的是不是同一个道理。</div></div>`+pairHTML(p.pair[0],p.pair[1],p.an,'第'+cnum(d)+'天　')+
+     (d===21?`<div class="panel"><div class="lab">加读：4841</div>${esc(CODES['4841'])}</div>`:'');
+  const idx=steps.findIndex(s=>s[0]===step),nx=steps[idx+1];
+  main.innerHTML=`<section class="view">${nav}${step==='quiz'?'<div id="qz"></div>':body}
+   ${step!=='quiz'&&nx?`<div class="row"><button class="btn ${nx[0]==='quiz'?'warm':'go'}" id="nx">下一步：${nx[1]} →</button></div>`:''}</section>`;
+  main.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{SFX.click();go('day',{d,step:b.dataset.step});});
+  if(nx&&step!=='quiz')document.getElementById('nx').onclick=()=>{SFX.click();go('day',{d,step:nx[0]});};
+  bindText(main);if(step==='pair')bindPair(p.an);
+  if(step==='quiz')runQuiz(document.getElementById('qz'),dayQuestions(d),res=>finishDay(d,res));
+}
+function finishDay(d,{right,total,bonus}){
+  const pct=right/total,stars=pct>=.9?3:pct>=.75?2:pct>=.6?1:0;const old=S.days[d]||{stars:0};
+  let gain=right*10+bonus;if(stars>old.stars)gain+=(stars-old.stars)*50;
+  S.xp+=gain;S.days[d]={stars:Math.max(stars,old.stars),best:Math.max(right,old.best||0),date:today()};save();renderTop();
+  if(stars===3)award('full');checkBadges();
+  const cards=stars?[...dayCh(d).map(n=>({c:n<=37?'var(--s3)':'var(--s2)',t:'第'+n+'章 '+DN[n-1].ti,s:DN[n-1].key.split('……')[0]})),...dayGua(d).map(n=>({c:tc(GUA[n-1].up),t:fullName(GUA[n-1]),s:GN[n-1].ti}))]:[];
+  return {stars,gain,pass:stars>0,cards,next:d<30?()=>go('day',{d:d+1}):null,retry:()=>go('day',{d,step:'quiz'})};
+}
+
+// ---------- 题目生成 ----------
+const rnd=n=>Math.floor(Math.random()*n);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
+const pick=a=>a[rnd(a.length)];
+function others(n,max,k,near){const s=new Set();let guard=0;while(s.size<k&&guard++<500){const c=near?Math.min(max,Math.max(1,n+rnd(21)-10)):1+rnd(max);if(c!==n)s.add(c);}return [...s];}
+function mk(q,correct,wrongs,exp,sub){const opts=shuffle([correct,...wrongs.slice(0,3)]);return {q,sub:sub||'',opts,a:opts.indexOf(correct),exp};}
+const chLabel=n=>`《道德经》第${n}章「${DN[n-1].ti}」`;
+const guaLabel=n=>`第${n}卦 ${fullName(GUA[n-1])}「${GN[n-1].ti}」`;
+const Q={
+ chKey(n){const key=DN[n-1].key.split('……')[0];return mk(`“${key}”出自《道德经》第几章？`,`第${n}章`,others(n,81,3,true).map(k=>`第${k}章`),`出自${chLabel(n)}。`);},
+ chTheme(n){return mk(`哪一章讲的是「${DN[n-1].ti}」？`,chLabel(n),others(n,81,3).map(chLabel),DN[n-1].key);},
+ chCloze(n){const sents=DDJ[n-1].s.split(/[。；？！]/).map(s=>s.trim()).filter(s=>s.includes('，'));
+   const cands=[];sents.forEach(s=>{const parts=s.split('，');parts.forEach((p,i)=>{const c=p.replace(/[“”：、]/g,'');if(c.length>=2&&c.length<=7&&parts.length>1)cands.push([s,i,p]);});});
+   if(!cands.length)return Q.chKey(n);const [s,i,p]=pick(cands);const L=p.length;
+   const pool=[];DDJ.forEach((d,k)=>{if(k!==n-1)d.s.split(/[，。；？！]/).forEach(x=>{x=x.trim();if(x.length===L&&!/[“”：]/.test(x)&&x!==p)pool.push(x);});});
+   const wr=shuffle([...new Set(pool)]).slice(0,3);if(wr.length<3)return Q.chKey(n);
+   const parts=s.split('，');parts[i]='＿＿＿＿';return mk(`填空（第${n}章）：“${parts.join('，')}”`,p,wr,`原句：“${s}。”`);},
+ caseQ(ref){const isG=ref[0]==='g',n=ref[1],no=isG?GN[n-1]:DN[n-1],txt=pick([no.gu,no.jin]);
+   const lab=isG?guaLabel(n):chLabel(n);const wr=isG?others(n,64,3,true).map(guaLabel):others(n,81,3,true).map(chLabel);
+   return mk('下面这个案例，最能说明哪一个道理？',lab,wr,lab+'：'+no.ti,`<div class="qsub">${esc(txt)}</div>`);},
+ guaShape(n){const g=GUA[n-1];return mk('看卦象：这是哪一卦？（爻从下往上数，颜色代表上下卦的五行）',fullName(g),others(n,64,3).map(k=>fullName(GUA[k-1])),`${fullName(g)}：${TRI[g.up].x}在上，${TRI[g.down].x}在下。`,`<div class="qsub" style="display:flex;justify-content:center">${guaSVG(g,110)}</div>`);},
+ guaTri(n){const g=GUA[n-1];return mk(`上卦是${g.up}（${TRI[g.up].x}），下卦是${g.down}（${TRI[g.down].x}），这是哪一卦？`,g.name,others(n,64,3).map(k=>GUA[k-1].name),`${fullName(g)}，第${n}卦。`);},
+ guaDx(n){const g=GUA[n-1];let dx=g.dx;[...g.name].forEach(c=>{dx=dx.split(c).join('○');});
+   return mk(`《象传》说：“${dx}”（○为卦名）这是哪一卦？`,g.name,others(n,64,3,true).map(k=>GUA[k-1].name),`象曰：${g.dx}`);},
+ guaTi(n){return mk(`哪一卦的核心是「${GN[n-1].ti}」？`,guaLabel(n),others(n,64,3).map(guaLabel),GN[n-1].bh.slice(0,60)+'……');},
+ yaoPos(n){const g=GUA[n-1],i=rnd(6),t=g.yao[i],k=t.indexOf('：')>-1?t.indexOf('：'):t.indexOf('，');const posAll=g.yao.slice(0,6).map(y=>y.slice(0,y.search(/[：，]/)));
+   const correct=posAll[i];const wr=shuffle(posAll.filter(x=>x!==correct));return mk(`${g.name}卦中，“${t.slice(k+1)}”是哪一爻？`,correct,wr,`${correct}：${GN[n-1].yao[i]}`);},
+ tri(){const name=pick(TRI_NAMES),t=TRI[name];return mk('这是八卦中的哪一卦？',`${name}（${t.x}）`,shuffle(TRI_NAMES.filter(x=>x!==name)).slice(0,3).map(x=>`${x}（${TRI[x].x}）`),`${t.song}：${name}为${t.x}，性质“${t.de}”，五行属${t.wn}。`,`<div class="qsub" style="display:flex;justify-content:center">${triSVG(name,90)}</div>`);}
+};
+const BASIC_Q=[
+ ()=>mk('《易经》的爻是从哪里开始数的？','从最下面一爻往上数',['从最上面一爻往下数','从中间往两边数','没有固定顺序'],'第一爻叫“初”，在最下；第六爻叫“上”，在最上。'),
+ ()=>mk('爻辞中的“九”和“六”分别代表什么？','九是阳爻，六是阴爻',['九是阴爻，六是阳爻','九是第九爻，六是第六爻','都表示吉凶'],'阳爻（—）称九，阴爻（- -）称六，例如“初九”“六二”。'),
+ ()=>mk('《道德经》一共有多少章？','81章',['64章','100章','72章'],'通行本《道德经》分81章，前37章为“道经”，后44章为“德经”。'),
+ ()=>mk('一个六爻卦由什么组成？','上下两个三爻的八卦',['六个八卦','两个六爻卦','一阴一阳'],'六十四卦 = 8 × 8，每卦由下卦（内卦）和上卦（外卦）组成。'),
+ ()=>mk('“离（火）上 坎（水）下”的卦叫什么？','火水未济',['水火既济','火天大有','水火相济'],'读卦名时先读上卦之象，再读下卦之象，最后是卦名：火水未济。')
+];
+function dayQuestions(d){
+  const ch=dayCh(d),gu=dayGua(d),pool=[];
+  ch.forEach(n=>{pool.push(Q.chKey(n),Q.chCloze(n),Q.chTheme(n));});
+  gu.forEach(n=>{pool.push(Q.guaShape(n),pick([Q.guaTri,Q.guaDx])(n),Q.yaoPos(n),Q.guaTi(n));});
+  const items=[...ch.map(n=>['c',n]),...gu.map(n=>['g',n])];
+  shuffle(items).slice(0,2).forEach(r=>pool.push(Q.caseQ(r)));
+  let qs=shuffle(pool).slice(0,d===1?9:10);
+  if(d===1)qs=qs.concat(shuffle(BASIC_Q).slice(0,3).map(f=>f()));
+  else{const prev=[];for(let k=1;k<d;k++){dayCh(k).forEach(n=>prev.push(()=>Q.chKey(n)));dayGua(k).forEach(n=>prev.push(()=>Q.guaShape(n)));}
+    shuffle(prev).slice(0,2).forEach(f=>{const q=f();q.review=true;qs.push(q);});}
+  return shuffle(qs);
+}
+
+// ---------- 测验引擎 ----------
+const OC=['var(--s1)','var(--s3)','var(--s5)','var(--s2)'];
+function runQuiz(box,qs,onDone,opts={}){
+  let i=0,right=0,combo=0,bonus=0,reviewOk=0;
+  function show(){
+    const q=qs[i];
+    box.innerHTML=`<div class="quiz"><div class="qtop">${mascot('idle',44)}<div class="qbar"><div style="width:${i/qs.length*100}%"></div></div><span class="combo" id="cb">${combo>=2?'连对×'+combo:''}</span></div>
+      <div class="qcard"><div class="eyebrow">第 ${i+1} / ${qs.length} 题${q.review?' · 温故知新':''} · 答对 ${right}</div>
+      <div class="qq">${esc(q.q)}</div>${q.sub}
+      <div class="opts">${q.opts.map((o,k)=>`<button class="opt" data-k="${k}" style="--oc:${OC[k]}"><b>${'ABCD'[k]}</b><span>${esc(o)}</span></button>`).join('')}</div><div id="fb"></div></div></div>`;
+    box.querySelectorAll('.opt').forEach(b=>b.onclick=e=>answer(+b.dataset.k,e));
+  }
+  function answer(k,e){
+    const q=qs[i],ok=k===q.a;
+    if(ok){right++;combo++;const add=combo>=3?combo*2:0;bonus+=add;S.bestCombo=Math.max(S.bestCombo,combo);
+      SFX.ok();confetti(combo>=3?50:25,e.clientX,e.clientY);
+      const pl=document.createElement('div');pl.className='plus';pl.textContent='+'+(10+add);box.querySelector('.qcard').appendChild(pl);
+      const cb=document.getElementById('cb');if(combo>=2){cb.textContent='连对×'+combo;cb.classList.add('pop');}
+    }else{combo=0;SFX.no();document.getElementById('cb').textContent='';}
+    const m=box.querySelector('.mascot');m.outerHTML=mascot(ok?'happy':'sad',44,ok?'happy':'sad');
+    box.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add('ok');else if(j===k)b.classList.add('no');});
+    const id=q.q+'|'+q.opts[q.a];
+    if(!ok&&!S.mistakes.some(x=>x.id===id))S.mistakes.push(Object.assign({id},q));
+    if(ok&&opts.fromReview){S.mistakes=S.mistakes.filter(x=>x.id!==id);reviewOk++;}
+    save();
+    document.getElementById('fb').innerHTML=`<div class="fb" style="--c:${ok?'var(--good)':'var(--bad)'}"><b>${ok?pick(CHEER):pick(COMFORT)}</b><br>${esc(q.exp)}</div>
+      <div class="row" style="margin-top:12px"><button class="btn ${i+1<qs.length?'':'warm'}" id="go">${i+1<qs.length?'下一题 →':'看结果'}</button></div>`;
+    const g=document.getElementById('go');g.focus({preventScroll:true});g.onclick=()=>{i++;if(i<qs.length)show();else end();};
+  }
+  function end(){
+    if(opts.fromReview&&reviewOk){S.reviewOk=(S.reviewOk||0)+reviewOk;if(S.reviewOk>=10)award('review');}
+    checkBadges();
+    const r=onDone({right,total:qs.length,bonus})||{};
+    const st=r.stars;
+    box.innerHTML=`<div class="quiz"><div class="panel result">
+      ${mascot(r.pass===false?'sad':'happy',90,r.pass===false?'sad':'happy')}
+      <div class="fun" style="font-size:26px">${r.pass===false?'差一点点！':'闯关成功！'}</div>
+      <div style="font-size:18px">答对 <b>${right}</b> / ${qs.length}</div>
+      ${st!==undefined?`<div class="seals">${[0,1,2].map(k=>`<svg class="star${k<st?' on':''}" viewBox="0 0 20 19" style="animation-delay:${.2+k*.3}s"><path d="${STAR_D}"/></svg>`).join('')}</div>`:''}
+      ${r.gain!==undefined?`<div class="chip xp" style="font-size:16px">+${r.gain} 经验${bonus?`（含连对奖励 ${bonus}）`:''}</div>`:''}
+      ${r.cards&&r.cards.length?`<div class="note">收集到今天的锦囊卡：</div><div class="cards">${r.cards.map((c,k)=>`<div class="jn" style="--c:${c.c};animation-delay:${.8+k*.12}s"><b>${esc(c.t)}</b>${esc(c.s)}</div>`).join('')}</div>`:''}
+      <div class="note">${r.pass===false?'答对 60% 就能拿到星星、解锁下一座岛。错题已收进错题本，看一眼再来！':r.msg||'错题已自动收进错题本，方便以后复习。'}</div>
+      <div class="row" style="justify-content:center">${r.retry?'<button class="btn ghost" id="rt">再闯一次</button>':''}${r.next&&r.pass?'<button class="btn go" id="nd">前往下一座岛 →</button>':''}<button class="btn ghost" id="bk">回到地图</button></div>
+    </div></div>`;
+    if(r.pass!==false){SFX.win();setTimeout(()=>confetti(st===3?160:90),300);if(st)for(let k=0;k<st;k++)setTimeout(SFX.stamp,500+k*300);}
+    if(r.retry)document.getElementById('rt').onclick=r.retry;
+    if(r.next&&r.pass)document.getElementById('nd').onclick=r.next;
+    document.getElementById('bk').onclick=()=>go('map');
+  }
+  show();
+}
+
+// ---------- 经典库 ----------
+let libTab='ddj',libQ='';
+function renderLib(arg){
+  if(arg&&arg.tab)libTab=arg.tab;
+  main.innerHTML=`<section class="view"><div class="head2"><h2 class="fun">经典库</h2>
+    <div class="seg"><button data-t="ddj" class="${libTab==='ddj'?'on':''}">道德经 81 章</button><button data-t="gua" class="${libTab==='gua'?'on':''}">易经 64 卦</button></div></div>
+    <div class="row"><input class="search" id="q" placeholder="搜索原文、主题或案例，例如：水、谦、范蠡" value="${esc(libQ)}"><span class="note">彩色 = 已学过</span></div>
+    <div class="grid-n" id="grid"></div><div id="detail" style="display:grid;gap:16px"></div></section>`;
+  main.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{libTab=b.dataset.t;renderLib();});
+  const q=document.getElementById('q');q.oninput=()=>{libQ=q.value.trim();grid();};
+  function grid(){const isD=libTab==='ddj',N=isD?81:64;let h='';
+    for(let n=1;n<=N;n++){const no=isD?DN[n-1]:GN[n-1],tx=isD?DDJ[n-1].s:GUA[n-1].name+GUA[n-1].gc+GUA[n-1].yao.join('')+GUA[n-1].dx;
+      if(libQ&&!(tx+no.ti+no.bh+no.gu+no.jin).includes(libQ))continue;
+      const c=isD?SEA_C[seaIdx(chDay(n))]:tc(GUA[n-1].up);
+      h+=`<button data-n="${n}" style="--c:${c}" class="${(isD?learnedCh:learnedGua).has(n)?'learned':''}"><b>${n}</b>${isD?'':guaSVG(GUA[n-1],30)}<span>${isD?esc(no.ti):esc(GUA[n-1].name)}</span></button>`;}
+    const g=document.getElementById('grid');g.innerHTML=h||'<span class="note">没有找到，换个关键词试试。</span>';
+    g.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{SFX.click();const d=document.getElementById('detail');d.innerHTML=isD?chapterHTML(+b.dataset.n):guaHTML(+b.dataset.n);bindText(d);d.scrollIntoView({behavior:reduce?'auto':'smooth'});});}
+  grid();
+}
+
+// ---------- 卦象训练营 ----------
+function renderTrainer(){
+  main.innerHTML=`<section class="view"><div class="head2"><div><div class="eyebrow">最佳成绩 ${S.trainerBest} / 20</div><h2 class="fun">卦象训练营</h2></div></div>
+   <div class="panel" style="display:grid;gap:14px"><div class="talk">${mascot('happy',56)}<div class="bubble">20 道速认题：看线条认八卦、看卦象认六十四卦、看上下卦说卦名。颜色就是五行：<b style="color:var(--jin)">金</b> <b style="color:var(--mu)">木</b> <b style="color:var(--shui)">水</b> <b style="color:var(--huo)">火</b> <b style="color:var(--tu)">土</b>，记住颜色更好认！</div></div>
+   <div class="tri">${TRI_NAMES.map(k=>`<div style="--c:${tc(k)}">${triSVG(k,54)}<b>${k}</b><span style="font-size:13px">${TRI[k].x} · ${TRI[k].song}</span></div>`).join('')}</div>
+   <div class="row"><button class="btn warm" id="st">开始训练</button><label class="note"><input type="checkbox" id="only" ${learnedGua.size>=4?'':'disabled'}> 只练已学过的卦（已学 ${learnedGua.size} 卦）</label></div></div><div id="qz"></div></section>`;
+  document.getElementById('st').onclick=()=>{
+    const only=document.getElementById('only').checked,pool=only?[...learnedGua]:Array.from({length:64},(_,i)=>i+1);
+    const qs=Array.from({length:20},(_,k)=>k<5?Q.tri():pick([Q.guaShape,Q.guaTri])(pick(pool)));
+    const t0=Date.now();main.querySelector('.panel').hidden=true;
+    runQuiz(document.getElementById('qz'),qs,({right,bonus})=>{const sec=Math.round((Date.now()-t0)/1000);const nb=right>S.trainerBest;if(nb)S.trainerBest=right;if(right>=18)award('trainer');
+      const gain=right*3+bonus;S.xp+=gain;save();renderTop();
+      return {gain,msg:`用时 ${sec} 秒${nb?'，刷新了最佳成绩！':'。'}`,retry:()=>renderTrainer()};});
+  };
+}
+
+// ---------- 错题本 ----------
+function renderReview(){
+  const m=S.mistakes;
+  main.innerHTML=`<section class="view"><div class="head2"><h2 class="fun">错题本</h2><span class="note">重练时答对的题会自动移出</span></div>
+   ${m.length?`<div class="row" id="rrow"><button class="btn warm" id="go">重练错题（${Math.min(m.length,15)} 题）</button><button class="btn ghost" id="mix">综合复习已学内容</button></div>
+   <div class="panel" id="rlist" style="display:grid;gap:10px">${m.slice(-30).reverse().map(x=>`<div style="border-bottom:2px solid var(--line);padding-bottom:8px"><div>${esc(x.q)}</div><div class="note">正确答案：<b style="color:var(--good)">${esc(x.opts[x.a])}</b>　${esc(x.exp)}</div></div>`).join('')}</div>`
+   :`<div class="panel talk" id="rlist">${mascot('happy',64)}<div class="bubble">还没有错题，真棒！闯关时答错的题会自动收进这里。<div class="row" style="margin-top:10px"><button class="btn ghost" id="mix" ${learnedCh.size?'':'disabled'}>综合复习已学内容</button></div></div></div>`}
+   <div id="qz"></div></section>`;
+  const hide=()=>{['rrow','rlist'].forEach(id=>{const e=document.getElementById(id);if(e)e.hidden=true;});};
+  const b=document.getElementById('go');
+  if(b)b.onclick=()=>{const qs=shuffle(m).slice(0,15).map(x=>{const o=shuffle(x.opts.map((t,k)=>[t,k===x.a]));return Object.assign({},x,{opts:o.map(z=>z[0]),a:o.findIndex(z=>z[1])});});
+    hide();runQuiz(document.getElementById('qz'),qs,({right,bonus})=>{const gain=right*5+bonus;S.xp+=gain;save();renderTop();return {gain,retry:()=>renderReview()};},{fromReview:true});};
+  const mx=document.getElementById('mix');
+  if(mx)mx.onclick=()=>{const c=[...learnedCh],g=[...learnedGua];if(!c.length){toast('先完成第一座岛');return;}
+    const qs=Array.from({length:12},(_,k)=>k%2||!g.length?pick([Q.chKey,Q.chCloze,Q.chTheme])(pick(c)):pick([Q.guaShape,Q.guaDx,Q.yaoPos])(pick(g)));
+    hide();runQuiz(document.getElementById('qz'),qs,({right,bonus})=>{const gain=right*5+bonus;S.xp+=gain;save();renderTop();return {gain,retry:()=>renderReview()};});};
+}
+
+// ---------- 编号对读 ----------
+function renderCode(){
+  main.innerHTML=`<section class="view"><div class="head2"><h2 class="fun">编号对读</h2></div>
+   <div class="panel" style="display:grid;gap:12px">
+    <div>输入四位编号：<b style="color:var(--s3)">前两位</b>是《道德经》章数（01–81），<b style="color:var(--s5)">后两位</b>是《易经》卦序（01–64）。例如书中的 4841 = 第48章 × 第41卦（损）。系统会把这一章与这一卦并排展开，供你对照学习。</div>
+    <div class="row"><input class="code-in" id="ci" inputmode="numeric" maxlength="4" value="4841" aria-label="四位编号"><button class="btn" id="cb">展开对读</button>
+     ${Object.keys(CODES).map(k=>`<button class="btn small" data-c="${k}">${k}</button>`).join('')}</div>
+    <div class="note">这里只把编号当作“一章配一卦”的学习索引。经文的价值在于理解与践行，默念编号本身不能代替看病、心理咨询或做决定。</div>
+   </div><div id="out" style="display:grid;gap:16px"></div></section>`;
+  const ci=document.getElementById('ci');
+  const run=()=>{const v=ci.value.replace(/\D/g,'');const c=+v.slice(0,2),g=+v.slice(2,4),o=document.getElementById('out');
+    if(v.length!==4||c<1||c>81||g<1||g>64){o.innerHTML='<div class="panel">编号要是四位数字：前两位 01–81，后两位 01–64。</div>';return;}
+    const an=CODES[v]||`把《道德经》第${c}章「${DN[c-1].ti}」与《易经》第${g}卦${fullName(GUA[g-1])}「${GN[g-1].ti}」放在一起读：先找出两者共同的关键词（比如“柔”“止”“信”“损”），再想一想：老子的这句话，能不能解释这一卦的某一爻？这一卦的处境，又能不能用这一章的智慧来应对？把你的答案写在本子上。`;
+    o.innerHTML=pairHTML(c,g,an,'编号'+v+'　')+`<div class="two">${chapterHTML(c)}${guaHTML(g)}</div>`;bindText(o);bindPair(an);};
+  document.getElementById('cb').onclick=()=>{SFX.click();run();};ci.onkeydown=e=>{if(e.key==='Enter')run();};
+  main.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{ci.value=b.dataset.c;SFX.click();run();});run();
+}
+
+// ---------- 入门须知 ----------
+function basicsHTML(){return `<div class="page basics" style="--pc:var(--s1)">
+  <div class="ph"><span class="tag">第一天先读这一页</span><h3>两部书，怎么读</h3></div>
+  <div class="talk">${mascot('happy',60)}<div class="bubble">我是易宝，一个太极。黑白两半就是阴和阳，接下来30天我陪你一起闯岛！</div></div>
+  <div><div class="lab" style="--lc:var(--s3)">《道德经》</div>春秋时期老子所著，约五千字，通行本（王弼本）分 81 章：第 1–37 章为“道经”，讲宇宙规律；第 38–81 章为“德经”，讲做人做事。核心词：道、德、无为、不争、柔弱、知足。</div>
+  <div><div class="lab" style="--lc:var(--s5)">《易经》（周易）</div>由 64 卦组成，每卦有卦辞和 6 条爻辞，后来又有孔子一派写的《易传》（如《彖传》《象传》）来解释。核心思想是“变”：处境不断变化，人要看清处境、顺势而为。</div>
+  <div><div class="lab">读卦的四个要点</div>
+   <ol style="margin:4px 0;padding-left:1.3em">
+    <li>阳爻是一条长线 —，阴爻是中间断开的 - -。</li>
+    <li>六爻<b>从下往上</b>数：初、二、三、四、五、上。</li>
+    <li>阳爻称“九”，阴爻称“六”。所以“初六”是最下面一爻且为阴，“九五”是第五爻且为阳。</li>
+    <li>下面三爻叫下卦（内卦），上面三爻叫上卦（外卦）。卦名全称先读上卦之象、再读下卦之象：离（火）上坎（水）下 → <b>火水未济</b>。</li>
+   </ol></div>
+  <div><div class="lab" style="--lc:var(--huo)">八卦口诀：乾三连，坤六断；震仰盂，艮覆碗；离中虚，坎中满；兑上缺，巽下断。</div>
+   <div class="note">颜色按五行：乾兑属金，震巽属木，坎属水，离属火，坤艮属土。</div>
+   <div class="tri" style="margin-top:8px">${TRI_NAMES.map(k=>`<div style="--c:${tc(k)}">${triSVG(k,50)}<b>${k}</b><span style="font-size:13px">${TRI[k].x} · ${TRI[k].de} · ${TRI[k].fam}</span></div>`).join('')}</div></div>
+  <div><div class="lab">每天怎么学（40–60 分钟）</div>
+   <div class="tablewrap"><table class="t"><tr><th>步骤</th><th>做什么</th><th>时间</th></tr>
+   <tr><td>读经</td><td>朗读当天 2–3 章原文，看白话和古今案例，用“背诵”按钮遮字自测</td><td>15–20 分钟</td></tr>
+   <tr><td>观象</td><td>认卦象、读卦辞和六爻，看每一爻的白话</td><td>15–20 分钟</td></tr>
+   <tr><td>对读</td><td>读一章一卦的对读分析（竖排，像书一样）</td><td>5 分钟</td></tr>
+   <tr><td>闯关</td><td>12 道题，答对 60% 得星、解锁下一岛；连对有额外奖励</td><td>5–10 分钟</td></tr>
+   <tr><td>践行</td><td>完成“今日一用”里的一件小事</td><td>全天</td></tr></table></div></div>
+  <div class="note">原文：《道德经》用王弼本，《周易》用通行本（均据维基文库整理）。可在“设置”里切换繁体原文。</div>
+ </div>`;}
+function renderBasics(){main.innerHTML=`<section class="view"><div class="head2"><h2 class="fun">入门须知</h2></div>${basicsHTML()}</section>`;}
+
+// ---------- 设置 ----------
+function renderSettings(arg){
+  main.innerHTML=`<section class="view"><div class="head2"><h2 class="fun">设置</h2></div>
+   <div class="panel" id="inst" style="display:grid;gap:10px;max-width:760px"><div class="lab" style="--lc:var(--s2)">添加到手机桌面</div>${installHTML()}</div>
+   <div class="panel" style="display:grid;gap:16px;max-width:640px">
+    <label class="row"><input type="checkbox" id="trad" ${S.trad?'checked':''}> 原文显示繁体（同书中排版）</label>
+    <label class="row"><input type="checkbox" id="sd" ${S.sound?'checked':''}> 答题音效</label>
+    <label class="row">朗读语速 <input type="range" id="rate" min="0.5" max="1.3" step="0.05" value="${S.rate}"> <span id="rv">${S.rate}</span> <button class="btn small" id="tst">试听</button></label>
+    <label class="row"><input type="checkbox" id="ul" ${S.unlockAll?'checked':''}> 解锁全部 30 座岛（可跳着学）</label>
+    <div><div class="lab">备份进度</div><div class="note">进度保存在这台电脑的浏览器里。换电脑或清理浏览器前，复制下面的进度码保存起来；导入时粘贴回来。</div>
+     <textarea id="bk" readonly></textarea><div class="row"><button class="btn small" id="cp">复制进度码</button></div></div>
+    <div><div class="lab">导入进度</div><textarea id="im" placeholder="把进度码粘贴到这里"></textarea><div class="row"><button class="btn small" id="imb">导入</button></div></div>
+    <div><div class="lab" style="--lc:var(--bad)">重新开始</div><div class="row"><button class="btn small" id="rs">清空全部进度</button><span id="rsc"></span></div></div>
+   </div></section>`;
+  const $=id=>document.getElementById(id);
+  bindInstall(main);if(arg&&arg.install)setTimeout(()=>$('inst').scrollIntoView(),0);
+  $('trad').onchange=e=>{S.trad=e.target.checked;save();toast(S.trad?'原文改为繁体':'原文改为简体');};
+  $('sd').onchange=e=>{S.sound=e.target.checked;save();renderTop();SFX.click();};
+  $('rate').oninput=e=>{S.rate=+e.target.value;$('rv').textContent=S.rate;save();};
+  $('tst').onclick=()=>speak('上善若水。水善利万物而不争。');
+  $('ul').onchange=e=>{S.unlockAll=e.target.checked;save();toast(S.unlockAll?'已解锁全部岛屿':'恢复按顺序解锁');};
+  const code=btoa(unescape(encodeURIComponent(JSON.stringify(S))));$('bk').value=code;
+  $('cp').onclick=()=>{const fb=()=>{$('bk').select();toast('请按 Ctrl+C 复制');};try{navigator.clipboard.writeText(code).then(()=>toast('进度码已复制'),fb);}catch(e){fb();}};
+  $('imb').onclick=()=>{try{const o=JSON.parse(decodeURIComponent(escape(atob($('im').value.trim()))));if(typeof o.xp!=='number')throw 0;S=Object.assign(fresh(),o);save();renderTop();toast('进度已导入');}catch(e){toast('进度码不正确，请检查是否复制完整');}};
+  $('rs').onclick=()=>{$('rsc').innerHTML='<span class="note">确定清空？</span> <button class="btn small" id="rsy">确定清空</button>';$('rsy').onclick=()=>{S=fresh();save();renderTop();toast('已清空');go('map');};};
+}
+
+if('speechSynthesis' in window)speechSynthesis.getVoices();
+go('map');
+})();
+
+</script>
+<script>if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js');</script>
+</body></html>

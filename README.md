@@ -17,3 +17,8 @@
 - `data/texts.js`：原文（《道德经》王弼本、《周易》通行本，据维基文库整理），由 `tools/parse_sources.py` 生成
 - `data/ddj_notes*.js`、`data/gua_notes*.js`：讲解与案例；`data/plan.js`：30 天计划与对读
 - `src/`：界面与程序；修改后运行 `python3 tools/build.py` 重新生成 `dist/易道能力岛.html`
+
+## 放到手机桌面（像 App 一样点图标就能学）
+`docs/` 目录是手机版（PWA：有桌面图标、全屏、离线可用），由 `python3 tools/build.py` 一起生成。
+1. 把 `docs/` 发布成网址（例如 GitHub Pages：仓库 Settings → Pages → Branch 选 `main`、文件夹选 `/docs`）。
+2. 手机用浏览器打开这个网址：iPhone 用 Safari 点“分享”→“添加到主屏幕”；安卓用 Chrome 点 ⋮ →“添加到主屏幕/安装应用”。

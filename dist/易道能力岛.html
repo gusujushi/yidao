@@ -69,7 +69,7 @@ nav.tabs button:hover:not(.on){background:var(--line)}
 .btn.small{padding:5px 14px;font-size:13px;box-shadow:0 0 0 2px var(--line) inset;background:var(--card);color:var(--ink)}
 .btn:disabled{opacity:.45;cursor:default}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.panel{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:0 2px 0 var(--line)}
+.panel{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:0 2px 0 var(--line);scroll-margin-top:140px}
 section.view{display:grid;gap:22px;padding-top:22px}
 .head2{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 16px;justify-content:space-between}
 .head2 h2{font-size:30px}
@@ -1156,6 +1156,22 @@ function streak(){const set=new Set(S.dates);let n=0;const d=new Date();if(!set.
 const LEVELS=[[0,'童生'],[300,'秀才'],[900,'举人'],[1800,'进士'],[3000,'翰林'],[4500,'大儒'],[6500,'悟道者']];
 function level(){let i=0;while(i+1<LEVELS.length&&S.xp>=LEVELS[i+1][0])i++;const cur=LEVELS[i],nx=LEVELS[i+1];
   return {name:cur[1],pct:nx?(S.xp-cur[0])/(nx[0]-cur[0]):1};}
+// ---------- 添加到手机桌面 ----------
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(curView==='map'||curView==='settings')go(curView);});
+const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+function installHTML(){
+  if(standalone())return '<div>已经在手机桌面上啦，以后点图标就能直接学习。</div>';
+  return `${deferredPrompt?'<div class="row"><button class="btn go" data-install>一键添加到桌面</button></div>':''}
+   <div class="tablewrap"><table class="t">
+    <tr><th>手机</th><th>操作</th></tr>
+    <tr><td>苹果 iPhone</td><td>用 <b>Safari</b> 打开本页 → 点底部的“分享”按钮（方框带向上箭头）→ 选“<b>添加到主屏幕</b>” → 点“添加”</td></tr>
+    <tr><td>安卓手机</td><td>用 <b>Chrome</b>（或手机自带浏览器）打开本页 → 点右上角 ⋮ → 选“<b>添加到主屏幕</b>”或“<b>安装应用</b>”</td></tr>
+    <tr><td>在微信里打开的</td><td>先点右上角 ··· → 选“<b>在浏览器打开</b>”，再按上面的方法操作</td></tr>
+   </table></div>
+   <div class="note">添加后桌面上会出现“易道能力岛”的太极小图标，点开就是全屏，第一次打开后没网也能学。进度保存在这部手机里；电脑和手机的进度不互通，可用下方“进度码”搬过来。</div>`;}
+function bindInstall(root){root.querySelectorAll('[data-install]').forEach(b=>b.onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();const r=await deferredPrompt.userChoice;deferredPrompt=null;if(r.outcome==='accepted')toast('已添加到桌面');go(curView);});}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2400);}
 
 // ---------- 音效与彩带 ----------
@@ -1235,7 +1251,10 @@ function renderMap(){
   const nd=nextDay(),p=PLAN[nd-1],done=Object.values(S.days).filter(x=>x.stars>0).length;
   const stars=Object.values(S.days).reduce((a,x)=>a+(x.stars||0),0);
   const tipN=1+Math.floor(Date.now()/864e5)%81,tip=DN[tipN-1];
+  const showTip=!standalone()&&innerWidth<760&&!S.hideInstall;
   main.innerHTML=`<section class="view">
+   ${showTip?`<div class="panel talk">${mascot('happy',48)}<div style="min-width:0;flex:1"><b>把易道能力岛放到手机桌面</b><div class="note">像英语能力岛一样，点图标就能学。</div>
+     <div class="row" style="margin-top:6px">${deferredPrompt?'<button class="btn go small" data-install style="background:var(--s2);color:#fff">一键添加</button>':''}<button class="btn small" id="howto">怎么添加</button><button class="btn small" id="hidetip">不再提示</button></div></div></div>`:''}
    <div class="today">
     <div class="hero" style="background:linear-gradient(135deg,${SEA_C[seaIdx(nd)]},var(--s4))">
       <div class="eyebrow">今日航程 · 第 ${nd} 天 / 30 · ${SEAS[seaIdx(nd)].name}</div>
@@ -1264,6 +1283,7 @@ function renderMap(){
    <div class="badges">${BADGES.map(b=>`<div class="badge${S.badges[b[0]]?'':' off'}" style="--c:${b[3]}" title="${esc(b[2])}"><i>${b[4]}</i><div><b>${b[1]}</b><div class="note">${esc(b[2])}</div></div></div>`).join('')}</div>
   </section>`;
   main.querySelector('[data-day]').onclick=()=>{SFX.click();go('day',{d:nd});};
+  if(showTip){bindInstall(main);document.getElementById('howto').onclick=()=>go('settings',{install:true});document.getElementById('hidetip').onclick=()=>{S.hideInstall=true;save();go('map');};}
   drawMap();
 }
 function drawMap(){
@@ -1579,8 +1599,9 @@ function basicsHTML(){return `<div class="page basics" style="--pc:var(--s1)">
 function renderBasics(){main.innerHTML=`<section class="view"><div class="head2"><h2 class="fun">入门须知</h2></div>${basicsHTML()}</section>`;}
 
 // ---------- 设置 ----------
-function renderSettings(){
+function renderSettings(arg){
   main.innerHTML=`<section class="view"><div class="head2"><h2 class="fun">设置</h2></div>
+   <div class="panel" id="inst" style="display:grid;gap:10px;max-width:760px"><div class="lab" style="--lc:var(--s2)">添加到手机桌面</div>${installHTML()}</div>
    <div class="panel" style="display:grid;gap:16px;max-width:640px">
     <label class="row"><input type="checkbox" id="trad" ${S.trad?'checked':''}> 原文显示繁体（同书中排版）</label>
     <label class="row"><input type="checkbox" id="sd" ${S.sound?'checked':''}> 答题音效</label>
@@ -1592,6 +1613,7 @@ function renderSettings(){
     <div><div class="lab" style="--lc:var(--bad)">重新开始</div><div class="row"><button class="btn small" id="rs">清空全部进度</button><span id="rsc"></span></div></div>
    </div></section>`;
   const $=id=>document.getElementById(id);
+  bindInstall(main);if(arg&&arg.install)setTimeout(()=>$('inst').scrollIntoView(),0);
   $('trad').onchange=e=>{S.trad=e.target.checked;save();toast(S.trad?'原文改为繁体':'原文改为简体');};
   $('sd').onchange=e=>{S.sound=e.target.checked;save();renderTop();SFX.click();};
   $('rate').oninput=e=>{S.rate=+e.target.value;$('rv').textContent=S.rate;save();};
